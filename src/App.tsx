@@ -3,13 +3,13 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Navigation from "./components/Navigation";
-import Home from "./pages/Home";
-import Memories from "./pages/Memories";
-import Members from "./pages/Members";
-import Recruitment from "./pages/Recruitment";
-import Admin from "./pages/Admin";
+import NewHome from "./pages/NewHome";
+import NewMembers from "./pages/NewMembers";
+import Events from "./pages/Events";
+import Articles from "./pages/Articles";
 import NotFound from "./pages/NotFound";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 const queryClient = new QueryClient();
 
@@ -19,16 +19,16 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Navigation />
+        <Header />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/memories" element={<Memories />} />
-          <Route path="/members" element={<Members />} />
-          <Route path="/recruitment" element={<Recruitment />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/" element={<NewHome />} />
+          <Route path="/members" element={<NewMembers />} />
+          <Route path="/events" element={<Events />} />
+          <Route path="/articles" element={<Articles />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
