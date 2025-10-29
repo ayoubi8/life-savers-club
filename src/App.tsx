@@ -7,6 +7,10 @@ import NewHome from "./pages/NewHome";
 import NewMembers from "./pages/NewMembers";
 import Events from "./pages/Events";
 import Articles from "./pages/Articles";
+import Sponsors from "./pages/Sponsors";
+import BecomeSponsor from "./pages/BecomeSponsor";
+import SubmitArticle from "./pages/SubmitArticle";
+import JoinUs from "./pages/JoinUs";
 import NotFound from "./pages/NotFound";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -25,6 +29,10 @@ const App = () => (
           <Route path="/members" element={<NewMembers />} />
           <Route path="/events" element={<Events />} />
           <Route path="/articles" element={<Articles />} />
+          <Route path="/sponsors" element={<Sponsors />} />
+          <Route path="/become-sponsor" element={<BecomeSponsor />} />
+          <Route path="/submit-article" element={<SubmitArticle />} />
+          <Route path="/join-us" element={<JoinUs />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -14,6 +14,7 @@ const Header = () => {
     { path: "/articles", label: "Articles" },
     { path: "/sponsors", label: "Sponsors" },
     { path: "/submit-article", label: "Submit Article" },
+    { path: "/join-us", label: "Join Us" },
   ];
 
   const NavLinks = ({ onClick }: { onClick?: () => void }) => (
