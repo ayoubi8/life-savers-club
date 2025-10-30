@@ -14,16 +14,216 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      articles: {
+        Row: {
+          author_email: string
+          author_name: string
+          author_social: Json | null
+          category: string
+          content: string
+          cover_image: string | null
+          created_at: string
+          excerpt: string | null
+          full_document: string | null
+          id: string
+          published_at: string | null
+          rejection_reason: string | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_email: string
+          author_name: string
+          author_social?: Json | null
+          category: string
+          content: string
+          cover_image?: string | null
+          created_at?: string
+          excerpt?: string | null
+          full_document?: string | null
+          id?: string
+          published_at?: string | null
+          rejection_reason?: string | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_email?: string
+          author_name?: string
+          author_social?: Json | null
+          category?: string
+          content?: string
+          cover_image?: string | null
+          created_at?: string
+          excerpt?: string | null
+          full_document?: string | null
+          id?: string
+          published_at?: string | null
+          rejection_reason?: string | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      events: {
+        Row: {
+          created_at: string
+          description: string
+          event_date: string
+          id: string
+          images: Json | null
+          show_explore_button: boolean | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          event_date: string
+          id?: string
+          images?: Json | null
+          show_explore_button?: boolean | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          event_date?: string
+          id?: string
+          images?: Json | null
+          show_explore_button?: boolean | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      join_submissions: {
+        Row: {
+          availability: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          major: string | null
+          motivation: string
+          notes: string | null
+          phone: string | null
+          skills: string | null
+          status: string
+          university: string | null
+          updated_at: string
+          year: string | null
+        }
+        Insert: {
+          availability?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          major?: string | null
+          motivation: string
+          notes?: string | null
+          phone?: string | null
+          skills?: string | null
+          status?: string
+          university?: string | null
+          updated_at?: string
+          year?: string | null
+        }
+        Update: {
+          availability?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          major?: string | null
+          motivation?: string
+          notes?: string | null
+          phone?: string | null
+          skills?: string | null
+          status?: string
+          university?: string | null
+          updated_at?: string
+          year?: string | null
+        }
+        Relationships: []
+      }
+      sponsors: {
+        Row: {
+          created_at: string
+          display_order: number | null
+          email: string | null
+          facebook_url: string | null
+          id: string
+          instagram_url: string | null
+          logo: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number | null
+          email?: string | null
+          facebook_url?: string | null
+          id?: string
+          instagram_url?: string | null
+          logo: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number | null
+          email?: string | null
+          facebook_url?: string | null
+          id?: string
+          instagram_url?: string | null
+          logo?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: { Args: { user_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +350,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
