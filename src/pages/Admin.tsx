@@ -1,217 +1,684 @@
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Download, Trash2, Eye } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import * as XLSX from "xlsx";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/hooks/use-toast";
+import { FileText, Calendar, Heart, Users, LogOut } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-const Admin = () => {
-  const { toast } = useToast();
-  const [submissions, setSubmissions] = useState(() => {
-    return JSON.parse(localStorage.getItem("recruitmentSubmissions") || "[]");
+export default function Admin() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  
+  // Articles state
+  const [articles, setArticles] = useState<any[]>([]);
+  const [loadingArticles, setLoadingArticles] = useState(false);
+  
+  // Events state
+  const [events, setEvents] = useState<any[]>([]);
+  const [newEvent, setNewEvent] = useState({
+    title: "",
+    description: "",
+    event_date: "",
+    status: "upcoming" as "upcoming" | "past",
+    show_explore_button: false,
   });
+  
+  // Sponsors state
+  const [sponsors, setSponsors] = useState<any[]>([]);
+  const [newSponsor, setNewSponsor] = useState({
+    name: "",
+    logo: "",
+    facebook_url: "",
+    instagram_url: "",
+    email: "",
+  });
+  
+  // Join submissions state
+  const [submissions, setSubmissions] = useState<any[]>([]);
 
-  const exportToExcel = () => {
-    if (submissions.length === 0) {
+  useEffect(() => {
+    checkAdmin();
+  }, []);
+
+  const checkAdmin = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        navigate("/auth");
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin")
+        .single();
+
+      if (error || !data) {
+        toast({
+          title: "Access Denied",
+          description: "You don't have admin privileges.",
+          variant: "destructive",
+        });
+        navigate("/");
+        return;
+      }
+
+      setIsAdmin(true);
+      loadAllData();
+    } catch (error) {
+      console.error("Error checking admin:", error);
+      navigate("/");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadAllData = async () => {
+    await Promise.all([
+      loadArticles(),
+      loadEvents(),
+      loadSponsors(),
+      loadSubmissions(),
+    ]);
+  };
+
+  const loadArticles = async () => {
+    setLoadingArticles(true);
+    const { data, error } = await supabase
+      .from("articles")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
       toast({
-        title: "No Data",
-        description: "There are no submissions to export.",
+        title: "Error loading articles",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      setArticles(data || []);
+    }
+    setLoadingArticles(false);
+  };
+
+  const loadEvents = async () => {
+    const { data, error } = await supabase
+      .from("events")
+      .select("*")
+      .order("event_date", { ascending: false });
+
+    if (error) {
+      toast({
+        title: "Error loading events",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      setEvents(data || []);
+    }
+  };
+
+  const loadSponsors = async () => {
+    const { data, error } = await supabase
+      .from("sponsors")
+      .select("*")
+      .order("display_order", { ascending: true });
+
+    if (error) {
+      toast({
+        title: "Error loading sponsors",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      setSponsors(data || []);
+    }
+  };
+
+  const loadSubmissions = async () => {
+    const { data, error } = await supabase
+      .from("join_submissions")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      toast({
+        title: "Error loading submissions",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      setSubmissions(data || []);
+    }
+  };
+
+  const handleArticleAction = async (id: string, action: "approve" | "reject", reason?: string) => {
+    const { error } = await supabase
+      .from("articles")
+      .update({
+        status: action === "approve" ? "approved" : "rejected",
+        published_at: action === "approve" ? new Date().toISOString() : null,
+        rejection_reason: reason,
+      })
+      .eq("id", id);
+
+    if (error) {
+      toast({
+        title: "Error updating article",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: `Article ${action}d successfully`,
+      });
+      loadArticles();
+    }
+  };
+
+  const handleAddEvent = async () => {
+    if (!newEvent.title || !newEvent.description || !newEvent.event_date) {
+      toast({
+        title: "Missing fields",
+        description: "Please fill in all required fields",
         variant: "destructive",
       });
       return;
     }
 
-    const worksheet = XLSX.utils.json_to_sheet(submissions);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Submissions");
-    XLSX.writeFile(workbook, `life-savers-applications-${Date.now()}.xlsx`);
+    const { error } = await supabase.from("events").insert([{
+      ...newEvent,
+      images: [],
+    }]);
 
-    toast({
-      title: "Export Successful",
-      description: "Applications exported to Excel successfully.",
-    });
-  };
-
-  const clearAllSubmissions = () => {
-    if (window.confirm("Are you sure you want to delete all submissions? This cannot be undone.")) {
-      localStorage.removeItem("recruitmentSubmissions");
-      setSubmissions([]);
+    if (error) {
       toast({
-        title: "Submissions Cleared",
-        description: "All applications have been deleted.",
+        title: "Error adding event",
+        description: error.message,
+        variant: "destructive",
       });
+    } else {
+      toast({
+        title: "Success",
+        description: "Event added successfully",
+      });
+      setNewEvent({
+        title: "",
+        description: "",
+        event_date: "",
+        status: "upcoming",
+        show_explore_button: false,
+      });
+      loadEvents();
     }
   };
 
-  const deleteSubmission = (index: number) => {
-    const updated = submissions.filter((_: any, i: number) => i !== index);
-    localStorage.setItem("recruitmentSubmissions", JSON.stringify(updated));
-    setSubmissions(updated);
-    toast({
-      title: "Submission Deleted",
-      description: "Application removed successfully.",
-    });
+  const handleDeleteEvent = async (id: string) => {
+    const { error } = await supabase.from("events").delete().eq("id", id);
+
+    if (error) {
+      toast({
+        title: "Error deleting event",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: "Event deleted successfully",
+      });
+      loadEvents();
+    }
   };
 
+  const handleAddSponsor = async () => {
+    if (!newSponsor.name || !newSponsor.logo) {
+      toast({
+        title: "Missing fields",
+        description: "Name and logo are required",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const { error } = await supabase.from("sponsors").insert([newSponsor]);
+
+    if (error) {
+      toast({
+        title: "Error adding sponsor",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: "Sponsor added successfully",
+      });
+      setNewSponsor({
+        name: "",
+        logo: "",
+        facebook_url: "",
+        instagram_url: "",
+        email: "",
+      });
+      loadSponsors();
+    }
+  };
+
+  const handleDeleteSponsor = async (id: string) => {
+    const { error } = await supabase.from("sponsors").delete().eq("id", id);
+
+    if (error) {
+      toast({
+        title: "Error deleting sponsor",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: "Sponsor deleted successfully",
+      });
+      loadSponsors();
+    }
+  };
+
+  const handleSubmissionAction = async (id: string, status: "accepted" | "rejected", notes?: string) => {
+    const { error } = await supabase
+      .from("join_submissions")
+      .update({ status, notes })
+      .eq("id", id);
+
+    if (error) {
+      toast({
+        title: "Error updating submission",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: `Submission ${status} successfully`,
+      });
+      loadSubmissions();
+    }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/");
+  };
+
+  if (loading) {
+    return <div className="container py-12 text-center">Loading...</div>;
+  }
+
+  if (!isAdmin) {
+    return null;
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/20">
-      <div className="container mx-auto px-4 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-[var(--gradient-hero)] bg-clip-text text-transparent">
-            Admin Dashboard
-          </h1>
-          <p className="text-xl text-muted-foreground">
-            Manage content, members, and applications
-          </p>
+    <div className="container py-12">
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-4xl font-bold text-primary">Admin Panel</h1>
+          <p className="text-muted-foreground mt-2">Manage all website content</p>
         </div>
+        <Button onClick={handleLogout} variant="outline">
+          <LogOut className="mr-2 h-4 w-4" />
+          Logout
+        </Button>
+      </div>
 
-        <div className="max-w-6xl mx-auto">
-          <Tabs defaultValue="applications" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="applications">Applications</TabsTrigger>
-              <TabsTrigger value="content">Content</TabsTrigger>
-              <TabsTrigger value="settings">Settings</TabsTrigger>
-            </TabsList>
+      <Tabs defaultValue="articles" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="articles">
+            <FileText className="mr-2 h-4 w-4" />
+            Articles
+          </TabsTrigger>
+          <TabsTrigger value="events">
+            <Calendar className="mr-2 h-4 w-4" />
+            Events
+          </TabsTrigger>
+          <TabsTrigger value="sponsors">
+            <Heart className="mr-2 h-4 w-4" />
+            Sponsors
+          </TabsTrigger>
+          <TabsTrigger value="submissions">
+            <Users className="mr-2 h-4 w-4" />
+            Join Requests
+          </TabsTrigger>
+        </TabsList>
 
-            {/* Applications Tab */}
-            <TabsContent value="applications" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle>Recruitment Applications</CardTitle>
-                      <CardDescription>
-                        {submissions.length} total application(s)
-                      </CardDescription>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button onClick={exportToExcel} className="gap-2">
-                        <Download className="h-4 w-4" />
-                        Export to Excel
-                      </Button>
-                      <Button
-                        onClick={clearAllSubmissions}
-                        variant="destructive"
-                        className="gap-2"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                        Clear All
-                      </Button>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  {submissions.length === 0 ? (
-                    <div className="text-center py-12 text-muted-foreground">
-                      <Eye className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                      <p>No applications yet</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {submissions.map((submission: any, index: number) => (
-                        <Card key={index} className="border-2">
-                          <CardHeader>
-                            <div className="flex items-start justify-between">
-                              <div>
-                                <CardTitle className="text-lg">
-                                  {submission.fullName}
-                                </CardTitle>
-                                <CardDescription>
-                                  {submission.email} • {submission.phone}
-                                </CardDescription>
-                              </div>
+        {/* Articles Tab */}
+        <TabsContent value="articles">
+          <Card>
+            <CardHeader>
+              <CardTitle>Article Submissions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Author</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {articles.map((article) => (
+                    <TableRow key={article.id}>
+                      <TableCell className="font-medium">{article.title}</TableCell>
+                      <TableCell>{article.author_name}</TableCell>
+                      <TableCell>{article.category}</TableCell>
+                      <TableCell>
+                        <span className={`px-2 py-1 rounded-full text-xs ${
+                          article.status === 'approved' ? 'bg-green-100 text-green-800' :
+                          article.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                          'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {article.status}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          {article.status === 'pending' && (
+                            <>
                               <Button
                                 size="sm"
-                                variant="ghost"
-                                onClick={() => deleteSubmission(index)}
+                                onClick={() => handleArticleAction(article.id, "approve")}
                               >
-                                <Trash2 className="h-4 w-4 text-destructive" />
+                                Approve
                               </Button>
-                            </div>
-                          </CardHeader>
-                          <CardContent className="space-y-2">
-                            <div>
-                              <p className="text-sm font-semibold mb-1">Motivation:</p>
-                              <p className="text-sm text-muted-foreground">
-                                {submission.motivation}
-                              </p>
-                            </div>
-                            {submission.experience && (
-                              <div>
-                                <p className="text-sm font-semibold mb-1">Experience:</p>
-                                <p className="text-sm text-muted-foreground">
-                                  {submission.experience}
-                                </p>
-                              </div>
-                            )}
-                            <p className="text-xs text-muted-foreground">
-                              Submitted:{" "}
-                              {new Date(submission.submittedAt).toLocaleString()}
-                            </p>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => handleArticleAction(article.id, "reject", "Not suitable")}
+                              >
+                                Reject
+                              </Button>
+                            </>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-            {/* Content Tab */}
-            <TabsContent value="content">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Content Management</CardTitle>
-                  <CardDescription>
-                    Manage gallery, members, and announcements
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <Button variant="outline" className="w-full justify-start">
-                      Manage Gallery Images
-                    </Button>
-                    <Button variant="outline" className="w-full justify-start">
-                      Edit Team Members
-                    </Button>
-                    <Button variant="outline" className="w-full justify-start">
-                      Update Announcements
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
+        {/* Events Tab */}
+        <TabsContent value="events">
+          <div className="grid gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Add New Event</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label htmlFor="event-title">Event Title</Label>
+                  <Input
+                    id="event-title"
+                    value={newEvent.title}
+                    onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="event-description">Description</Label>
+                  <Textarea
+                    id="event-description"
+                    value={newEvent.description}
+                    onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="event-date">Event Date</Label>
+                  <Input
+                    id="event-date"
+                    type="datetime-local"
+                    value={newEvent.event_date}
+                    onChange={(e) => setNewEvent({ ...newEvent, event_date: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="event-status">Status</Label>
+                  <Select
+                    value={newEvent.status}
+                    onValueChange={(value: "upcoming" | "past") => setNewEvent({ ...newEvent, status: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="upcoming">Upcoming</SelectItem>
+                      <SelectItem value="past">Past</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button onClick={handleAddEvent}>Add Event</Button>
+              </CardContent>
+            </Card>
 
-            {/* Settings Tab */}
-            <TabsContent value="settings">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Application Settings</CardTitle>
-                  <CardDescription>
-                    Configure recruitment form and colors
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <p className="text-sm text-muted-foreground">
-                      Settings panel coming soon. This will allow you to customize:
-                    </p>
-                    <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                      <li>Number of questions</li>
-                      <li>Required vs optional fields</li>
-                      <li>Media upload settings</li>
-                      <li>Primary and accent colors</li>
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Existing Events</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Title</TableHead>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {events.map((event) => (
+                      <TableRow key={event.id}>
+                        <TableCell>{event.title}</TableCell>
+                        <TableCell>{new Date(event.event_date).toLocaleDateString()}</TableCell>
+                        <TableCell>{event.status}</TableCell>
+                        <TableCell>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleDeleteEvent(event.id)}
+                          >
+                            Delete
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Sponsors Tab */}
+        <TabsContent value="sponsors">
+          <div className="grid gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Add New Sponsor</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label htmlFor="sponsor-name">Sponsor Name</Label>
+                  <Input
+                    id="sponsor-name"
+                    value={newSponsor.name}
+                    onChange={(e) => setNewSponsor({ ...newSponsor, name: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="sponsor-logo">Logo URL</Label>
+                  <Input
+                    id="sponsor-logo"
+                    value={newSponsor.logo}
+                    onChange={(e) => setNewSponsor({ ...newSponsor, logo: e.target.value })}
+                    placeholder="https://example.com/logo.png"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="sponsor-facebook">Facebook URL (optional)</Label>
+                  <Input
+                    id="sponsor-facebook"
+                    value={newSponsor.facebook_url}
+                    onChange={(e) => setNewSponsor({ ...newSponsor, facebook_url: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="sponsor-instagram">Instagram URL (optional)</Label>
+                  <Input
+                    id="sponsor-instagram"
+                    value={newSponsor.instagram_url}
+                    onChange={(e) => setNewSponsor({ ...newSponsor, instagram_url: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="sponsor-email">Email (optional)</Label>
+                  <Input
+                    id="sponsor-email"
+                    type="email"
+                    value={newSponsor.email}
+                    onChange={(e) => setNewSponsor({ ...newSponsor, email: e.target.value })}
+                  />
+                </div>
+                <Button onClick={handleAddSponsor}>Add Sponsor</Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Existing Sponsors</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Logo</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {sponsors.map((sponsor) => (
+                      <TableRow key={sponsor.id}>
+                        <TableCell>{sponsor.name}</TableCell>
+                        <TableCell>
+                          <img src={sponsor.logo} alt={sponsor.name} className="w-12 h-12 rounded-full object-cover" />
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleDeleteSponsor(sponsor.id)}
+                          >
+                            Delete
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Submissions Tab */}
+        <TabsContent value="submissions">
+          <Card>
+            <CardHeader>
+              <CardTitle>Join Us Submissions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>University</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {submissions.map((submission) => (
+                    <TableRow key={submission.id}>
+                      <TableCell>{submission.full_name}</TableCell>
+                      <TableCell>{submission.email}</TableCell>
+                      <TableCell>{submission.university}</TableCell>
+                      <TableCell>
+                        <span className={`px-2 py-1 rounded-full text-xs ${
+                          submission.status === 'accepted' ? 'bg-green-100 text-green-800' :
+                          submission.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                          'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {submission.status}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          {submission.status === 'pending' && (
+                            <>
+                              <Button
+                                size="sm"
+                                onClick={() => handleSubmissionAction(submission.id, "accepted")}
+                              >
+                                Accept
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => handleSubmissionAction(submission.id, "rejected")}
+                              >
+                                Reject
+                              </Button>
+                            </>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
-};
-
-export default Admin;
+}

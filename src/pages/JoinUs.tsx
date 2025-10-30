@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,13 +30,36 @@ const JoinUs = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.fullName || !formData.email || !formData.motivation) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const { error } = await supabase
+      .from("join_submissions")
+      .insert([{
+        full_name: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        university: formData.university,
+        major: formData.major,
+        year: formData.year,
+        motivation: formData.motivation,
+        skills: formData.skills,
+        availability: formData.availability,
+      }]);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to submit application. Please try again.",
         variant: "destructive"
       });
       return;

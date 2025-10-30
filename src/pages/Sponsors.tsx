@@ -1,67 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Facebook, Instagram, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 interface Sponsor {
-  id: number;
+  id: string;
   name: string;
   logo: string;
-  facebook?: string;
-  instagram?: string;
+  facebook_url?: string;
+  instagram_url?: string;
   email?: string;
 }
 
-const sponsors: Sponsor[] = [
-  {
-    id: 1,
-    name: "MedTech Solutions",
-    logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=150&h=150&fit=crop",
-    facebook: "https://facebook.com",
-    instagram: "https://instagram.com",
-    email: "contact@medtech.com"
-  },
-  {
-    id: 2,
-    name: "HealthCare Plus",
-    logo: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=150&h=150&fit=crop",
-    facebook: "https://facebook.com",
-    instagram: "https://instagram.com",
-    email: "info@healthcareplus.com"
-  },
-  {
-    id: 3,
-    name: "BioLab Research",
-    logo: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=150&h=150&fit=crop",
-    facebook: "https://facebook.com",
-    email: "research@biolab.com"
-  },
-  {
-    id: 4,
-    name: "Pharma Innovations",
-    logo: "https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?w=150&h=150&fit=crop",
-    instagram: "https://instagram.com",
-    email: "contact@pharmainno.com"
-  },
-];
-
 const SponsorCard = ({ sponsor }: { sponsor: Sponsor }) => (
-  <Card className="p-6 hover:scale-105 transition-transform duration-300 bg-card border-border">
+  <Card className="p-6 shadow-md hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 bg-card border-border">
     <div className="flex flex-col items-center gap-4">
       <div className="w-[150px] h-[150px] rounded-full overflow-hidden border-4 border-primary">
         <img src={sponsor.logo} alt={sponsor.name} className="w-full h-full object-cover" />
       </div>
       <h3 className="text-xl font-semibold text-foreground text-center">{sponsor.name}</h3>
       <div className="flex gap-3">
-        {sponsor.facebook && (
-          <a href={sponsor.facebook} target="_blank" rel="noopener noreferrer" 
+        {sponsor.facebook_url && (
+          <a href={sponsor.facebook_url} target="_blank" rel="noopener noreferrer" 
              className="text-muted-foreground hover:text-primary transition-colors">
             <Facebook size={20} />
           </a>
         )}
-        {sponsor.instagram && (
-          <a href={sponsor.instagram} target="_blank" rel="noopener noreferrer"
+        {sponsor.instagram_url && (
+          <a href={sponsor.instagram_url} target="_blank" rel="noopener noreferrer"
              className="text-muted-foreground hover:text-primary transition-colors">
             <Instagram size={20} />
           </a>
@@ -78,6 +46,23 @@ const SponsorCard = ({ sponsor }: { sponsor: Sponsor }) => (
 );
 
 const Sponsors = () => {
+  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+
+  useEffect(() => {
+    loadSponsors();
+  }, []);
+
+  const loadSponsors = async () => {
+    const { data, error } = await supabase
+      .from("sponsors")
+      .select("*")
+      .order("display_order", { ascending: true });
+
+    if (!error && data) {
+      setSponsors(data);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}

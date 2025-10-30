@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { ClassicEditor, Bold, Essentials, Italic, Paragraph, Undo, Heading, Link, List, BlockQuote, Image, ImageUpload, MediaEmbed, Table, Indent } from "ckeditor5";
 import "ckeditor5/ckeditor5.css";
@@ -6,24 +7,52 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { FileText, Image as ImageIcon } from "lucide-react";
 
 const SubmitArticle = () => {
   const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("Medicine");
   const [content, setContent] = useState("");
   const [authorName, setAuthorName] = useState("");
   const [authorEmail, setAuthorEmail] = useState("");
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!title || !content || !authorName || !authorEmail) {
+    if (!title || !content || !authorName || !authorEmail || !category) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Create slug from title
+    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+    const { error } = await supabase
+      .from("articles")
+      .insert([{
+        title,
+        slug,
+        category,
+        author_name: authorName,
+        author_email: authorEmail,
+        content,
+        excerpt: content.substring(0, 200).replace(/<[^>]*>/g, ''),
+        cover_image: coverImage ? URL.createObjectURL(coverImage) : null,
+        status: 'pending',
+      }]);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to submit article. Please try again.",
         variant: "destructive"
       });
       return;
@@ -36,6 +65,7 @@ const SubmitArticle = () => {
 
     // Reset form
     setTitle("");
+    setCategory("Medicine");
     setContent("");
     setAuthorName("");
     setAuthorEmail("");
@@ -64,6 +94,20 @@ const SubmitArticle = () => {
                     placeholder="Enter article title"
                     className="mt-1"
                   />
+                </div>
+
+                <div>
+                  <Label htmlFor="category">Category *</Label>
+                  <Select value={category} onValueChange={setCategory}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Medicine">Medicine</SelectItem>
+                      <SelectItem value="Dental Medicine">Dental Medicine</SelectItem>
+                      <SelectItem value="Pharmacy">Pharmacy</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>

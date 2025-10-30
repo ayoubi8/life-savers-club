@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -7,43 +8,42 @@ import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carouse
 import Autoplay from "embla-carousel-autoplay";
 
 const Events = () => {
-  const upcomingEvents = [
-    {
-      id: 1,
-      title: "Annual Medical Conference 2024",
-      date: "March 15, 2024",
-      description: "Join us for our flagship conference featuring keynote speakers and workshops.",
-      images: ["/placeholder.svg", "/placeholder.svg"],
-      hasExplore: true
-    },
-    {
-      id: 2,
-      title: "Research Symposium",
-      date: "April 22, 2024",
-      description: "Showcase your research and network with fellow scientists.",
-      images: ["/placeholder.svg"],
-      hasExplore: true
-    }
-  ];
+  const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
+  const [pastEvents, setPastEvents] = useState<any[]>([]);
 
-  const pastEvents = [
-    {
-      id: 3,
-      title: "Health Awareness Workshop",
-      date: "January 10, 2024",
-      description: "Community outreach program on preventive healthcare.",
-      images: ["/placeholder.svg"],
-      hasExplore: false
-    },
-    {
-      id: 4,
-      title: "Pharmaceutical Innovation Summit",
-      date: "December 5, 2023",
-      description: "Exploring the future of drug development and delivery.",
-      images: ["/placeholder.svg", "/placeholder.svg"],
-      hasExplore: false
+  useEffect(() => {
+    loadEvents();
+  }, []);
+
+  const loadEvents = async () => {
+    const { data, error } = await supabase
+      .from("events")
+      .select("*")
+      .order("event_date", { ascending: false });
+
+    if (!error && data) {
+      const upcoming = data.filter(e => e.status === 'upcoming');
+      const past = data.filter(e => e.status === 'past');
+      
+      setUpcomingEvents(upcoming.map(e => ({
+        id: e.id,
+        title: e.title,
+        date: new Date(e.event_date).toLocaleDateString(),
+        description: e.description,
+        images: Array.isArray(e.images) && e.images.length > 0 ? e.images : ["/placeholder.svg"],
+        hasExplore: e.show_explore_button
+      })));
+      
+      setPastEvents(past.map(e => ({
+        id: e.id,
+        title: e.title,
+        date: new Date(e.event_date).toLocaleDateString(),
+        description: e.description,
+        images: Array.isArray(e.images) && e.images.length > 0 ? e.images : ["/placeholder.svg"],
+        hasExplore: e.show_explore_button
+      })));
     }
-  ];
+  };
 
   return (
     <div className="min-h-screen">

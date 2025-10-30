@@ -11,6 +11,8 @@ import Sponsors from "./pages/Sponsors";
 import BecomeSponsor from "./pages/BecomeSponsor";
 import SubmitArticle from "./pages/SubmitArticle";
 import JoinUs from "./pages/JoinUs";
+import Admin from "./pages/Admin";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -33,6 +35,8 @@ const App = () => (
           <Route path="/become-sponsor" element={<BecomeSponsor />} />
           <Route path="/submit-article" element={<SubmitArticle />} />
           <Route path="/join-us" element={<JoinUs />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/auth" element={<Auth />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
