@@ -86,7 +86,7 @@ const Articles = () => {
         {filteredArticles.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredArticles.map((article) => (
-              <Card key={article.id} className="overflow-hidden hover:shadow-[var(--shadow-card)] transition-shadow">
+              <Card key={article.id} className="overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105">
                 <img 
                   src={article.image} 
                   alt={article.title}

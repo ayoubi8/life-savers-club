@@ -75,7 +75,7 @@ const Events = () => {
             <TabsContent value="upcoming" className="py-12">
               <div className="grid md:grid-cols-2 gap-8">
                 {upcomingEvents.map((event) => (
-                  <Card key={event.id} className="overflow-hidden shadow-[var(--shadow-card)]">
+                  <Card key={event.id} className="overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105">
                     <Carousel
                       opts={{ loop: true }}
                       plugins={event.images.length > 1 ? [Autoplay({ delay: 3000 })] : []}
@@ -113,7 +113,7 @@ const Events = () => {
             <TabsContent value="past" className="py-12">
               <div className="grid md:grid-cols-2 gap-8">
                 {pastEvents.map((event) => (
-                  <Card key={event.id} className="overflow-hidden shadow-[var(--shadow-card)]">
+                  <Card key={event.id} className="overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105">
                     <Carousel
                       opts={{ loop: true }}
                       plugins={event.images.length > 1 ? [Autoplay({ delay: 3000 })] : []}

@@ -64,7 +64,7 @@ const NewMembers = () => {
 
         {/* Owner Section */}
         <div className="max-w-3xl mx-auto mb-16">
-          <Card className="border-4 border-primary shadow-[var(--shadow-card)]">
+          <Card className="border-4 border-primary shadow-md hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105">
             <CardContent className="p-8 text-center">
               <img 
                 src={owner.avatar} 
@@ -91,7 +91,7 @@ const NewMembers = () => {
 
         {/* Vice President Section */}
         <div className="max-w-2xl mx-auto mb-16">
-          <Card className="border-4 border-accent shadow-[var(--shadow-card)]">
+          <Card className="border-4 border-accent shadow-md hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105">
             <CardContent className="p-6 text-center">
               <img 
                 src={vicePresident.avatar} 
@@ -120,7 +120,7 @@ const NewMembers = () => {
         <h2 className="text-3xl font-bold text-center mb-8 text-primary">Team Leaders</h2>
         <div className="grid md:grid-cols-3 gap-8 mb-16">
           {leaders.map((leader, index) => (
-            <Card key={index} className="border-2 border-primary/50 shadow-[var(--shadow-soft)]">
+            <Card key={index} className="border-2 border-primary/50 shadow-md hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105">
               <CardContent className="p-6 text-center">
                 <img 
                   src={leader.avatar} 
@@ -155,7 +155,7 @@ const NewMembers = () => {
 
         {/* Alumni Section */}
         <div className="max-w-2xl mx-auto">
-          <Card className="border-2 border-secondary shadow-[var(--shadow-soft)]">
+          <Card className="border-2 border-secondary shadow-md hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105">
             <CardContent className="p-6">
               <h2 className="text-2xl font-bold text-center mb-6 text-primary">
                 Former Presidents & Alumni
