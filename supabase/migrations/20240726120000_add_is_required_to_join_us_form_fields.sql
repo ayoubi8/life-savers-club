@@ -1,0 +1,1 @@
+ALTER TABLE join_us_form_fields ADD COLUMN is_required BOOLEAN DEFAULT FALSE;

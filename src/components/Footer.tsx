@@ -9,7 +9,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* About Section */}
           <div>
-            <h3 className="text-lg font-bold mb-4 text-primary">About Life Savers Hub</h3>
+            <h3 className="text-lg font-bold mb-4 text-primary">About Life Savers club</h3>
             <p className="text-sm text-muted-foreground">
               A scientific community dedicated to advancing healthcare knowledge, 
               fostering research, and inspiring the next generation of medical professionals.
@@ -22,15 +22,15 @@ const Footer = () => {
             <div className="space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
-                <span>contact@lifesavershub.org</span>
+                <span>lifesavers025@gmail.com</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4" />
-                <span>+1 (555) 123-4567</span>
+                <span>0778203383</span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4" />
-                <span>123 Medical Plaza, Health City, HC 12345</span>
+                <span>Faculte de médecine,Tlemcen, Algeria, 13000</span>
               </div>
             </div>
           </div>
@@ -56,7 +56,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
-          © {currentYear} Life Savers Hub. All rights reserved.
+          © {currentYear} Life Savers Club. All rights reserved.
         </div>
       </div>
     </footer>

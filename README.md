@@ -38,36 +38,52 @@ npm run dev
 
 **Edit a file directly in GitHub**
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Admin Access
 
-**Use GitHub Codespaces**
+To create an admin account, you first need to create a regular user account. After that, an existing admin must promote the new user to the admin role. There is no public link to directly create an admin account for security reasons.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+To log in, you can use the `/auth` page. This will allow you to sign in with an existing account. Once you are logged in, if you have admin privileges, you can access the admin dashboard at `/admin`.
 
-## What technologies are used for this project?
+The admin role has full permissions to manage the application's data. This includes the ability to create, read, update, and delete articles, events, sponsors, and user submissions.
 
-This project is built with:
+---
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Progress Log
 
-## How can I deploy this project?
+### Previous Session
 
-Simply open [Lovable](https://lovable.dev/projects/646f29fe-2607-4f8f-a0e4-1dbe77ab33d3) and click on Share -> Publish.
+**Summary:** We successfully debugged and fixed the event creation workflow. The primary issues were related to Supabase configuration and data consistency between the front-end application and the back-end database.
 
-## Can I connect a custom domain to my Lovable project?
+**Key Accomplishments:**
 
-Yes, you can!
+1.  **Fixed Supabase Storage Image Uploads:**
+    *   Diagnosed and resolved a `400 Bad Request` / `404 Bucket not found` error during image uploads.
+    *   Created the `event-media` public bucket in the Supabase Storage dashboard.
+    *   Wrote and applied a complete and correct set of Row Level Security (RLS) policies for both `storage.buckets` and `storage.objects` to allow authenticated users to view the bucket and upload/manage their own files.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+2.  **Fixed Event Saving Logic:**
+    *   Addressed a `400 Bad Request` error that occurred when saving a new event.
+    *   Updated the `EventEditor.tsx` component to require a user to select an `event_date` before saving, preventing the app from sending null data for a required database column.
+    *   Corrected a data mismatch by removing the non-existent `videos` field from the data payload sent to the `events` table, aligning the front-end with the actual database schema.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+---
+
+### Current Session Summary
+
+During this session, we addressed several key issues to improve the application's stability, security, and functionality.
+
+1.  **Enabled Public Commenting:** We modified the `EventDetailPage.tsx` file to allow all users, including those who are not logged in, to post comments on events. Comments now appear instantly for everyone.
+
+2.  **Corrected Database Schema Errors:**
+    *   Added the missing `category` column to the `events` table to fix an error that occurred when trying to save an event's category.
+    *   Created the `comments` table and established a proper foreign key relationship to the `events` table. This resolved the "Could not find a relationship" error and ensures data integrity.
+
+3.  **Fixed the Event Editor:** We corrected the `EventEditor.tsx` file to properly fetch and load existing event details (title, description, date, and images) into the form, allowing administrators to see and edit the information.
+
+4.  **Implemented Role-Based Access Control (RBAC):** We performed a major overhaul of the user roles and permissions in your Supabase database.
+    *   **Defined Roles:** We standardized the user roles to `root`, `admin`, and `editor`.
+    *   **Established Permissions:** We implemented a comprehensive set of Row Level Security policies and SQL functions to enforce strict access rules:
+        *   **Root:** Has full control over all data, including the ability to manage user roles.
+        *   **Admin:** Can manage events and other content but cannot change user roles.
+        *   **Editor:** Can create, edit, and view events but cannot manage other users or site settings.
+        *   **Public:** Can view events and comments but has no editing privileges.

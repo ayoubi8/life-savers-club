@@ -1,120 +1,90 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search } from "lucide-react";
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { getApprovedArticles, Article } from '@/integrations/supabase/articles';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const Articles = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("all");
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const articles = [
-    {
-      id: 1,
-      slug: "advances-cardiac-care",
-      title: "Advances in Cardiac Care",
-      excerpt: "Exploring new treatment methods for cardiovascular diseases and patient outcomes.",
-      category: "Medicine",
-      author: "Dr. Sarah Johnson",
-      date: "March 10, 2024",
-      image: "/placeholder.svg"
-    },
-    {
-      id: 2,
-      slug: "dental-innovation",
-      title: "Dental Innovation",
-      excerpt: "Revolutionary techniques in modern dentistry and oral healthcare.",
-      category: "Dental Medicine",
-      author: "Dr. Michael Chen",
-      date: "March 8, 2024",
-      image: "/placeholder.svg"
-    },
-    {
-      id: 3,
-      slug: "pharmaceutical-breakthroughs",
-      title: "Pharmaceutical Breakthroughs",
-      excerpt: "New drug development and delivery systems transforming patient care.",
-      category: "Pharmacy",
-      author: "Dr. Emily Rodriguez",
-      date: "March 5, 2024",
-      image: "/placeholder.svg"
-    }
-  ];
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        setLoading(true);
+        const fetchedArticles = await getApprovedArticles();
+        setArticles(fetchedArticles);
+        setError(null);
+      } catch (err: any) {
+        setError(err.message);
+        console.error('Failed to fetch articles:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const filteredArticles = articles.filter((article) => {
-    const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         article.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = activeCategory === "all" || article.category === activeCategory;
-    return matchesSearch && matchesCategory;
-  });
+    fetchArticles();
+  }, []);
 
   return (
-    <div className="min-h-screen">
-      {/* Sticky Search & Filter Bar */}
-      <div className="sticky top-16 bg-background/95 backdrop-blur-sm border-b border-border z-40 py-6">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col gap-4">
-            {/* Search Bar */}
-            <div className="relative max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search articles..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-4xl font-bold mb-8 text-center">Our Articles</h1>
 
-            {/* Category Tabs */}
-            <Tabs value={activeCategory} onValueChange={setActiveCategory}>
-              <TabsList className="w-full md:w-auto rounded-full">
-                <TabsTrigger value="all" className="rounded-full">All</TabsTrigger>
-                <TabsTrigger value="Medicine" className="rounded-full">Medicine</TabsTrigger>
-                <TabsTrigger value="Dental Medicine" className="rounded-full">Dental</TabsTrigger>
-                <TabsTrigger value="Pharmacy" className="rounded-full">Pharmacy</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
+      {loading && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <Card key={index}>
+              <CardHeader>
+                <Skeleton className="h-8 w-3/4" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6 mt-2" />
+              </CardContent>
+              <CardFooter>
+                <Skeleton className="h-10 w-28" />
+              </CardFooter>
+            </Card>
+          ))}
         </div>
-      </div>
+      )}
 
-      {/* Articles Grid */}
-      <div className="container mx-auto px-4 py-12">
-        {filteredArticles.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredArticles.map((article) => (
-              <Card key={article.id} className="overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105">
-                <img 
-                  src={article.image} 
+      {error && (
+        <div className="text-center text-red-500">
+          <p>Failed to load articles. Please try again later.</p>
+          <p className="text-sm">{error}</p>
+        </div>
+      )}
+
+      {!loading && !error && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {articles.map((article) => (
+            <Card key={article.id} className="flex flex-col">
+              {article.cover_image && (
+                <img
+                  src={article.cover_image}
                   alt={article.title}
-                  className="w-full h-48 object-cover"
+                  className="w-full h-48 object-cover rounded-t-lg"
                 />
-                <CardContent className="p-6">
-                  <span className="text-xs font-semibold text-accent">{article.category}</span>
-                  <h3 className="text-xl font-bold mt-2 mb-3">{article.title}</h3>
-                  <p className="text-muted-foreground text-sm mb-3">{article.excerpt}</p>
-                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
-                    <span>{article.author}</span>
-                    <span>{article.date}</span>
-                  </div>
-                  <Link to={`/articles/${article.slug}`}>
-                    <Button variant="pill" size="sm">
-                      Read More
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-16">
-            <p className="text-xl text-muted-foreground">No articles found</p>
-          </div>
-        )}
-      </div>
+              )}
+              <CardHeader>
+                <CardTitle>{article.title}</CardTitle>
+              </CardHeader>
+              <CardContent className="flex-grow">
+                <p className="text-gray-600">{article.excerpt}</p>
+                <p className="text-sm text-gray-500 mt-4">By {article.author_name}</p>
+              </CardContent>
+              <CardFooter>
+                <Link to={`/articles/${article.slug}`}>
+                  <Button>Read More</Button>
+                </Link>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,157 +1,95 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
+'use client';
 
-const Events = () => {
-  const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
-  const [pastEvents, setPastEvents] = useState<any[]>([]);
+import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { EventCard, Event } from '@/components/EventCard';
+import { supabase } from '@/integrations/supabase/client'; // Import supabase client
+
+const HeroBanner = ({ title, subtitle }: { title: string; subtitle: string }) => (
+  <div className="bg-gray-100 py-12 text-center">
+    <h1 className="text-4xl font-bold text-[#2271B6]">{title}</h1>
+    <p className="text-lg text-gray-600 mt-2">{subtitle}</p>
+  </div>
+);
+
+export default function EventsPage() {
+  const [activeTab, setActiveTab] = useState('lifesavers');
+  const [events, setEvents] = useState<Event[]>([]);
 
   useEffect(() => {
-    loadEvents();
+    const fetchEvents = async () => {
+      const { data, error } = await supabase.from('events').select('*');
+      if (error) {
+        console.error('Error fetching events:', error);
+      } else {
+        const formattedEvents: Event[] = data.map((event: any) => ({
+          id: event.id,
+          title: event.title,
+          date: event.event_date,
+          isUpcoming: new Date(event.event_date) > new Date(),
+          imageUrls: event.images || [],
+          description: event.description,
+          shortDescription: event.short_description,
+          category: event.category,
+        }));
+        setEvents(formattedEvents);
+      }
+    };
+
+    fetchEvents();
   }, []);
 
-  const loadEvents = async () => {
-    const { data, error } = await supabase
-      .from("events")
-      .select("*")
-      .order("event_date", { ascending: false });
-
-    if (!error && data) {
-      const upcoming = data.filter(e => e.status === 'upcoming');
-      const past = data.filter(e => e.status === 'past');
-      
-      setUpcomingEvents(upcoming.map(e => ({
-        id: e.id,
-        title: e.title,
-        date: new Date(e.event_date).toLocaleDateString(),
-        description: e.description,
-        images: Array.isArray(e.images) && e.images.length > 0 ? e.images : ["/placeholder.svg"],
-        hasExplore: e.show_explore_button
-      })));
-      
-      setPastEvents(past.map(e => ({
-        id: e.id,
-        title: e.title,
-        date: new Date(e.event_date).toLocaleDateString(),
-        description: e.description,
-        images: Array.isArray(e.images) && e.images.length > 0 ? e.images : ["/placeholder.svg"],
-        hasExplore: e.show_explore_button
-      })));
-    }
-  };
+  const lifeSaversEvents = events.filter((event) => event.category === 'Life Savers Events');
+  const invitationEvents = events.filter((event) => event.category === 'Invitations');
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Banner */}
-      <div className="bg-[var(--gradient-hero)] text-white py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Our Events & Community Invitations
-          </h1>
-          <p className="text-xl opacity-90">
-            Join us in our mission to advance science and healthcare
-          </p>
+    <div>
+      <HeroBanner
+        title="Our Events & Community Invitations"
+        subtitle="Discover our latest activities and collaborations."
+      />
+
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <div className="sticky top-16 z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm py-4">
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 gap-2 p-1 h-auto bg-[hsl(219.02,20%,85%)] rounded-full">
+            <TabsTrigger
+              value="lifesavers"
+              className={`px-4 py-2.5 text-sm font-medium rounded-full transition-all focus-visible:ring-2 focus-visible:ring-offset-2 ${activeTab === 'lifesavers'
+                  ? 'text-[#72B6F2] border-2 border-[#72B6F2] bg-background shadow-sm'
+                  : 'text-[#2271B6] border-2 border-[#2271B6] hover:text-[#72B6F2] hover:border-[#72B6F2] bg-transparent'}`}>
+              Life Savers Events
+            </TabsTrigger>
+            <TabsTrigger
+              value="invitations"
+              className={`px-4 py-2.5 text-sm font-medium rounded-full transition-all focus-visible:ring-2 focus-visible:ring-offset-2 ${activeTab === 'invitations'
+                  ? 'text-[#72B6F2] border-2 border-[#72B6F2] bg-background shadow-sm'
+                  : 'text-[#2271B6] border-2 border-[#2271B6] hover:text-[#72B6F2] hover:border-[#72B6F2] bg-transparent'}`}>
+              Invitations
+            </TabsTrigger>
+          </TabsList>
         </div>
-      </div>
 
-      {/* Tabs Section */}
-      <div className="sticky top-16 bg-background/95 backdrop-blur-sm border-b border-border z-40">
-        <div className="container mx-auto px-4">
-          <Tabs defaultValue="upcoming" className="w-full">
-            <TabsList className="w-full md:w-auto grid grid-cols-2 rounded-full">
-              <TabsTrigger value="upcoming" className="rounded-full">
-                Life Savers Events
-              </TabsTrigger>
-              <TabsTrigger value="past" className="rounded-full">
-                Invitations
-              </TabsTrigger>
-            </TabsList>
+        <TabsContent value="lifesavers" className="py-8">
+          <div className="container mx-auto px-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {lifeSaversEvents.map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+          </div>
+        </TabsContent>
 
-            <TabsContent value="upcoming" className="py-12">
-              <div className="grid md:grid-cols-2 gap-8">
-                {upcomingEvents.map((event) => (
-                  <Card key={event.id} className="overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105">
-                    <Carousel
-                      opts={{ loop: true }}
-                      plugins={event.images.length > 1 ? [Autoplay({ delay: 3000 })] : []}
-                    >
-                      <CarouselContent>
-                        {event.images.map((img, idx) => (
-                          <CarouselItem key={idx}>
-                            <img 
-                              src={img} 
-                              alt={`${event.title} ${idx + 1}`}
-                              className="w-full h-64 object-cover"
-                            />
-                          </CarouselItem>
-                        ))}
-                      </CarouselContent>
-                    </Carousel>
-                    <CardContent className="p-6">
-                      <Badge className="mb-3 bg-accent text-accent-foreground">
-                        Upcoming
-                      </Badge>
-                      <h3 className="text-2xl font-bold mb-2">{event.title}</h3>
-                      <p className="text-muted-foreground text-sm mb-4">{event.date}</p>
-                      <p className="text-foreground mb-6">{event.description}</p>
-                      {event.hasExplore && (
-                        <Button variant="pill">
-                          Explore Event
-                        </Button>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="past" className="py-12">
-              <div className="grid md:grid-cols-2 gap-8">
-                {pastEvents.map((event) => (
-                  <Card key={event.id} className="overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105">
-                    <Carousel
-                      opts={{ loop: true }}
-                      plugins={event.images.length > 1 ? [Autoplay({ delay: 3000 })] : []}
-                    >
-                      <CarouselContent>
-                        {event.images.map((img, idx) => (
-                          <CarouselItem key={idx}>
-                            <img 
-                              src={img} 
-                              alt={`${event.title} ${idx + 1}`}
-                              className="w-full h-64 object-cover"
-                            />
-                          </CarouselItem>
-                        ))}
-                      </CarouselContent>
-                    </Carousel>
-                    <CardContent className="p-6">
-                      <Badge variant="secondary" className="mb-3">
-                        Past
-                      </Badge>
-                      <h3 className="text-2xl font-bold mb-2">{event.title}</h3>
-                      <p className="text-muted-foreground text-sm mb-4">{event.date}</p>
-                      <p className="text-foreground mb-6">{event.description}</p>
-                      {event.hasExplore && (
-                        <Button variant="pill">
-                          Explore Event
-                        </Button>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </div>
+        <TabsContent value="invitations" className="py-8">
+          <div className="container mx-auto px-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {invitationEvents.map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
-};
-
-export default Events;
+}

@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { FileText, Image as ImageIcon } from "lucide-react";
+import { v4 as uuidv4 } from 'uuid';
 
 const SubmitArticle = () => {
   const [title, setTitle] = useState("");
@@ -20,56 +21,12 @@ const SubmitArticle = () => {
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!title || !content || !authorName || !authorEmail || !category) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // Create slug from title
-    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-
-    const { error } = await supabase
-      .from("articles")
-      .insert([{
-        title,
-        slug,
-        category,
-        author_name: authorName,
-        author_email: authorEmail,
-        content,
-        excerpt: content.substring(0, 200).replace(/<[^>]*>/g, ''),
-        cover_image: coverImage ? URL.createObjectURL(coverImage) : null,
-        status: 'pending',
-      }]);
-
-    if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to submit article. Please try again.",
-        variant: "destructive"
-      });
-      return;
-    }
-
     toast({
-      title: "Article Submitted!",
-      description: "Your article has been sent for review. We'll get back to you soon."
+      title: "Thanks for your interest.",
+      description: "The options are coming soon.",
     });
-
-    // Reset form
-    setTitle("");
-    setCategory("Medicine");
-    setContent("");
-    setAuthorName("");
-    setAuthorEmail("");
-    setCoverImage(null);
   };
 
   return (
@@ -78,7 +35,6 @@ const SubmitArticle = () => {
         <h1 className="text-4xl font-bold text-primary mb-8 text-center">Submit Your Article</h1>
         
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Form Column */}
           <div className="space-y-6">
             <Card>
               <CardHeader>
@@ -207,11 +163,10 @@ const SubmitArticle = () => {
               className="w-full"
               onClick={handleSubmit}
             >
-              Send for Review
+              coming soon.......
             </Button>
           </div>
 
-          {/* Preview Column */}
           <div className="lg:sticky lg:top-24 lg:self-start">
             <Card>
               <CardHeader>

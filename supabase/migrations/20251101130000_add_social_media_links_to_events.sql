@@ -1,0 +1,1 @@
+ALTER TABLE public.events ADD COLUMN social_media_links JSONB;

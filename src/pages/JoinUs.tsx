@@ -1,60 +1,74 @@
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { UserPlus, Heart } from "lucide-react";
 
-const JoinUs = () => {
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
-    university: "",
-    major: "",
-    year: "",
-    motivation: "",
-    skills: "",
-    availability: ""
-  });
+interface FormField {
+  id: number;
+  question: string;
+  type: 'text' | 'choice' | 'birthday';
+  options: string[];
+  is_required: boolean;
+}
 
+const JoinUs = () => {
+  const [fields, setFields] = useState<FormField[]>([]);
+  const [formData, setFormData] = useState<{ [key: string]: string }>({});
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  useEffect(() => {
+    fetchFields();
+  }, []);
+
+  const fetchFields = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('join_us_form_fields')
+      .select('*')
+      .order('id', { ascending: true });
+    if (error) {
+      console.error("Error fetching fields:", error);
+    } else {
+      setFields(data as FormField[]);
+      // Initialize formData with empty strings for each field
+      const initialFormData: { [key: string]: string } = {};
+      (data as FormField[]).forEach(field => {
+        initialFormData[field.question] = '';
+      });
+      setFormData(initialFormData);
+    }
+    setLoading(false);
+  };
+
+  const handleChange = (question: string, value: string) => {
+    setFormData(prev => ({ ...prev, [question]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.fullName || !formData.email || !formData.motivation) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields.",
-        variant: "destructive"
-      });
-      return;
+
+    for (const field of fields) {
+      if (field.is_required && !formData[field.question]) {
+        toast({
+          title: "Missing Information",
+          description: `Please fill in the "${field.question}" field.`,
+          variant: "destructive"
+        });
+        return;
+      }
     }
 
     const { error } = await supabase
-      .from("join_submissions")
-      .insert([{
-        full_name: formData.fullName,
-        email: formData.email,
-        phone: formData.phone,
-        university: formData.university,
-        major: formData.major,
-        year: formData.year,
-        motivation: formData.motivation,
-        skills: formData.skills,
-        availability: formData.availability,
-      }]);
+      .from("join_us_submissions")
+      .insert([{ submission_data: formData }]);
 
     if (error) {
       toast({
@@ -71,18 +85,51 @@ const JoinUs = () => {
     });
 
     // Reset form
-    setFormData({
-      fullName: "",
-      email: "",
-      phone: "",
-      university: "",
-      major: "",
-      year: "",
-      motivation: "",
-      skills: "",
-      availability: ""
+    const initialFormData: { [key: string]: string } = {};
+    fields.forEach(field => {
+      initialFormData[field.question] = '';
     });
+    setFormData(initialFormData);
   };
+  
+  const renderField = (field: FormField) => {
+    switch (field.type) {
+      case 'text':
+        return (
+          <Input
+            id={String(field.id)}
+            value={formData[field.question] || ''}
+            onChange={(e) => handleChange(field.question, e.target.value)}
+            required={field.is_required}
+          />
+        );
+      case 'choice':
+        return (
+          <Select onValueChange={(value) => handleChange(field.question, value)} value={formData[field.question] || ''}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select an option" />
+            </SelectTrigger>
+            <SelectContent>
+              {field.options.map(option => (
+                <SelectItem key={option} value={option}>{option}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        );
+      case 'birthday':
+        return (
+          <Input
+            id={String(field.id)}
+            type="date"
+            value={formData[field.question] || ''}
+            onChange={(e) => handleChange(field.question, e.target.value)}
+            required={field.is_required}
+          />
+        );
+      default:
+        return null;
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -142,143 +189,43 @@ const JoinUs = () => {
               Membership Application
             </CardTitle>
             <CardDescription>
-              Fill out the form below to apply for membership. Fields marked with * are required.
+              Fill out the form below to apply for membership. Fields marked with an asterisk (*) are required.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="fullName">Full Name *</Label>
-                  <Input
-                    id="fullName"
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    placeholder="John Doe"
-                    required
-                  />
+            {loading ? (
+              <p>Loading form...</p>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {fields.map(field => (
+                  <div key={field.id}>
+                    <Label htmlFor={String(field.id)}>
+                      {field.question}
+                      {field.is_required && <span className="text-destructive"> *</span>}
+                    </Label>
+                    {renderField(field)}
+                  </div>
+                ))}
+                <div className="flex gap-4 pt-4">
+                  <Button type="submit" variant="pill" size="lg" className="flex-1">
+                    Submit Application
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => {
+                      const initialFormData: { [key: string]: string } = {};
+                        fields.forEach(field => {
+                          initialFormData[field.question] = '';
+                        });
+                        setFormData(initialFormData);
+                    }}
+                  >
+                    Reset
+                  </Button>
                 </div>
-                <div>
-                  <Label htmlFor="email">Email *</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="john@example.com"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="+1 234 567 8900"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="university">University/Institution</Label>
-                  <Input
-                    id="university"
-                    name="university"
-                    value={formData.university}
-                    onChange={handleChange}
-                    placeholder="Your university"
-                  />
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="major">Major/Field of Study</Label>
-                  <Input
-                    id="major"
-                    name="major"
-                    value={formData.major}
-                    onChange={handleChange}
-                    placeholder="e.g., Medicine, Pharmacy"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="year">Year of Study</Label>
-                  <Input
-                    id="year"
-                    name="year"
-                    value={formData.year}
-                    onChange={handleChange}
-                    placeholder="e.g., 2nd year"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="motivation">Why do you want to join Life Savers? *</Label>
-                <Textarea
-                  id="motivation"
-                  name="motivation"
-                  value={formData.motivation}
-                  onChange={handleChange}
-                  placeholder="Tell us about your motivation and what you hope to contribute..."
-                  className="min-h-[120px]"
-                  required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="skills">Relevant Skills & Experience</Label>
-                <Textarea
-                  id="skills"
-                  name="skills"
-                  value={formData.skills}
-                  onChange={handleChange}
-                  placeholder="List any relevant skills, experiences, or previous involvement in similar organizations..."
-                  className="min-h-[100px]"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="availability">Availability</Label>
-                <Textarea
-                  id="availability"
-                  name="availability"
-                  value={formData.availability}
-                  onChange={handleChange}
-                  placeholder="What days/times are you typically available for club activities?"
-                  className="min-h-[80px]"
-                />
-              </div>
-
-              <div className="flex gap-4 pt-4">
-                <Button type="submit" variant="pill" size="lg" className="flex-1">
-                  Submit Application
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => setFormData({
-                    fullName: "",
-                    email: "",
-                    phone: "",
-                    university: "",
-                    major: "",
-                    year: "",
-                    motivation: "",
-                    skills: "",
-                    availability: ""
-                  })}
-                >
-                  Reset
-                </Button>
-              </div>
-            </form>
+              </form>
+            )}
           </CardContent>
         </Card>
       </section>

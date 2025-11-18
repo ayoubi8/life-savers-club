@@ -3,10 +3,31 @@ import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.jpg";
+import { createClient } from "@supabase/supabase-js";
+import { useEffect, useState } from "react";
+
+const supabase = createClient(
+  "https://pgilgnyglhyexkknolre.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBnaWxnbnlnbGh5ZXhra25vbHJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDIxNDMxNTUsImV4cCI6MjAxNzcxOTE1NX0.gYm6d1vK0r2n-n2e2_rWXBasY32n3pTCoXN3yoo_YmI"
+);
 
 const Header = () => {
   const location = useLocation();
-  
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setIsLoggedIn(!!data.user);
+    };
+    checkUser();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setIsLoggedIn(false);
+  };
+
   const navItems = [
     { path: "/", label: "Home" },
     { path: "/members", label: "Members" },
@@ -33,6 +54,11 @@ const Header = () => {
           {item.label}
         </Link>
       ))}
+      {isLoggedIn && (
+        <Button onClick={handleLogout} variant="ghost" size="sm">
+          Logout
+        </Button>
+      )}
     </>
   );
 

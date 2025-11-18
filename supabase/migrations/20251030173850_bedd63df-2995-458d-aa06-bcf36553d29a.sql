@@ -90,11 +90,11 @@ CREATE POLICY "Anyone can submit articles"
 
 -- Insert policy for join submissions
 CREATE POLICY "Anyone can submit join requests"
-  ON public.join_submissions FOR INSERT
+  ON public.join_submissions FOR INSERT TO anon, authenticated
   WITH CHECK (true);
 
 -- Create user roles table for admin
-CREATE TYPE public.app_role AS ENUM ('admin', 'user');
+CREATE TYPE public.app_role AS ENUM ('root', 'admin', 'co-admin', 'user');
 
 CREATE TABLE public.user_roles (
   id uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -118,7 +118,7 @@ AS $$
     SELECT 1
     FROM public.user_roles
     WHERE user_roles.user_id = $1
-      AND role = 'admin'
+      AND role IN ('root', 'admin', 'co-admin')
   )
 $$;
 
