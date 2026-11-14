@@ -1,0 +1,14 @@
+{
+  "name": "club-vibe-nexus-frontend-re",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Authenticated frontend reverse-engineering pipeline for the club-vibe-nexus Lovable project (capture DOM/CSS/assets/tokens/copy for rebuild + redesign).",
+  "scripts": {
+    "capture": "node scripts/capture.mjs",
+    "capture:smoke": "node scripts/capture.mjs --url https://example.com --out output-smoke --no-mobile"
+  },
+  "dependencies": {
+    "playwright-core": "^1.55.0"
+  }
+}

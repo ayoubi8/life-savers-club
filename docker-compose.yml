@@ -1,0 +1,19 @@
+services:
+  web:
+    build:
+      context: .
+      target: dev
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.local
+    environment:
+      WATCHPACK_POLLING: "true"
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules   # keep Linux deps out of the Windows folder
+      - next_cache:/app/.next
+
+volumes:
+  node_modules:
+  next_cache:

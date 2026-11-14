@@ -1,0 +1,128 @@
+@import "tailwindcss";
+
+/* Life Savers brand tokens (branding/colors brand.png) */
+:root {
+  --brand-pink: #ef4a6c;
+  --brand-blue: #2d74ba;
+  --brand-grey: #414042;
+  --brand-black: #231f20;
+  --brand-green: #6ebd45;
+
+  --background: #ffffff;
+  --foreground: #231f20;
+  --muted: #f4f6f9;
+  --muted-foreground: #646469;
+  --border: #e6e8ee;
+  --ink-deep: #17141a;
+}
+
+@theme inline {
+  --color-pink: var(--brand-pink);
+  --color-blue: var(--brand-blue);
+  --color-grey: var(--brand-grey);
+  --color-ink: var(--brand-black);
+  --color-deep: var(--ink-deep);
+  --color-green: var(--brand-green);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+  --radius-card: 1.25rem;
+  --shadow-soft: 0 10px 30px -12px rgb(45 116 186 / 0.25);
+  --shadow-glow: 0 12px 40px -10px rgb(239 74 108 / 0.45);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* ───────── effects ───────── */
+.text-gradient {
+  background: linear-gradient(100deg, var(--brand-pink), #ff8fa6 40%, var(--brand-blue) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.bg-brand-gradient { background: linear-gradient(120deg, var(--brand-blue), #5a5bb8 50%, var(--brand-pink)); }
+.bg-hero {
+  background:
+    radial-gradient(60% 60% at 15% 20%, rgb(45 116 186 / 0.55), transparent 70%),
+    radial-gradient(50% 55% at 85% 25%, rgb(239 74 108 / 0.5), transparent 70%),
+    radial-gradient(45% 50% at 60% 95%, rgb(110 189 69 / 0.35), transparent 70%),
+    var(--ink-deep);
+}
+.dots {
+  background-image: radial-gradient(rgb(255 255 255 / 0.12) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.glass {
+  background: rgb(255 255 255 / 0.08);
+  border: 1px solid rgb(255 255 255 / 0.16);
+  backdrop-filter: blur(10px);
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  border-radius: 9999px; padding: .8rem 1.6rem; font-weight: 800;
+  transition: transform .25s cubic-bezier(.16,1,.3,1), box-shadow .25s, background-color .25s, color .25s;
+  min-height: 44px; text-align: center;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-pink { background: var(--brand-pink); color: #fff; box-shadow: var(--shadow-glow); }
+.btn-pink:hover { box-shadow: 0 16px 44px -8px rgb(239 74 108 / 0.65); }
+.btn-blue { background: var(--brand-blue); color: #fff; box-shadow: var(--shadow-soft); }
+.btn-ghost { border: 2px solid rgb(255 255 255 / 0.35); color: #fff; }
+.btn-ghost:hover { background: rgb(255 255 255 / 0.12); }
+.btn-outline { border: 2px solid var(--brand-blue); color: var(--brand-blue); }
+.btn-outline:hover { background: var(--brand-blue); color: #fff; }
+
+.card-lift { transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s; }
+.card-lift:hover { transform: translateY(-6px); box-shadow: var(--shadow-soft); }
+
+/* scroll reveal */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s cubic-bezier(.16,1,.3,1); transition-delay: var(--d, 0ms); }
+.reveal.in { opacity: 1; transform: none; }
+
+@keyframes float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-14px) } }
+@keyframes drift { 0%,100% { transform: translate(0,0) scale(1) } 50% { transform: translate(24px,-18px) scale(1.08) } }
+@keyframes ecg { to { stroke-dashoffset: 0 } }
+@keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgb(239 74 108 / .55) } 100% { box-shadow: 0 0 0 18px rgb(239 74 108 / 0) } }
+@keyframes marquee { to { transform: translateX(-50%) } }
+
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-drift { animation: drift 12s ease-in-out infinite; }
+.ecg-path { stroke-dasharray: 1400; stroke-dashoffset: 1400; animation: ecg 3.2s ease-out .3s forwards; }
+.pulse-dot { animation: pulse-ring 2s infinite; }
+.marquee { display: flex; width: max-content; animation: marquee 30s linear infinite; }
+.marquee:hover { animation-play-state: paused; }
+
+/* Pending navigation hint under a clicked link (see LinkPending). */
+@keyframes link-pending { 0% { transform: translateX(-100%) } 100% { transform: translateX(250%) } }
+.link-pending { position: absolute; inset-inline: 0; bottom: 0; height: 2px; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity .15s; }
+.link-pending::after { content: ""; position: absolute; inset-block: 0; width: 40%; background: currentColor; animation: link-pending 1s ease-in-out infinite; }
+.link-pending[data-pending="true"] { opacity: 1; transition-delay: .1s; }
+@media (prefers-reduced-motion: reduce) {
+  .link-pending::after { animation: none; width: 100%; }
+}
+
+/* Per-form theme: variables come from themeStyle(); unlayered so they beat utilities. */
+.form-theme { background: var(--muted); }
+.form-theme .form-card { border-radius: var(--form-card-radius, 1.25rem); }
+.form-theme .form-header { background: var(--form-header, linear-gradient(120deg, var(--brand-blue), var(--brand-pink))); }
+.form-theme .form-card input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.form-theme .form-card textarea,
+.form-theme .form-card select { border-radius: var(--form-input-radius, 0.5rem); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .animate-float, .animate-drift, .pulse-dot, .marquee { animation: none; }
+  .ecg-path { animation: none; stroke-dashoffset: 0; }
+  .btn:hover, .card-lift:hover { transform: none; }
+}
