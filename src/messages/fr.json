@@ -33,7 +33,21 @@
   "team": {
     "title": "Notre équipe",
     "subtitle": "Des étudiants engagés qui font vivre le club.",
-    "note": "Les noms et photos seront ajoutés depuis l'espace leaders."
+    "note": "Les départements seront bientôt présentés ici.",
+    "bureau": "Le bureau",
+    "departments": "Nos départements",
+    "departmentsText": "Chaque département a son responsable et sa mission. Découvrez ce qu'ils font.",
+    "discover": "Découvrir"
+  },
+  "departmentPage": {
+    "previewBanner": "Aperçu : ce département n'est pas encore publié.",
+    "eyebrow": "Département",
+    "leader": "Responsable du département",
+    "mission": "Notre mission",
+    "team": "L'équipe",
+    "members": "Les membres",
+    "others": "Les autres départements",
+    "back": "Toute l'équipe"
   },
   "join": {
     "title": "Rejoignez Life Savers",
@@ -82,7 +96,8 @@
     "roleAdmin": "Admin",
     "roleMember": "Membre",
     "pages": "Pages du site",
-    "managePages": "Textes et images de l'accueil, des sponsors, de l'en-tête et du pied de page"
+    "managePages": "Textes et images de l'accueil, des sponsors, de l'en-tête et du pied de page",
+    "manageTeam": "Bureau, départements, responsables et photos d'équipe"
   },
   "adminForms": {
     "title": "Formulaires",
@@ -1270,6 +1285,179 @@
       "logoHint": "PNG au fond transparent conseillé.",
       "cta": "Bloc « Devenir sponsor »",
       "ctaHint": "Le bouton ouvre un e-mail vers l'adresse du club."
+    }
+  },
+  "adminTeam": {
+    "title": "Équipe",
+    "subtitle": "Le président, le vice-président et les pages de chaque département.",
+    "viewPage": "Voir la page Équipe",
+    "photo": {
+      "upload": "Ajouter une photo",
+      "replace": "Changer la photo",
+      "remove": "Retirer la photo",
+      "focus": "Point gardé dans le cercle",
+      "focusHint": "Cliquez sur le visage pour bien le centrer dans le cercle (ou flèches du clavier)."
+    },
+    "bureau": {
+      "title": "Bureau",
+      "subtitle": "Président(e) et vice-président(e) : affichés en haut de la page Équipe, sans département.",
+      "missing": "Les deux places du bureau sont introuvables : appliquez la dernière migration de la base de données.",
+      "positions": {
+        "president": "Président(e)",
+        "vice_president": "Vice-président(e)"
+      },
+      "visible": "Afficher sur le site",
+      "name": "Nom complet",
+      "roleFr": "Titre (français)",
+      "roleEn": "Titre (anglais)",
+      "bioFr": "Courte présentation (français)",
+      "bioEn": "Courte présentation (anglais)",
+      "bioEnHint": "Vide = le texte français est utilisé.",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "saved": "Bureau enregistré",
+      "unsaved": "Modifications non enregistrées",
+      "upToDate": "À jour",
+      "failed": "Impossible d'enregistrer.",
+      "imageInvalid": "Cette photo n'est pas valide : envoyez-la à nouveau.",
+      "nameRequired": "Indiquez le nom complet."
+    },
+    "new": {
+      "button": "Nouveau département",
+      "title": "Nouveau département",
+      "name": "Nom du département",
+      "placeholder": "ex. Marketing & communication",
+      "hint": "Le département est créé en brouillon : ajoutez son responsable, sa description et ses photos, puis publiez-le.",
+      "cancel": "Annuler",
+      "create": "Créer",
+      "creating": "Création…",
+      "failed": "Impossible de créer le département."
+    },
+    "list": {
+      "title": "Départements",
+      "subtitle": "Chaque département a sa carte sur la page Équipe et sa propre page. Glissez pour changer l'ordre.",
+      "empty": "Aucun département pour l'instant. Créez le premier.",
+      "drag": "Déplacer {name}",
+      "moveUp": "Monter",
+      "moveDown": "Descendre",
+      "edit": "Modifier",
+      "view": "Voir la page",
+      "delete": "Supprimer",
+      "deleteTitle": "Supprimer « {name} » ?",
+      "deleteText": "La page, ses photos et ses membres seront supprimés définitivement.",
+      "deleted": "Département supprimé",
+      "failed": "L'opération a échoué.",
+      "orderSaved": "Ordre enregistré",
+      "published": "Publié",
+      "draft": "Brouillon",
+      "noLeader": "Responsable à ajouter"
+    },
+    "editor": {
+      "back": "Équipe",
+      "statusPublished": "Publié",
+      "statusDraft": "Brouillon",
+      "view": "Voir",
+      "preview": "Aperçu",
+      "publish": "Publier",
+      "publishing": "Publication…",
+      "published": "Département publié",
+      "unpublish": "Dépublier",
+      "unpublished": "Département retiré du site",
+      "incomplete": "Il manque encore quelques éléments :",
+      "failed": "L'opération a échoué.",
+      "tabsLabel": "Sections du département",
+      "tabs": {
+        "details": "Détails",
+        "content": "Contenu",
+        "design": "Design",
+        "media": "Médias"
+      },
+      "problems": {
+        "name": "le nom du département (Détails)",
+        "leader": "le nom du responsable (Détails)",
+        "content": "la description du département (Contenu)",
+        "coverAlt": "la description de l'image d'en-tête (Médias)",
+        "imageAlt": "la description de chaque image du contenu (Contenu)"
+      }
+    },
+    "details": {
+      "identity": "Département",
+      "nameFr": "Nom (français)",
+      "nameEn": "Nom (anglais)",
+      "taglineFr": "Phrase d'accroche (français)",
+      "taglineEn": "Phrase d'accroche (anglais)",
+      "taglinePlaceholder": "ex. Nous faisons connaître le club et ses actions.",
+      "slug": "Adresse de la page",
+      "slugHint": "Lettres, chiffres et tirets. Changez-la seulement si nécessaire : les anciens liens ne marcheront plus.",
+      "leader": "Responsable",
+      "leaderHint": "Affiché sur la carte du département et en haut de sa page.",
+      "leaderName": "Nom complet du responsable",
+      "roleFr": "Titre (français)",
+      "roleEn": "Titre (anglais)",
+      "bioFr": "Présentation (français)",
+      "bioEn": "Présentation (anglais)",
+      "enFallback": "Vide = le texte français est utilisé.",
+      "cardPreview": "Carte sur la page Équipe",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "saved": "Détails enregistrés",
+      "unsaved": "Modifications non enregistrées",
+      "upToDate": "À jour",
+      "failed": "Impossible d'enregistrer.",
+      "imageInvalid": "Cette photo n'est pas valide : envoyez-la à nouveau.",
+      "nameRequired": "Indiquez le nom du département."
+    },
+    "design": {
+      "noCover": "Pas encore d'image d'en-tête (onglet Médias) : le bandeau coloré est utilisé.",
+      "previewSample": "Aperçu : écrivez la mission du département dans l'onglet Contenu.",
+      "cardPreview": "Carte sur la page Équipe"
+    },
+    "media": {
+      "mode": "Section « L'équipe » de la page",
+      "modes": {
+        "group": "Photo d'équipe",
+        "members": "Un par membre",
+        "both": "Les deux"
+      },
+      "modeHints": {
+        "group": "Une grande photo de toute l'équipe (les autres photos s'affichent en dessous).",
+        "members": "Une carte par membre : sa photo et son nom.",
+        "both": "La grande photo d'équipe, puis une carte par membre."
+      },
+      "modeSaved": "Affichage enregistré",
+      "failed": "L'opération a échoué.",
+      "photosTitle": "Photos d'équipe",
+      "photosHint": "La première photo s'affiche en grand. Une photo peut aussi servir d'image d'en-tête de la page.",
+      "drop": "Déposez les photos ici",
+      "pick": "Choisir des photos",
+      "uploading": "Envoi de {name}…",
+      "uploaded": "{count, plural, one {# photo ajoutée} other {# photos ajoutées}}",
+      "imagesOnly": "Seules les images sont acceptées ici.",
+      "alt": "Description (pour l'accessibilité)",
+      "altPlaceholder": "ex. L'équipe marketing lors de la journée portes ouvertes",
+      "altSaved": "Description enregistrée",
+      "missingAlt": "Description manquante",
+      "bigPhoto": "En grand",
+      "isCover": "En-tête",
+      "setCover": "Mettre en en-tête",
+      "unsetCover": "Retirer de l'en-tête",
+      "coverSet": "Image d'en-tête choisie",
+      "coverRemoved": "Image d'en-tête retirée",
+      "delete": "Supprimer",
+      "deletePhotoTitle": "Supprimer cette photo ?",
+      "deletePhotoText": "Elle sera retirée de la page et du contenu où elle est utilisée.",
+      "deleted": "Supprimé",
+      "membersTitle": "Membres",
+      "membersHint": "Une carte par membre : photo et nom. Sans photo, ses initiales sont affichées.",
+      "memberName": "Nom complet du membre",
+      "addMember": "Ajouter",
+      "adding": "Ajout…",
+      "memberAdded": "Membre ajouté",
+      "memberSaved": "Membre enregistré",
+      "noMembers": "Aucun membre pour l'instant.",
+      "deleteMemberTitle": "Retirer {name} ?",
+      "moveUp": "Monter",
+      "moveDown": "Descendre"
     }
   }
 }

@@ -12,6 +12,7 @@ export default async function AdminHome({ params }: { params: Promise<{ locale: 
   const cards = [
     { key: "events", href: "/admin/events", text: t("manageEvents"), show: can(profile, "events") },
     { key: "forms", href: "/admin/forms", text: t("manageForms"), show: can(profile, "forms") },
+    { key: "team", href: "/admin/team", text: t("manageTeam"), show: isAdmin(profile) },
     { key: "pages", href: "/admin/pages", text: t("managePages"), show: isAdmin(profile) },
   ] as const;
   const visible = cards.filter((c) => c.show);
@@ -34,12 +35,6 @@ export default async function AdminHome({ params }: { params: Promise<{ locale: 
               <p className="text-sm text-muted-foreground">{c.text}</p>
             </Link>
           ))}
-          {can(profile, "accounts") && (
-            <div className="rounded-card border border-border bg-white p-5">
-              <h2 className="font-bold text-grey">{t("team")}</h2>
-              <p className="text-sm text-muted-foreground">{t("soon")}</p>
-            </div>
-          )}
         </div>
       )}
     </div>

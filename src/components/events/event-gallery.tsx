@@ -29,7 +29,8 @@ export function EventGallery({
   columns = 3,
 }: {
   images: GalleryImage[];
-  layout?: "grid" | "masonry" | "carousel";
+  /** "feature": the first photo full width (e.g. a team photo), the others in a grid below. */
+  layout?: "grid" | "masonry" | "carousel" | "feature";
   columns?: number;
 }) {
   const t = useTranslations("eventPage");
@@ -106,6 +107,25 @@ export function EventGallery({
                 </button>
               ))}
             </div>
+          )}
+        </div>
+      ) : layout === "feature" ? (
+        <div className="space-y-3">
+          {images[0] && (
+            <figure>
+              {thumb(images[0], 0, "", "(min-width: 1280px) 1152px, 100vw", false)}
+              {images[0].caption && <figcaption className="mt-1.5 text-sm opacity-75">{images[0].caption}</figcaption>}
+            </figure>
+          )}
+          {images.length > 1 && (
+            <ul className={cn("grid grid-cols-2 gap-3", COLS[columns] ?? COLS[3])}>
+              {images.slice(1).map((image, offset) => (
+                <li key={`${image.src}-${offset + 1}`}>
+                  {thumb(image, offset + 1, "aspect-[4/3]", "(min-width: 1024px) 33vw, 50vw")}
+                  {image.caption && <p className="mt-1.5 text-sm opacity-75">{image.caption}</p>}
+                </li>
+              ))}
+            </ul>
           )}
         </div>
       ) : layout === "masonry" ? (

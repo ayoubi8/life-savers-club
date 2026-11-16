@@ -6,7 +6,11 @@ import { Check, Film, Link2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import { parseVideoUrl } from "@/lib/events/content";
 import { IMAGE_TYPES, VIDEO_TYPES, uploadEventMedia } from "@/lib/events/upload";
+import { uploadDepartmentMedia } from "@/lib/team/upload";
 import { cn } from "@/lib/utils";
+
+/** The page whose media library the editor uses. */
+export type ContentTarget = { kind: "event" | "department"; id: string };
 
 export type LibraryItem = { id: string; url: string; kind: "image" | "video"; alt: string; width: number | null; height: number | null };
 
@@ -17,7 +21,7 @@ export type PickResult =
 type PickRequest = { kind: "image" | "video"; multiple?: boolean; resolve: (result: PickResult | null) => void };
 
 type MediaContextValue = {
-  eventId: string;
+  target: ContentTarget;
   library: LibraryItem[];
   /** Opens the picker; resolves with the chosen files (or a video link), or null when cancelled. */
   pick: (kind: "image" | "video", options?: { multiple?: boolean }) => Promise<PickResult | null>;
@@ -33,7 +37,7 @@ export function useEventMedia() {
   return value;
 }
 
-export function EventMediaProvider({ eventId, initial, children }: { eventId: string; initial: LibraryItem[]; children: React.ReactNode }) {
+export function EventMediaProvider({ target, initial, children }: { target: ContentTarget; initial: LibraryItem[]; children: React.ReactNode }) {
   const t = useTranslations("adminEvents");
   const [library, setLibrary] = useState(initial);
   const [request, setRequest] = useState<PickRequest | null>(null);
@@ -43,7 +47,7 @@ export function EventMediaProvider({ eventId, initial, children }: { eventId: st
       const added: LibraryItem[] = [];
       for (const file of files) {
         const toastId = toast.loading(t("media.uploading", { name: file.name }));
-        const result = await uploadEventMedia(eventId, file);
+        const result = target.kind === "department" ? await uploadDepartmentMedia(target.id, file) : await uploadEventMedia(target.id, file);
         toast.dismiss(toastId);
         if (!result.ok) {
           toast.error(t(`media.errors.${result.error}`, { name: file.name }));
@@ -54,7 +58,7 @@ export function EventMediaProvider({ eventId, initial, children }: { eventId: st
       if (added.length) setLibrary((list) => [...list, ...added]);
       return added;
     },
-    [eventId, t],
+    [target.kind, target.id, t],
   );
 
   const pick = useCallback(
@@ -64,7 +68,7 @@ export function EventMediaProvider({ eventId, initial, children }: { eventId: st
   );
 
   return (
-    <MediaContext.Provider value={{ eventId, library, pick, uploadFiles }}>
+    <MediaContext.Provider value={{ target, library, pick, uploadFiles }}>
       {children}
       {request && (
         <MediaPicker

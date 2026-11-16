@@ -33,7 +33,21 @@
   "team": {
     "title": "Our team",
     "subtitle": "Committed students who keep the club alive.",
-    "note": "Names and photos will be added from the leaders area."
+    "note": "Our departments will be presented here soon.",
+    "bureau": "The bureau",
+    "departments": "Our departments",
+    "departmentsText": "Each department has its leader and its mission. Discover what they do.",
+    "discover": "Discover"
+  },
+  "departmentPage": {
+    "previewBanner": "Preview: this department is not published yet.",
+    "eyebrow": "Department",
+    "leader": "Head of department",
+    "mission": "Our mission",
+    "team": "The team",
+    "members": "Members",
+    "others": "Other departments",
+    "back": "The whole team"
   },
   "join": {
     "title": "Join Life Savers",
@@ -82,7 +96,8 @@
     "roleAdmin": "Admin",
     "roleMember": "Member",
     "pages": "Site pages",
-    "managePages": "Texts and images of the home page, sponsors, header and footer"
+    "managePages": "Texts and images of the home page, sponsors, header and footer",
+    "manageTeam": "Bureau, departments, leaders and team photos"
   },
   "adminForms": {
     "title": "Forms",
@@ -1270,6 +1285,179 @@
       "logoHint": "A PNG with a transparent background works best.",
       "cta": "“Become a sponsor” block",
       "ctaHint": "The button opens an email to the club address."
+    }
+  },
+  "adminTeam": {
+    "title": "Team",
+    "subtitle": "The president, the vice president and each department's page.",
+    "viewPage": "View the Team page",
+    "photo": {
+      "upload": "Add a photo",
+      "replace": "Change photo",
+      "remove": "Remove photo",
+      "focus": "Point kept in the circle",
+      "focusHint": "Click the face to centre it in the circle (or use the arrow keys)."
+    },
+    "bureau": {
+      "title": "Bureau",
+      "subtitle": "President and vice president: shown at the top of the Team page, outside the departments.",
+      "missing": "The two bureau seats are missing: apply the latest database migration.",
+      "positions": {
+        "president": "President",
+        "vice_president": "Vice president"
+      },
+      "visible": "Show on the site",
+      "name": "Full name",
+      "roleFr": "Title (French)",
+      "roleEn": "Title (English)",
+      "bioFr": "Short introduction (French)",
+      "bioEn": "Short introduction (English)",
+      "bioEnHint": "Empty = the French text is used.",
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Bureau saved",
+      "unsaved": "Unsaved changes",
+      "upToDate": "Up to date",
+      "failed": "Could not save.",
+      "imageInvalid": "This photo is not valid: upload it again.",
+      "nameRequired": "Enter the full name."
+    },
+    "new": {
+      "button": "New department",
+      "title": "New department",
+      "name": "Department name",
+      "placeholder": "e.g. Marketing & communication",
+      "hint": "The department starts as a draft: add its leader, description and photos, then publish it.",
+      "cancel": "Cancel",
+      "create": "Create",
+      "creating": "Creating…",
+      "failed": "Could not create the department."
+    },
+    "list": {
+      "title": "Departments",
+      "subtitle": "Each department has its card on the Team page and its own page. Drag to change the order.",
+      "empty": "No department yet. Create the first one.",
+      "drag": "Move {name}",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "edit": "Edit",
+      "view": "View page",
+      "delete": "Delete",
+      "deleteTitle": "Delete “{name}”?",
+      "deleteText": "The page, its photos and its members will be deleted permanently.",
+      "deleted": "Department deleted",
+      "failed": "Something went wrong.",
+      "orderSaved": "Order saved",
+      "published": "Published",
+      "draft": "Draft",
+      "noLeader": "Leader to add"
+    },
+    "editor": {
+      "back": "Team",
+      "statusPublished": "Published",
+      "statusDraft": "Draft",
+      "view": "View",
+      "preview": "Preview",
+      "publish": "Publish",
+      "publishing": "Publishing…",
+      "published": "Department published",
+      "unpublish": "Unpublish",
+      "unpublished": "Department removed from the site",
+      "incomplete": "A few things are still missing:",
+      "failed": "Something went wrong.",
+      "tabsLabel": "Department sections",
+      "tabs": {
+        "details": "Details",
+        "content": "Content",
+        "design": "Design",
+        "media": "Media"
+      },
+      "problems": {
+        "name": "the department name (Details)",
+        "leader": "the leader's name (Details)",
+        "content": "the department description (Content)",
+        "coverAlt": "the header image description (Media)",
+        "imageAlt": "a description for every image in the content (Content)"
+      }
+    },
+    "details": {
+      "identity": "Department",
+      "nameFr": "Name (French)",
+      "nameEn": "Name (English)",
+      "taglineFr": "Tagline (French)",
+      "taglineEn": "Tagline (English)",
+      "taglinePlaceholder": "e.g. We make the club and its actions known.",
+      "slug": "Page address",
+      "slugHint": "Letters, numbers and dashes. Change it only if needed: old links will stop working.",
+      "leader": "Leader",
+      "leaderHint": "Shown on the department card and at the top of its page.",
+      "leaderName": "Leader's full name",
+      "roleFr": "Title (French)",
+      "roleEn": "Title (English)",
+      "bioFr": "Introduction (French)",
+      "bioEn": "Introduction (English)",
+      "enFallback": "Empty = the French text is used.",
+      "cardPreview": "Card on the Team page",
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Details saved",
+      "unsaved": "Unsaved changes",
+      "upToDate": "Up to date",
+      "failed": "Could not save.",
+      "imageInvalid": "This photo is not valid: upload it again.",
+      "nameRequired": "Enter the department name."
+    },
+    "design": {
+      "noCover": "No header image yet (Media tab): the colour band is used.",
+      "previewSample": "Preview: write the department's mission in the Content tab.",
+      "cardPreview": "Card on the Team page"
+    },
+    "media": {
+      "mode": "“The team” section of the page",
+      "modes": {
+        "group": "Team photo",
+        "members": "One per member",
+        "both": "Both"
+      },
+      "modeHints": {
+        "group": "One big photo of the whole team (other photos are shown below it).",
+        "members": "One card per member: their photo and name.",
+        "both": "The big team photo, then one card per member."
+      },
+      "modeSaved": "Display saved",
+      "failed": "Something went wrong.",
+      "photosTitle": "Team photos",
+      "photosHint": "The first photo is shown large. A photo can also be used as the page header image.",
+      "drop": "Drop photos here",
+      "pick": "Choose photos",
+      "uploading": "Uploading {name}…",
+      "uploaded": "{count, plural, one {# photo added} other {# photos added}}",
+      "imagesOnly": "Only images are accepted here.",
+      "alt": "Description (for accessibility)",
+      "altPlaceholder": "e.g. The marketing team at the open day",
+      "altSaved": "Description saved",
+      "missingAlt": "Description missing",
+      "bigPhoto": "Large",
+      "isCover": "Header",
+      "setCover": "Use as header",
+      "unsetCover": "Remove from header",
+      "coverSet": "Header image chosen",
+      "coverRemoved": "Header image removed",
+      "delete": "Delete",
+      "deletePhotoTitle": "Delete this photo?",
+      "deletePhotoText": "It will be removed from the page and from any content using it.",
+      "deleted": "Deleted",
+      "membersTitle": "Members",
+      "membersHint": "One card per member: photo and name. Without a photo, their initials are shown.",
+      "memberName": "Member's full name",
+      "addMember": "Add",
+      "adding": "Adding…",
+      "memberAdded": "Member added",
+      "memberSaved": "Member saved",
+      "noMembers": "No members yet.",
+      "deleteMemberTitle": "Remove {name}?",
+      "moveUp": "Move up",
+      "moveDown": "Move down"
     }
   }
 }

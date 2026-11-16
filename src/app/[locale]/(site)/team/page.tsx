@@ -1,36 +1,67 @@
+import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHero } from "@/components/site/page-hero";
 import { Reveal } from "@/components/site/reveal";
-import { team } from "@/lib/sample-data";
-import { pick } from "@/lib/site";
+import { BureauCard } from "@/components/team/bureau-card";
+import { DepartmentCard } from "@/components/team/department-card";
+import { getBureau, getPublishedDepartments } from "@/lib/team/queries";
 
-const ring = { pink: "from-pink to-[#ff9db1]", blue: "from-blue to-[#7db4e6]", green: "from-green to-[#b2e394]" };
+type Props = { params: Promise<{ locale: string }> };
 
-export default async function TeamPage({ params }: { params: Promise<{ locale: string }> }) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "team" });
+  return { title: t("title"), description: t("subtitle") };
+}
+
+export default async function TeamPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations({ locale, namespace: "team" });
+  const [t, bureau, departments] = await Promise.all([
+    getTranslations({ locale, namespace: "team" }),
+    getBureau(),
+    getPublishedDepartments(),
+  ]);
 
   return (
     <>
       <PageHero title={t("title")} subtitle={t("subtitle")} />
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
-        <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
-          {team.map((m, i) => (
-            <Reveal key={i} delay={(i % 4) * 80}>
-              <div className="card-lift rounded-card border border-border bg-white p-5 text-center">
-                <div className={`mx-auto grid h-24 w-24 place-items-center rounded-full bg-gradient-to-br p-1 sm:h-28 sm:w-28 ${ring[m.color]}`}>
-                  <span className="grid h-full w-full place-items-center rounded-full bg-white text-3xl font-extrabold text-grey">
-                    {m.name[0]}
-                  </span>
-                </div>
-                <h3 className="mt-4 font-extrabold text-ink">{m.name}</h3>
-                <p className="text-sm font-bold text-pink">{pick(m.role, locale)}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-        <p className="mt-10 text-center text-sm text-muted-foreground">{t("note")}</p>
+
+      <div className="mx-auto max-w-7xl space-y-16 px-4 py-16 sm:px-6">
+        {bureau.length > 0 && (
+          <section aria-labelledby="bureau-title">
+            <h2 id="bureau-title" className="text-center text-2xl font-extrabold text-blue sm:text-3xl">
+              {t("bureau")}
+            </h2>
+            <div className="mx-auto mt-8 grid max-w-3xl gap-4 sm:grid-cols-2 sm:gap-6">
+              {bureau.map((member, i) => (
+                <Reveal key={member.id} delay={i * 80} className="h-full">
+                  <BureauCard member={member} locale={locale} />
+                </Reveal>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <section aria-labelledby="departments-title">
+          <h2 id="departments-title" className="text-center text-2xl font-extrabold text-blue sm:text-3xl">
+            {t("departments")}
+          </h2>
+          <p className="mx-auto mt-2 max-w-2xl text-center text-muted-foreground">{t("departmentsText")}</p>
+          {departments.length > 0 ? (
+            <ul className="mt-8 grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
+              {departments.map((department, i) => (
+                <li key={department.id}>
+                  <Reveal delay={(i % 4) * 80} className="h-full">
+                    <DepartmentCard department={department} locale={locale} cta={t("discover")} />
+                  </Reveal>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-10 text-center text-sm text-muted-foreground">{t("note")}</p>
+          )}
+        </section>
       </div>
     </>
   );

@@ -19,7 +19,7 @@ export default async function EventContentPage({
   return (
     <ContentEditorLoader
       key={`${editorLang}-${event.updated_at}`}
-      eventId={event.id}
+      target={{ kind: "event", id: event.id }}
       lang={editorLang}
       docs={{ fr: event.content_fr, en: event.content_en }}
       updatedAt={event.updated_at}

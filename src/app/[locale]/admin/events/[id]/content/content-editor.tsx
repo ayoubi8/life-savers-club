@@ -12,11 +12,12 @@ import { CircleAlert, CircleCheck, Copy, LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "@/i18n/navigation";
 import { copyContentToEnglish, saveEventContent } from "@/lib/events/actions";
+import { copyDepartmentContentToEnglish, saveDepartmentContent } from "@/lib/team/actions";
 import { EMPTY_DOC, isEmptyDoc, safeHref, type EventDoc } from "@/lib/events/content";
 import { IMAGE_TYPES } from "@/lib/events/upload";
 import { cn } from "@/lib/utils";
 import { CUSTOM_NODES, FontSizeToken, MoveBlock } from "./extensions";
-import { EventMediaProvider, useEventMedia, type LibraryItem } from "./media-context";
+import { EventMediaProvider, useEventMedia, type ContentTarget, type LibraryItem } from "./media-context";
 import { InsertPalette, SelectionMenu, Toolbar } from "./toolbar";
 
 type Lang = "fr" | "en";
@@ -24,6 +25,18 @@ type SaveStatus = "saved" | "pending" | "saving" | "retrying" | "conflict";
 
 const SAVE_DELAY = 1500;
 const backupKey = (id: string, lang: Lang) => `event-content:${id}:${lang}`;
+
+/** Save / copy / route for the page being edited: an event or a department (same editor). */
+function targetApi(target: ContentTarget) {
+  return target.kind === "department"
+    ? {
+        id: target.id,
+        save: saveDepartmentContent,
+        copyToEnglish: copyDepartmentContentToEnglish,
+        path: `/admin/team/${target.id}/content`,
+      }
+    : { id: target.id, save: saveEventContent, copyToEnglish: copyContentToEnglish, path: `/admin/events/${target.id}/content` };
+}
 
 function readBackup(id: string, lang: Lang): { doc: EventDoc; at: number } | null {
   try {
@@ -43,32 +56,35 @@ function writeBackup(id: string, lang: Lang, doc: EventDoc | null) {
 }
 
 export function ContentEditor(props: {
-  eventId: string;
+  target: ContentTarget;
   lang: Lang;
   docs: { fr: EventDoc | null; en: EventDoc | null };
   updatedAt: string;
   library: LibraryItem[];
 }) {
   return (
-    <EventMediaProvider eventId={props.eventId} initial={props.library}>
+    <EventMediaProvider target={props.target} initial={props.library}>
       <EditorInner {...props} />
     </EventMediaProvider>
   );
 }
 
 function EditorInner({
-  eventId,
+  target,
   lang,
   docs,
   updatedAt,
 }: {
-  eventId: string;
+  target: ContentTarget;
   lang: Lang;
   docs: { fr: EventDoc | null; en: EventDoc | null };
   updatedAt: string;
 }) {
   const t = useTranslations("adminEvents.editor");
   const router = useRouter();
+  const api = targetApi(target);
+  // Backups of event pages keep their old key; departments get their own namespace.
+  const eventId = target.kind === "event" ? target.id : `department:${target.id}`;
   const media = useEventMedia();
   const base = useRef(updatedAt);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -176,7 +192,7 @@ function EditorInner({
       // A JSON round trip turns everything into plain objects.
       const doc = JSON.parse(JSON.stringify(editor.getJSON()));
       try {
-        const result = await saveEventContent(eventId, lang, doc, base.current, { force });
+        const result = await api.save(api.id, lang, doc, base.current, { force });
         if (result.ok) {
           base.current = result.updated_at;
           retries.current = 0;
@@ -197,6 +213,7 @@ function EditorInner({
         timer.current = setTimeout(() => void saveRef.current(force), Math.min(30000, 2000 * 2 ** retries.current));
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- api is derived from target, which never changes for a mounted editor
     [editor, eventId, lang],
   );
 
@@ -228,12 +245,12 @@ function EditorInner({
   async function switchLang(next: Lang) {
     if (next === lang) return;
     if (status === "pending" || status === "saving") await save();
-    router.push(`/admin/events/${eventId}/content?lang=${next}`);
+    router.push(`${api.path}?lang=${next}`);
   }
 
   async function copyFromFrench() {
     if (status !== "saved") await save();
-    const result = await copyContentToEnglish(eventId, base.current);
+    const result = await api.copyToEnglish(api.id, base.current);
     if (!result.ok) return void toast.error(t(result.error === "not_empty" ? "copyNotEmpty" : "saveFailed"));
     base.current = result.updated_at;
     editor?.commands.setContent(docs.fr ?? EMPTY_DOC, { emitUpdate: false });
