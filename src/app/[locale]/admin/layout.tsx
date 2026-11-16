@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { redirect } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
 import { getSessionProfile } from "@/lib/auth";
+import { can, isAdmin } from "@/lib/permissions";
 import { createClient } from "@/lib/supabase/server";
 import { ConfirmProvider } from "@/components/ui/confirm";
 import { LinkPending } from "@/components/ui/link-pending";
@@ -54,9 +55,11 @@ export default async function AdminLayout({
 
   const items = [
     { href: "/admin", label: t("admin.dashboard") },
-    { href: "/admin/forms", label: t("admin.forms") },
-    ...(profile.role === "admin" ? [{ href: "/admin/accounts", label: t("admin.accounts") }] : []),
-  ] as { href: "/admin" | "/admin/forms" | "/admin/accounts"; label: string }[];
+    ...(can(profile, "events") ? [{ href: "/admin/events", label: t("admin.events") }] : []),
+    ...(can(profile, "forms") ? [{ href: "/admin/forms", label: t("admin.forms") }] : []),
+    ...(isAdmin(profile) ? [{ href: "/admin/pages", label: t("admin.pages") }] : []),
+    ...(can(profile, "accounts") ? [{ href: "/admin/accounts", label: t("admin.accounts") }] : []),
+  ] as { href: "/admin" | "/admin/events" | "/admin/forms" | "/admin/pages" | "/admin/accounts"; label: string }[];
 
   return (
     <ConfirmProvider>
@@ -76,7 +79,9 @@ export default async function AdminLayout({
             </Link>
           ))}
         </nav>
-        <p className="hidden truncate text-xs text-white/70 md:block">{profile.email} · {profile.role}</p>
+        <p className="hidden truncate text-xs text-white/70 md:block">{profile.email} · {profile.role === "admin" ? t("admin.roleAdmin") : t("admin.roleMember")}
+          {profile.department && ` · ${t(`adminAccounts.departments.${profile.department}`)}`}
+        </p>
         <div className="hidden md:block"><SignOutButton locale={locale} label={t("nav.logout")} /></div>
       </aside>
       <main className="min-w-0 flex-1 bg-muted p-4 sm:p-6">{children}</main>

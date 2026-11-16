@@ -1,15 +1,5 @@
-// Placeholder club details. Replace with real values (later editable from the admin settings).
-export const site = {
-  name: "Life Savers",
-  email: "contact@lifesavers.club",
-  phone: "+213 000 00 00 00",
-  address: "Faculté de Médecine",
-  socials: {
-    facebook: "https://facebook.com/",
-    instagram: "https://instagram.com/",
-    linkedin: "https://linkedin.com/",
-  },
-};
+// Club details (logo, contact, socials, page texts) are edited from /admin/pages
+// and read through src/lib/site-content.
 
 export type Locale = "fr" | "en";
 export type L10n = { fr: string; en: string };

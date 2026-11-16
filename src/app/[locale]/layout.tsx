@@ -9,6 +9,8 @@ import "../globals.css";
 const nunito = Nunito({ subsets: ["latin"], variable: "--font-nunito" });
 
 export const metadata: Metadata = {
+  // Absolute base for Open Graph / canonical URLs (link previews on WhatsApp, Facebook, X).
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
   title: { default: "Life Savers Club", template: "%s | Life Savers Club" },
   description: "Spread health, spread hope.",
   icons: { icon: "/brand/logo.png" },

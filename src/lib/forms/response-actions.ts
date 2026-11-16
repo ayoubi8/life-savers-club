@@ -1,24 +1,17 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { requireSection } from "@/lib/auth";
 import { DISPLAY_TYPES, isUuid, parseSchema, parseSettings, schemaFields } from "./schema";
 import { RESPONSE_STATUSES, type ResponseStatus } from "./responses-query";
 
 type Result = { ok: boolean; error?: string };
 
-/** Any active leader. RLS enforces the same on the database side. */
+/** Forms team or admins. RLS enforces the same on the database side. */
 async function leader() {
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
-  if (!data.user) return null;
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("id, status")
-    .eq("id", data.user.id)
-    .maybeSingle();
-  if (!profile || profile.status !== "active") return null;
-  return { supabase, userId: data.user.id };
+  const context = await requireSection("forms");
+  if (!context) return null;
+  return { supabase: context.supabase, userId: context.profile.id };
 }
 
 function cleanIds(ids: string[]) {

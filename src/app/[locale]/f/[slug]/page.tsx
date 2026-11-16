@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getSessionProfile } from "@/lib/auth";
+import { can } from "@/lib/permissions";
 import { createClient } from "@/lib/supabase/server";
 import {
   firstPage,
@@ -55,11 +56,11 @@ export default async function PublicFormPage({
 
   if (!form) notFound();
 
-  // Drafts are visible only to active leaders, as a non-submittable preview.
+  // Drafts are visible only to the forms team, as a non-submittable preview.
   let preview = false;
   if (form.status !== "published") {
     const { profile: me } = await getSessionProfile();
-    if (me?.status !== "active") notFound();
+    if (!can(me, "forms")) notFound();
     preview = true;
   }
 

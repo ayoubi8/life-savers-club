@@ -2,12 +2,12 @@ import { GraduationCap, HeartPulse, Users } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHero } from "@/components/site/page-hero";
 import { Reveal } from "@/components/site/reveal";
-import { site } from "@/lib/site";
+import { getSiteGeneral } from "@/lib/site-content/queries";
 
 export default async function JoinPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations({ locale, namespace: "join" });
+  const [t, site] = await Promise.all([getTranslations({ locale, namespace: "join" }), getSiteGeneral()]);
   const benefits = [
     { icon: GraduationCap, k: "b1", c: "bg-blue" },
     { icon: Users, k: "b2", c: "bg-green" },

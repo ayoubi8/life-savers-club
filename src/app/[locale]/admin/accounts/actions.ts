@@ -1,28 +1,36 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { requireSection } from "@/lib/auth";
+import { isDepartment, isSection, ROLES, type Role } from "@/lib/permissions";
 
 const STATUSES = ["pending", "active", "disabled"] as const;
-const ROLES = ["leader", "admin"] as const;
 
-/** Admin-only (enforced by RLS): change an account's status and/or role. */
+/**
+ * Admin-only (enforced by RLS): change an account's status, role, department and sections.
+ * A database trigger also refuses to demote or disable the last active admin.
+ */
 export async function updateAccount(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   const status = String(formData.get("status") ?? "");
   const role = String(formData.get("role") ?? "");
-  if (!id || !STATUSES.includes(status as never) || !ROLES.includes(role as never)) return;
+  const department = String(formData.get("department") ?? "");
+  if (!id || !STATUSES.includes(status as never) || !ROLES.includes(role as Role)) return;
 
-  const supabase = await createClient();
-  const { data: auth } = await supabase.auth.getUser();
-  if (!auth.user || auth.user.id === id) return; // never edit your own account here
+  const context = await requireSection("accounts");
+  if (!context || context.profile.id === id) return; // never edit your own account here
 
-  await supabase
+  // Admins see everything, so their section list is cleared to keep the data honest.
+  const sections = role === "admin" ? [] : [...new Set(formData.getAll("sections").filter(isSection))];
+
+  await context.supabase
     .from("profiles")
     .update({
       status,
       role,
-      activated_by: status === "active" ? auth.user.id : null,
+      department: isDepartment(department) ? department : null,
+      sections,
+      activated_by: status === "active" ? context.profile.id : null,
       activated_at: status === "active" ? new Date().toISOString() : null,
     })
     .eq("id", id);

@@ -1,5 +1,5 @@
 import ExcelJS from "exceljs";
-import { createClient } from "@/lib/supabase/server";
+import { requireSection } from "@/lib/auth";
 import {
   answerToText,
   DISPLAY_TYPES,
@@ -21,16 +21,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   const { id } = await params;
   if (!isUuid(id)) return new Response("Not found", { status: 404 });
 
-  const supabase = await createClient();
-  const { data: auth } = await supabase.auth.getUser();
-  if (!auth.user) return new Response("Unauthorized", { status: 401 });
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("id, status")
-    .eq("id", auth.user.id)
-    .maybeSingle();
-  if (!profile || profile.status !== "active") return new Response("Forbidden", { status: 403 });
+  const context = await requireSection("forms");
+  if (!context) return new Response("Forbidden", { status: 403 });
+  const { supabase } = context;
 
   const { data: form } = await supabase
     .from("forms")

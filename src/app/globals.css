@@ -102,6 +102,79 @@ body {
 .marquee { display: flex; width: max-content; animation: marquee 30s linear infinite; }
 .marquee:hover { animation-play-state: paused; }
 
+/* Homepage "Our journey" (JourneyTimeline): vertical rail on mobile, heartbeat line from lg up. */
+@keyframes journey-pulse { from { stroke-dashoffset: 1090 } to { stroke-dashoffset: 0 } }
+.journey { display: grid; row-gap: 1rem; margin-left: .5rem; padding-left: 1.75rem; border-left: 2px solid rgb(255 255 255 / .16); }
+.journey-line { display: none; }
+.journey-year {
+  justify-self: start; position: relative; z-index: 1; margin-left: -2.6rem;
+  padding: .3rem .9rem; border-radius: 9999px; font-weight: 900; font-size: .95rem;
+  background: var(--ink-deep); border: 2px solid var(--c);
+  box-shadow: 0 0 0 6px rgb(255 255 255 / .04), 0 0 24px -4px var(--c);
+}
+.journey-card {
+  position: relative; height: 100%; padding: 1rem; border-radius: 1rem;
+  background: rgb(255 255 255 / .07); border: 1px solid rgb(255 255 255 / .14); backdrop-filter: blur(6px);
+  transition: transform .3s cubic-bezier(.16,1,.3,1), background-color .3s;
+}
+.journey-card:hover { transform: translateY(-4px); background: rgb(255 255 255 / .11); }
+.journey-pulse { stroke-dasharray: 90 1000; animation: journey-pulse 5s linear infinite; filter: drop-shadow(0 0 6px rgb(239 74 108 / .9)); }
+
+@media (min-width: 1024px) {
+  .journey {
+    margin-left: 0; padding-left: 0; border-left: 0; row-gap: 0; column-gap: 1rem;
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr)); grid-template-rows: auto 6rem auto;
+  }
+  .journey-line { display: block; position: relative; grid-row: 2; grid-column: 1 / -1; }
+  .journey-line svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .journey-year { grid-row: 2; grid-column: var(--col); justify-self: center; align-self: center; margin-left: 0; }
+  .journey-slot { grid-row: 1; grid-column: var(--col); align-self: end; }
+  .journey-slot.is-down { grid-row: 3; align-self: start; }
+  .journey-slot .journey-card::after {
+    content: ""; position: absolute; left: 50%; top: 100%; width: 2px; height: 1.4rem; transform: translateX(-50%);
+    background: linear-gradient(rgb(255 255 255 / .25), var(--c));
+  }
+  .journey-slot.is-down .journey-card::after { top: auto; bottom: 100%; background: linear-gradient(var(--c), transparent); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .journey-pulse { animation: none; display: none; }
+  .journey-card { transition: none; }
+}
+
+/* Event page colour band (minimal header): gradient or solid from the event theme (themeStyle). */
+.event-band { background: var(--form-header, linear-gradient(120deg, var(--brand-blue), var(--brand-pink))); }
+
+/* Event content editor (admin): mirrors the public renderer (src/components/events/event-content.tsx). */
+.event-editor { color: var(--brand-black); font-size: 1.0625rem; line-height: 1.7; display: flow-root; }
+.event-editor p { margin: 0.75rem 0; }
+.event-editor h2 { clear: both; margin: 2rem 0 0.75rem; font-size: 1.75rem; font-weight: 800; line-height: 1.2; }
+.event-editor h3 { clear: both; margin: 1.5rem 0 0.5rem; font-size: 1.375rem; font-weight: 800; line-height: 1.25; }
+.event-editor h4 { clear: both; margin: 1.25rem 0 0.5rem; font-size: 1.125rem; font-weight: 800; }
+.event-editor ul { list-style: disc; padding-left: 1.5rem; margin: 0.75rem 0; }
+.event-editor ol { list-style: decimal; padding-left: 1.5rem; margin: 0.75rem 0; }
+.event-editor li > p { margin: 0.15rem 0; }
+.event-editor li::marker { color: var(--brand-pink); }
+.event-editor blockquote { border-left: 4px solid var(--brand-pink); padding-left: 1.25rem; margin: 1.25rem 0; font-style: italic; font-size: 1.125rem; }
+.event-editor a { color: var(--brand-blue); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+.event-editor mark { border-radius: 0.2rem; padding: 0 0.1rem; color: inherit; }
+.event-editor hr { clear: both; margin: 2rem 0; border: 0; border-top: 2px solid rgb(0 0 0 / 0.12); }
+.event-editor hr.ProseMirror-selectednode { border-top-color: var(--brand-blue); }
+.event-editor .fs-sm { font-size: 0.875rem; }
+.event-editor .fs-lg { font-size: 1.125rem; }
+.event-editor .fs-xl { font-size: 1.25rem; }
+.event-editor .fs-2xl { font-size: 1.5rem; }
+.event-editor .fs-3xl { font-size: 1.875rem; }
+.event-editor .event-columns > [data-node-view-content-react], .event-editor .event-columns { display: grid; gap: 1rem; }
+.event-editor .event-col { min-width: 0; border-radius: 0.5rem; padding: 0.25rem 0.5rem; outline: 1px dashed rgb(0 0 0 / 0.1); display: flow-root; }
+.event-editor .event-col > :first-child { margin-top: 0; }
+.event-editor p.is-empty::before, .event-editor h2.is-empty::before, .event-editor h3.is-empty::before {
+  content: attr(data-placeholder); float: left; height: 0; pointer-events: none; color: #a1a1aa; font-style: normal;
+}
+@media (min-width: 768px) {
+  .event-editor .event-columns.md\:grid-cols-2 > [data-node-view-content-react] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .event-editor .event-columns.md\:grid-cols-3 > [data-node-view-content-react] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
 /* Pending navigation hint under a clicked link (see LinkPending). */
 @keyframes link-pending { 0% { transform: translateX(-100%) } 100% { transform: translateX(250%) } }
 .link-pending { position: absolute; inset-inline: 0; bottom: 0; height: 2px; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity .15s; }

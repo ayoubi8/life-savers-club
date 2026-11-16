@@ -1,12 +1,15 @@
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
+import { can, type Department, type Role, type Section } from "@/lib/permissions";
 
 export type SessionProfile = {
   id: string;
   full_name: string | null;
   email: string;
-  role: "leader" | "admin";
+  role: Role;
   status: "pending" | "active" | "disabled";
+  department: Department | null;
+  sections: string[];
 };
 
 /**
@@ -24,8 +27,18 @@ export const getSessionProfile = cache(async () => {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, full_name, email, role, status")
+    .select("id, full_name, email, role, status, department, sections")
     .eq("id", userId)
     .maybeSingle();
   return { userId, profile: (profile as SessionProfile | null) ?? null };
 });
+
+/**
+ * For server actions and route handlers: the Supabase client and profile when the
+ * signed-in account may use `section`, otherwise null. RLS applies the same rule.
+ */
+export async function requireSection(section: Section | "accounts") {
+  const { profile } = await getSessionProfile();
+  if (!can(profile, section)) return null;
+  return { supabase: await createClient(), profile: profile! };
+}

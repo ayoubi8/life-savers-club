@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireSection } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isUuid, parseSchema } from "@/lib/forms/schema";
@@ -40,6 +41,7 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL(`/${locale}/login`, origin));
   }
   if (auth.user.id !== state.userId) return back("error", "invalid_user");
+  if (!(await requireSection("forms"))) return back("error", "forbidden");
 
   try {
     const tokens = await exchangeCode(code, googleRedirectUri(origin));

@@ -43,3 +43,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Instagram scrape (raw media, not committed)
+scraped/
+*cookies*.txt
+
+# generated: knowledge graph and Python bytecode
+graphify-out/
+__pycache__/

@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { requireSection } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { rebuildSheet, retryFailed, syncPending, type SyncResult } from "@/lib/google/sync";
 import { buildTemplate, isTemplateKey } from "./templates";
@@ -28,19 +29,11 @@ type SubmitState =
   | { status: "success" }
   | { status: "error"; code: string; fieldId?: string };
 
+/** Forms team (members with the "forms" section) or admins. RLS enforces the same rule. */
 async function getLeader() {
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
-  if (!data.user) return null;
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("id, role")
-    .eq("id", data.user.id)
-    .maybeSingle();
-
-  if (!profile) return null;
-  return { supabase, user: data.user, profile };
+  const context = await requireSection("forms");
+  if (!context) return null;
+  return { ...context, user: { id: context.profile.id } };
 }
 
 async function uniqueSlug(supabase: ServerClient, base: string) {

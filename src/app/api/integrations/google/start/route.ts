@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireSection } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/forms/schema";
 import { googleRedirectUri, isGoogleConfigured } from "@/lib/google/config";
@@ -26,14 +27,7 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL(`/${locale}/login`, origin));
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("id")
-    .eq("id", auth.user.id)
-    .maybeSingle();
-  if (!profile) {
-    return NextResponse.redirect(new URL(`/${locale}/login`, origin));
-  }
+  if (!(await requireSection("forms"))) return back("error", "forbidden");
 
   const state = signState({
     formId,
