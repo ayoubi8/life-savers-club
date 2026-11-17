@@ -49,10 +49,10 @@ export default async function TeamPage({ params }: Props) {
           </h2>
           <p className="mx-auto mt-2 max-w-2xl text-center text-muted-foreground">{t("departmentsText")}</p>
           {departments.length > 0 ? (
-            <ul className="mt-8 grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
+            <ul className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
               {departments.map((department, i) => (
                 <li key={department.id}>
-                  <Reveal delay={(i % 4) * 80} className="h-full">
+                  <Reveal delay={(i % 3) * 80} className="h-full">
                     <DepartmentCard department={department} locale={locale} cta={t("discover")} />
                   </Reveal>
                 </li>

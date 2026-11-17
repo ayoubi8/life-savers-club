@@ -20,22 +20,23 @@ export function DepartmentCard({ department, locale, cta, preview = false }: { d
         name={department.leader_name || name}
         focus={department.leader_photo_focus}
         ring="var(--dept-ring)"
+        size="lg"
       />
-      <h3 className="mt-4 font-extrabold text-ink">{name}</h3>
+      <h3 className="mt-5 text-xl font-extrabold text-ink">{name}</h3>
       {department.leader_name && (
-        <p className="text-sm font-bold" style={{ color: "var(--dept-text)" }}>
+        <p className="mt-0.5 text-base font-bold" style={{ color: "var(--dept-text)" }}>
           {department.leader_name}
         </p>
       )}
-      {tagline && <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground">{tagline}</p>}
-      <span className="mt-auto inline-flex items-center gap-1 pt-3 text-xs font-extrabold" style={{ color: "var(--dept-text)" }}>
+      {tagline && <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">{tagline}</p>}
+      <span className="mt-auto inline-flex items-center gap-1 pt-4 text-sm font-extrabold" style={{ color: "var(--dept-text)" }}>
         {cta}
-        <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden />
+        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden />
       </span>
     </>
   );
   const className =
-    "card-lift group relative flex h-full flex-col items-center overflow-hidden rounded-card border border-border bg-white p-5 pt-7 text-center";
+    "card-lift group relative flex h-full flex-col items-center overflow-hidden rounded-card border border-border bg-white p-6 pt-8 text-center";
 
   if (preview) {
     return (

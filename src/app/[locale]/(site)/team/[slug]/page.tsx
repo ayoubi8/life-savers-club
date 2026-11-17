@@ -84,7 +84,7 @@ export default async function DepartmentPage({ params }: Props) {
           <div className="border-t border-current/10 pt-10">
             <h2 className="mb-6 text-xl font-extrabold">{t("others")}</h2>
             {/* Other departments keep their own colours: a white strip so their cards read as on /team. */}
-            <ul className="grid grid-cols-2 gap-4 rounded-[var(--form-card-radius,1.25rem)] bg-muted p-4 text-ink sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
+            <ul className="grid grid-cols-1 gap-5 rounded-[var(--form-card-radius,1.25rem)] bg-muted p-4 text-ink sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
               {others.map((other) => (
                 <li key={other.id}>
                   <DepartmentCard department={other} locale={locale} cta={tTeam("discover")} />
