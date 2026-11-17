@@ -57,10 +57,12 @@ export default async function AdminLayout({
     { href: "/admin", label: t("admin.dashboard") },
     ...(can(profile, "events") ? [{ href: "/admin/events", label: t("admin.events") }] : []),
     ...(can(profile, "forms") ? [{ href: "/admin/forms", label: t("admin.forms") }] : []),
+    ...(can(profile, "media") ? [{ href: "/admin/media", label: t("admin.media") }] : []),
+    ...(can(profile, "finance") ? [{ href: "/admin/finance", label: t("admin.finance") }] : []),
     ...(isAdmin(profile) ? [{ href: "/admin/team", label: t("admin.team") }] : []),
     ...(isAdmin(profile) ? [{ href: "/admin/pages", label: t("admin.pages") }] : []),
     ...(can(profile, "accounts") ? [{ href: "/admin/accounts", label: t("admin.accounts") }] : []),
-  ] as { href: "/admin" | "/admin/events" | "/admin/forms" | "/admin/team" | "/admin/pages" | "/admin/accounts"; label: string }[];
+  ] as { href: "/admin" | "/admin/events" | "/admin/forms" | "/admin/media" | "/admin/finance" | "/admin/team" | "/admin/pages" | "/admin/accounts"; label: string }[];
 
   return (
     <ConfirmProvider>

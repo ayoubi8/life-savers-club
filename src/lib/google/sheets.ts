@@ -3,39 +3,8 @@ import { answerToText, DISPLAY_TYPES, schemaFields, type FormSchema } from "@/li
 const SHEETS_API = "https://sheets.googleapis.com/v4/spreadsheets";
 const SHEET = "Sheet1";
 
-export type GoogleTokens = {
-  access_token: string;
-  refresh_token?: string;
-  expires_in?: number;
-};
-
-async function tokenRequest(body: Record<string, string>) {
-  const clientId = process.env.GOOGLE_CLIENT_ID;
-  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-  if (!clientId || !clientSecret) throw new Error("Google OAuth is not configured");
-
-  const response = await fetch("https://oauth2.googleapis.com/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({ client_id: clientId, client_secret: clientSecret, ...body }),
-    cache: "no-store",
-  });
-
-  if (!response.ok) throw new Error(`Google token request failed (${response.status})`);
-  return (await response.json()) as GoogleTokens;
-}
-
-export function exchangeCode(code: string, redirectUri: string) {
-  return tokenRequest({
-    code,
-    redirect_uri: redirectUri,
-    grant_type: "authorization_code",
-  });
-}
-
-export function refreshAccessToken(refreshToken: string) {
-  return tokenRequest({ refresh_token: refreshToken, grant_type: "refresh_token" });
-}
+// Token helpers moved to ./oauth (shared with the Drive integration); re-exported for existing imports.
+export { exchangeCode, refreshAccessToken, type GoogleTokens } from "./oauth";
 
 export async function createSpreadsheet(title: string, accessToken: string) {
   const response = await fetch(SHEETS_API, {

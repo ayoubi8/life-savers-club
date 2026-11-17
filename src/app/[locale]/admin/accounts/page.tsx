@@ -41,7 +41,7 @@ export default async function AccountsPage({ params }: { params: Promise<{ local
     noDepartment: t("noDepartment"),
     departments: Object.fromEntries(DEPARTMENTS.map((d) => [d, t(`departments.${d}`)])) as Record<(typeof DEPARTMENTS)[number], string>,
     sections: t("sections"),
-    sectionNames: { events: tAdmin("events"), forms: tAdmin("forms") },
+    sectionNames: { events: tAdmin("events"), forms: tAdmin("forms"), media: tAdmin("media"), finance: tAdmin("finance") },
     adminHint: t("adminHint"),
     memberHint: t("memberHint"),
     noSection: t("noSection"),

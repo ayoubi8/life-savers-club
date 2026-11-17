@@ -51,3 +51,6 @@ scraped/
 # generated: knowledge graph and Python bytecode
 graphify-out/
 __pycache__/
+
+# Google OAuth client secrets (never commit)
+client_secret_*.json

@@ -12,6 +12,8 @@ export default async function AdminHome({ params }: { params: Promise<{ locale: 
   const cards = [
     { key: "events", href: "/admin/events", text: t("manageEvents"), show: can(profile, "events") },
     { key: "forms", href: "/admin/forms", text: t("manageForms"), show: can(profile, "forms") },
+    { key: "media", href: "/admin/media", text: t("manageMedia"), show: can(profile, "media") },
+    { key: "finance", href: "/admin/finance", text: t("manageFinance"), show: can(profile, "finance") },
     { key: "team", href: "/admin/team", text: t("manageTeam"), show: isAdmin(profile) },
     { key: "pages", href: "/admin/pages", text: t("managePages"), show: isAdmin(profile) },
   ] as const;

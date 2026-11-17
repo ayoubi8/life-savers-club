@@ -1,7 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { requireSection } from "@/lib/auth";
+import { revokeFinanceShares } from "@/lib/finance/gsheets";
 import { isDepartment, isSection, ROLES, type Role } from "@/lib/permissions";
 
 const STATUSES = ["pending", "active", "disabled"] as const;
@@ -23,7 +25,7 @@ export async function updateAccount(formData: FormData) {
   // Admins see everything, so their section list is cleared to keep the data honest.
   const sections = role === "admin" ? [] : [...new Set(formData.getAll("sections").filter(isSection))];
 
-  await context.supabase
+  const { error } = await context.supabase
     .from("profiles")
     .update({
       status,
@@ -34,6 +36,10 @@ export async function updateAccount(formData: FormData) {
       activated_at: status === "active" ? new Date().toISOString() : null,
     })
     .eq("id", id);
+
+  // Lost the finance section (or the account): remove their access to the finance Google files.
+  const keepsFinance = status === "active" && (role === "admin" || sections.includes("finance"));
+  if (!error && !keepsFinance) after(() => revokeFinanceShares(id).catch(() => undefined));
 
   revalidatePath("/", "layout");
 }

@@ -10,3 +10,8 @@ export function isGoogleConfigured() {
 export function googleRedirectUri(origin: string) {
   return process.env.GOOGLE_REDIRECT_URI || `${origin}/api/integrations/google/callback`;
 }
+
+/** OAuth callback of the media library (Google Drive). Must also be listed in Google Cloud Console. */
+export function driveRedirectUri(origin: string) {
+  return process.env.GOOGLE_DRIVE_REDIRECT_URI || `${origin}/api/integrations/google/drive/callback`;
+}

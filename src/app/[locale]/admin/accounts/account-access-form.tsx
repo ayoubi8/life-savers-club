@@ -34,7 +34,7 @@ export function AccountAccessForm({
   const [department, setDepartment] = useState(account.department ?? "");
   const [sections, setSections] = useState<string[]>(account.sections);
 
-  // Choosing a department pre-ticks its default sections (HR → forms, MRKT → events).
+  // Choosing a department pre-ticks its default sections (HR → forms, MRKT → events + media, FL → finance).
   function pickDepartment(value: string) {
     setDepartment(value);
     if (isDepartment(value)) setSections(DEPARTMENT_SECTIONS[value]);

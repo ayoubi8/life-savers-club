@@ -5,7 +5,7 @@
 export const ROLES = ["admin", "member"] as const;
 export type Role = (typeof ROLES)[number];
 
-export const SECTIONS = ["events", "forms"] as const;
+export const SECTIONS = ["events", "forms", "media", "finance"] as const;
 export type Section = (typeof SECTIONS)[number];
 
 export const DEPARTMENTS = ["hr", "er", "mrkt", "fl", "org"] as const;
@@ -14,9 +14,9 @@ export type Department = (typeof DEPARTMENTS)[number];
 /** Sections pre-ticked when an admin puts a member in a department. */
 export const DEPARTMENT_SECTIONS: Record<Department, Section[]> = {
   hr: ["forms"],
-  mrkt: ["events"],
+  mrkt: ["events", "media"],
   er: [],
-  fl: [],
+  fl: ["finance"],
   org: [],
 };
 
