@@ -1458,6 +1458,14 @@
       "deleteMemberTitle": "Retirer {name} ?",
       "moveUp": "Monter",
       "moveDown": "Descendre"
+    },
+    "autosave": {
+      "saved": "Enregistré automatiquement",
+      "pending": "Modifications en attente…",
+      "saving": "Enregistrement…",
+      "error": "Échec de l’enregistrement, nouvel essai bientôt.",
+      "retry": "Réessayer",
+      "invalid": "Complétez les champs requis pour enregistrer."
     }
   }
 }

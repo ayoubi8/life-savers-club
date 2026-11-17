@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { useRouter } from "@/i18n/navigation";
 import { copyContentToEnglish, saveEventContent } from "@/lib/events/actions";
 import { copyDepartmentContentToEnglish, saveDepartmentContent } from "@/lib/team/actions";
+import { usePendingSave } from "@/lib/team/autosave";
 import { EMPTY_DOC, isEmptyDoc, safeHref, type EventDoc } from "@/lib/events/content";
 import { IMAGE_TYPES } from "@/lib/events/upload";
 import { cn } from "@/lib/utils";
@@ -89,6 +90,7 @@ function EditorInner({
   const base = useRef(updatedAt);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const retries = useRef(0);
+  const inflight = useRef<Promise<void> | null>(null);
   const [status, setStatus] = useState<SaveStatus>("saved");
   const [savedAt, setSavedAt] = useState<Date | null>(null);
   const [palette, setPalette] = useState<{ top: number; left: number } | null>(null);
@@ -186,13 +188,23 @@ function EditorInner({
     async (force = false) => {
       if (!editor) return;
       if (timer.current) clearTimeout(timer.current);
+      timer.current = null;
       setStatus("saving");
       // ProseMirror attribute objects have a null prototype, which server-action
       // serialization silently drops (colours, sizes, links, image settings…).
       // A JSON round trip turns everything into plain objects.
       const doc = JSON.parse(JSON.stringify(editor.getJSON()));
+      const request = api.save(api.id, lang, doc, base.current, { force });
+      const settled = request.then(
+        () => {},
+        () => {},
+      );
+      inflight.current = settled;
+      void settled.then(() => {
+        if (inflight.current === settled) inflight.current = null;
+      });
       try {
-        const result = await api.save(api.id, lang, doc, base.current, { force });
+        const result = await request;
         if (result.ok) {
           base.current = result.updated_at;
           retries.current = 0;
@@ -234,7 +246,30 @@ function EditorInner({
     };
   });
 
-  // Warn before leaving with unsaved changes; flush on unmount.
+  // Switching tab (or publishing) first sends the waiting change.
+  usePendingSave(status === "pending" || status === "saving" || status === "retrying", async () => {
+    if (timer.current || status === "retrying") await saveRef.current();
+    else if (inflight.current) await inflight.current;
+  });
+
+  // Leaving the tab while a save is still waiting: send it now (the editor is about to be destroyed).
+  useEffect(
+    () => () => {
+      if (!timer.current) return;
+      clearTimeout(timer.current);
+      timer.current = null;
+      const current = editorRef.current;
+      if (!current || current.isDestroyed) return;
+      const doc = JSON.parse(JSON.stringify(current.getJSON()));
+      void api.save(api.id, lang, doc, base.current).then((result) => {
+        if (result.ok) writeBackup(eventId, lang, null);
+      });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once, on unmount
+    [],
+  );
+
+  // Warn before leaving with unsaved changes.
   useEffect(() => {
     if (status === "saved") return;
     const warn = (e: BeforeUnloadEvent) => e.preventDefault();

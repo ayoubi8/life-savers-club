@@ -1,16 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { RotateCcw, Save, TriangleAlert } from "lucide-react";
-import { toast } from "sonner";
+import { RotateCcw, TriangleAlert } from "lucide-react";
 import { ColorField, Segmented } from "@/components/admin/fields";
 import { DepartmentBody } from "@/components/team/department-body";
 import { DepartmentCard } from "@/components/team/department-card";
 import { DepartmentHero } from "@/components/team/department-hero";
-import { useRouter } from "@/i18n/navigation";
 import { localized } from "@/lib/events/utils";
 import { saveDepartmentTheme } from "@/lib/team/actions";
+import { useAutosave } from "@/lib/team/autosave";
 import {
   DEFAULT_DEPARTMENT_THEME,
   DEPARTMENT_THEME_PRESETS,
@@ -21,6 +20,7 @@ import {
 } from "@/lib/team/theme";
 import type { DepartmentFull } from "@/lib/team/types";
 import { cn } from "@/lib/utils";
+import { AutosavePill } from "../../autosave-pill";
 
 const same = (a: DepartmentTheme, b: DepartmentTheme) => JSON.stringify(a) === JSON.stringify(b);
 
@@ -33,30 +33,10 @@ export function DesignPanel({ department, locale }: { department: DepartmentFull
   const tTeam = useTranslations("adminTeam.design");
   const tPage = useTranslations("departmentPage");
   const tCard = useTranslations("team");
-  const router = useRouter();
   const [theme, setTheme] = useState(department.theme);
-  const [saved, setSaved] = useState(department.theme);
-  const [pending, startTransition] = useTransition();
-  const dirty = !same(theme, saved);
   const warnings = departmentThemeWarnings(theme);
   const patch = (change: Partial<DepartmentTheme>) => setTheme((current) => ({ ...current, ...change }));
-
-  useEffect(() => {
-    if (!dirty) return;
-    const warn = (e: BeforeUnloadEvent) => e.preventDefault();
-    window.addEventListener("beforeunload", warn);
-    return () => window.removeEventListener("beforeunload", warn);
-  }, [dirty]);
-
-  function save() {
-    startTransition(async () => {
-      const result = await saveDepartmentTheme(department.id, theme);
-      if (!result.ok) return void toast.error(t("failed"));
-      setSaved(theme);
-      toast.success(t("saved"));
-      router.refresh();
-    });
-  }
+  const { status, flush } = useAutosave(theme, async (next) => (await saveDepartmentTheme(department.id, next)).ok);
 
   const preview = useMemo(() => ({ ...department, theme }), [department, theme]);
   const name = localized(department.name_fr, department.name_en, locale);
@@ -160,18 +140,9 @@ export function DesignPanel({ department, locale }: { department: DepartmentFull
             <RotateCcw className="h-3.5 w-3.5" aria-hidden />
             {t("reset")}
           </button>
-          <button
-            type="button"
-            onClick={save}
-            disabled={!dirty || pending}
-            className="inline-flex items-center gap-2 rounded-full bg-blue px-5 py-2 text-sm font-extrabold text-white hover:opacity-90 disabled:opacity-50"
-          >
-            <Save className="h-4 w-4" aria-hidden />
-            {pending ? t("saving") : t("save")}
-          </button>
-          <p className={cn("w-full text-right text-xs font-bold", dirty ? "text-pink" : "text-muted-foreground")} aria-live="polite">
-            {dirty ? t("unsaved") : t("saved")}
-          </p>
+          <div className="w-full">
+            <AutosavePill status={status} onRetry={() => void flush()} />
+          </div>
         </div>
       </div>
 

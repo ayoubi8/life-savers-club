@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Save } from "lucide-react";
 import { toast } from "sonner";
 import { DepartmentCard } from "@/components/team/department-card";
 import { useRouter } from "@/i18n/navigation";
 import { slugify } from "@/lib/forms/schema";
 import { saveDepartmentDetails } from "@/lib/team/actions";
+import { useAutosave } from "@/lib/team/autosave";
 import type { DepartmentFull } from "@/lib/team/types";
-import { cn } from "@/lib/utils";
+import { AutosavePill } from "../../autosave-pill";
 import { PhotoField } from "../../photo-field";
 
 const input =
@@ -54,31 +54,27 @@ export function DetailsForm({ department, locale }: { department: DepartmentFull
   const tTeam = useTranslations("team");
   const router = useRouter();
   const [draft, setDraft] = useState(() => toDraft(department));
-  const [saved, setSaved] = useState(() => toDraft(department));
-  const [pending, startTransition] = useTransition();
-  const dirty = JSON.stringify(draft) !== JSON.stringify(saved);
+  // The address is only sent once the admin leaves the field (it is cleaned up on blur).
+  const [editingSlug, setEditingSlug] = useState(false);
   const patch = (change: Partial<Draft>) => setDraft((current) => ({ ...current, ...change }));
+  const valid = draft.name_fr.trim().length >= 2 && !editingSlug;
 
-  useEffect(() => {
-    if (!dirty) return;
-    const warn = (e: BeforeUnloadEvent) => e.preventDefault();
-    window.addEventListener("beforeunload", warn);
-    return () => window.removeEventListener("beforeunload", warn);
-  }, [dirty]);
-
-  function save(event: React.FormEvent) {
-    event.preventDefault();
-    if (draft.name_fr.trim().length < 2) return void toast.error(t("nameRequired"));
-    startTransition(async () => {
-      const result = await saveDepartmentDetails(department.id, draft);
-      if (!result.ok) return void toast.error(t(result.error === "image_invalid" ? "imageInvalid" : "failed"));
-      const next = { ...draft, slug: result.slug };
-      setDraft(next);
-      setSaved(next);
-      toast.success(t("saved"));
-      router.refresh();
-    });
-  }
+  const { status, flush } = useAutosave(
+    draft,
+    async (sent) => {
+      const result = await saveDepartmentDetails(department.id, sent);
+      if (!result.ok) {
+        if (result.error === "image_invalid") toast.error(t("imageInvalid"));
+        return false;
+      }
+      // The server may adjust the address (taken or cleaned up): show what was really saved.
+      if (result.slug !== sent.slug) setDraft((current) => (current.slug === sent.slug ? { ...current, slug: result.slug } : current));
+      // The header shows the name and address.
+      if (sent.name_fr !== department.name_fr || result.slug !== department.slug) router.refresh();
+      return true;
+    },
+    { valid },
+  );
 
   const preview = {
     ...department,
@@ -90,7 +86,12 @@ export function DetailsForm({ department, locale }: { department: DepartmentFull
   };
 
   return (
-    <form onSubmit={save} className="grid gap-6 lg:grid-cols-[1fr_280px]">
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        void flush();
+      }}
+      className="grid gap-6 lg:grid-cols-[1fr_280px]">
       <div className="space-y-6">
         <section className={card} aria-labelledby="identity-title">
           <h2 id="identity-title" className="font-extrabold text-grey">{t("identity")}</h2>
@@ -119,7 +120,11 @@ export function DetailsForm({ department, locale }: { department: DepartmentFull
               <input
                 value={draft.slug}
                 onChange={(e) => patch({ slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })}
-                onBlur={() => patch({ slug: slugify(draft.slug || draft.name_fr) })}
+                onFocus={() => setEditingSlug(true)}
+                onBlur={() => {
+                  setEditingSlug(false);
+                  patch({ slug: slugify(draft.slug || draft.name_fr) });
+                }}
                 maxLength={80}
                 className="w-full rounded-lg px-1 py-2 text-sm font-normal outline-none"
               />
@@ -175,17 +180,7 @@ export function DetailsForm({ department, locale }: { department: DepartmentFull
           </div>
         </div>
         <div className="rounded-card border border-border bg-white p-4">
-          <button
-            type="submit"
-            disabled={!dirty || pending}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-blue px-5 py-2.5 text-sm font-extrabold text-white hover:opacity-90 disabled:opacity-50"
-          >
-            <Save className="h-4 w-4" aria-hidden />
-            {pending ? t("saving") : t("save")}
-          </button>
-          <p className={cn("mt-2 text-center text-xs font-bold", dirty ? "text-pink" : "text-muted-foreground")} aria-live="polite">
-            {dirty ? t("unsaved") : t("upToDate")}
-          </p>
+          <AutosavePill status={status} onRetry={() => void flush()} invalid={t("nameRequired")} />
         </div>
       </aside>
     </form>

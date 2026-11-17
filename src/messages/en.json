@@ -1458,6 +1458,14 @@
       "deleteMemberTitle": "Remove {name}?",
       "moveUp": "Move up",
       "moveDown": "Move down"
+    },
+    "autosave": {
+      "saved": "Saved automatically",
+      "pending": "Changes pending…",
+      "saving": "Saving…",
+      "error": "Could not save, retrying soon.",
+      "retry": "Retry",
+      "invalid": "Fill in the required fields to save."
     }
   }
 }

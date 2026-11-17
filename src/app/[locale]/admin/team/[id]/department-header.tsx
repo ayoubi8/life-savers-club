@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { LinkPending } from "@/components/ui/link-pending";
 import { publishDepartment, unpublishDepartment } from "@/lib/team/actions";
+import { flushPendingSaves, hasPendingSaves } from "@/lib/team/autosave";
 import { cn } from "@/lib/utils";
 
 const TABS = ["details", "content", "design", "media"] as const;
@@ -26,8 +27,18 @@ export function DepartmentHeader({
   const base = `/admin/team/${department.id}`;
   const published = department.status === "published";
 
+  // Tabs and "Back" send any waiting autosave before leaving the page.
+  async function leave(event: React.MouseEvent<HTMLAnchorElement>, href: string) {
+    if (!hasPendingSaves() || event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+    event.preventDefault();
+    await flushPendingSaves();
+    router.push(href);
+  }
+
   function publish() {
     startTransition(async () => {
+      // Publish checks what is stored: save the last edits first.
+      await flushPendingSaves();
       const result = await publishDepartment(department.id);
       if (result.ok) {
         toast.success(t("published"));
@@ -58,7 +69,7 @@ export function DepartmentHeader({
     <div>
       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
-          <Link href="/admin/team" className="text-xs font-bold text-blue hover:underline">
+          <Link href="/admin/team" onClick={(e) => void leave(e, "/admin/team")} className="text-xs font-bold text-blue hover:underline">
             ← {t("back")}
           </Link>
           <h1 className="mt-1 truncate text-2xl font-extrabold text-blue">{department.name}</h1>
@@ -112,6 +123,7 @@ export function DepartmentHeader({
             <Link
               key={tab}
               href={href}
+              onClick={(e) => void leave(e, href)}
               aria-current={active ? "page" : undefined}
               className={cn(
                 "relative inline-flex shrink-0 items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-bold transition",
