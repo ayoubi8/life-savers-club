@@ -1,0 +1,74 @@
+# Supabase pauses free projects after 7 days without database activity.
+# This checks once a day and pings the database at a random interval of 1 to 5 days,
+# so the project never goes idle.
+# Needs two repository secrets (Settings > Secrets and variables > Actions):
+#   SUPABASE_URL       same value as NEXT_PUBLIC_SUPABASE_URL
+#   SUPABASE_ANON_KEY  same value as NEXT_PUBLIC_SUPABASE_ANON_KEY
+name: Supabase keep-alive
+
+on:
+  schedule:
+    - cron: "17 6 * * *" # daily check, 06:17 UTC
+  workflow_dispatch: # run by hand from the Actions tab (always pings)
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # The date of the last ping lives in the Actions cache (newest entry wins).
+      - name: Restore last ping date
+        uses: actions/cache/restore@v4
+        with:
+          path: .keepalive
+          key: keepalive-none
+          restore-keys: keepalive-
+
+      - name: Decide whether to ping today
+        id: decide
+        run: |
+          today=$(date -u +%s)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ ! -f .keepalive/last ]; then
+            echo "Manual run or no record of a previous ping: pinging."
+            echo "ping=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Rounded, so a run that starts a bit earlier than yesterday's still counts as a full day.
+          days=$(( (today - $(cat .keepalive/last) + 43200) / 86400 ))
+          # Chance per day picked so the gap between pings is evenly spread over 1-5 days:
+          # day 1: 1/5, day 2: 1/4, day 3: 1/3, day 4: 1/2, day 5 or later: always.
+          left=$(( 6 - days ))
+          if [ "$left" -le 1 ] || [ $(( RANDOM % left )) -eq 0 ]; then
+            echo "Last ping $days day(s) ago: pinging."
+            echo "ping=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Last ping $days day(s) ago: skipping today."
+            echo "ping=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Query the database
+        if: steps.decide.outputs.ping == 'true'
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "::error::Set the SUPABASE_URL and SUPABASE_ANON_KEY repository secrets."
+            exit 1
+          fi
+          # Fails the run (and GitHub emails you) if Supabase is unreachable or paused.
+          status=$(curl -sS -o /dev/null -w "%{http_code}" --retry 3 --retry-delay 10 \
+            "$SUPABASE_URL/rest/v1/events?select=id&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY")
+          echo "Supabase answered HTTP $status"
+          [ "$status" = "200" ]
+          mkdir -p .keepalive
+          date -u +%s > .keepalive/last
+
+      - name: Save ping date
+        if: steps.decide.outputs.ping == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .keepalive
+          key: keepalive-${{ github.run_id }}
