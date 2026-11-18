@@ -14,12 +14,12 @@ export function SponsorsForm({ initial, locale }: { initial: SponsorsPage; local
 
   return (
     <div className="space-y-4 pb-24">
-      <Panel title={t("hero")}>
+      <Panel tour="sponsors.hero" title={t("hero")}>
         <L10nField label={f("title")} value={v.hero.title} onChange={hero("title")} />
         <L10nField label={f("subtitle")} value={v.hero.subtitle} max={LIMITS.long} rows={2} onChange={hero("subtitle")} />
       </Panel>
 
-      <Panel title={t("list")} hint={t("listHint")}>
+      <Panel tour="sponsors.list" title={t("list")} hint={t("listHint")}>
         <SortableList
           items={v.sponsors}
           onChange={(sponsors) => setValues((c) => ({ ...c, sponsors }))}
@@ -39,7 +39,7 @@ export function SponsorsForm({ initial, locale }: { initial: SponsorsPage; local
         />
       </Panel>
 
-      <Panel title={t("cta")} hint={t("ctaHint")}>
+      <Panel tour="sponsors.cta" title={t("cta")} hint={t("ctaHint")}>
         <L10nField label={f("title")} value={v.cta.title} onChange={cta("title")} />
         <L10nField label={f("text")} value={v.cta.text} max={LIMITS.long} rows={2} onChange={cta("text")} />
         <L10nField label={f("button")} value={v.cta.button} max={60} onChange={cta("button")} />

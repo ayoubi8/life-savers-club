@@ -58,7 +58,7 @@ export default async function FinanceHistoryPage({ params }: { params: Promise<{
       {entries.length === 0 ? (
         <p className="mt-6 text-sm text-muted-foreground">{t("history.none")}</p>
       ) : (
-        <ol className="mt-6 divide-y divide-border rounded-card border border-border bg-white">
+        <ol data-tour="history.list" className="mt-6 divide-y divide-border rounded-card border border-border bg-white">
           {entries.map((entry) => {
             const { subject, changes } = describe(entry);
             if (entry.action === "update" && changes.length === 0) return null;

@@ -84,13 +84,13 @@ export function BuilderHeader({
               {t(`status.${form.status}`)}
             </span>
             <span className="truncate">/{form.slug}</span>
-            <SavePill status={builder.saveStatus} time={time} onRetry={builder.retryNow} />
+            <span data-tour="builder.save"><SavePill status={builder.saveStatus} time={time} onRetry={builder.retryNow} /></span>
           </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           {onEditor && (
-            <div className="flex items-center rounded-full border border-border bg-white">
+            <div data-tour="builder.undo" className="flex items-center rounded-full border border-border bg-white">
               <button
                 type="button"
                 onClick={builder.undo}
@@ -117,6 +117,7 @@ export function BuilderHeader({
           {onEditor ? (
             <button
               type="button"
+              data-tour="builder.preview"
               onClick={() => setPreviewOpen(true)}
               className="inline-flex items-center gap-2 rounded-full border border-border bg-white px-4 py-2 text-xs font-bold text-grey hover:border-blue hover:text-blue"
             >
@@ -134,7 +135,9 @@ export function BuilderHeader({
               {form.status === "published" ? t("view") : t("preview.title")}
             </a>
           )}
-          <PublishButton publicUrl={publicUrl} />
+          <div data-tour="builder.publish">
+            <PublishButton publicUrl={publicUrl} />
+          </div>
         </div>
       </div>
 
@@ -174,7 +177,7 @@ export function BuilderHeader({
 
       <PreviewDrawer open={previewOpen} onClose={() => setPreviewOpen(false)} publicUrl={publicUrl} />
 
-      <nav aria-label={t("tabsLabel")} className="mt-6 flex gap-1 overflow-x-auto border-b border-border">
+      <nav data-tour="builder.tabs" aria-label={t("tabsLabel")} className="mt-6 flex gap-1 overflow-x-auto border-b border-border">
         {TABS.map((tab) => {
           const href = `${base}/${tab}`;
           const active = pathname === href || pathname.startsWith(`${href}/`);

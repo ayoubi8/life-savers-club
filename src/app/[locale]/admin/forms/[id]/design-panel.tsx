@@ -202,7 +202,7 @@ export function DesignPanel({
 
   return (
     <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
-      <div className="space-y-6 rounded-card border border-border bg-white p-5">
+      <div data-tour="formDesign.controls" className="space-y-6 rounded-card border border-border bg-white p-5">
         <div>
           <h2 className="font-extrabold text-grey">{t("presets")}</h2>
           <div className="mt-3 grid grid-cols-3 gap-2">
@@ -325,7 +325,7 @@ export function DesignPanel({
         </div>
       </div>
 
-      <div>
+      <div data-tour="formDesign.preview">
         <p className="mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">{t("livePreview")}</p>
         <FormShell
           compact

@@ -2,12 +2,12 @@ import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Toaster } from "sonner";
 import { redirect } from "@/i18n/navigation";
-import { Link } from "@/i18n/navigation";
 import { getSessionProfile } from "@/lib/auth";
 import { can, isAdmin } from "@/lib/permissions";
 import { createClient } from "@/lib/supabase/server";
 import { ConfirmProvider } from "@/components/ui/confirm";
-import { LinkPending } from "@/components/ui/link-pending";
+import { TourProvider } from "@/components/admin/tour/tour-provider";
+import { AdminNav, type AdminNavItem } from "./admin-nav";
 import { SignOutButton } from "./sign-out-button";
 
 export default async function AdminLayout({
@@ -53,42 +53,43 @@ export default async function AdminLayout({
     );
   }
 
-  const items = [
-    { href: "/admin", label: t("admin.dashboard") },
-    ...(can(profile, "events") ? [{ href: "/admin/events", label: t("admin.events") }] : []),
-    ...(can(profile, "forms") ? [{ href: "/admin/forms", label: t("admin.forms") }] : []),
-    ...(can(profile, "media") ? [{ href: "/admin/media", label: t("admin.media") }] : []),
-    ...(can(profile, "finance") ? [{ href: "/admin/finance", label: t("admin.finance") }] : []),
-    ...(isAdmin(profile) ? [{ href: "/admin/team", label: t("admin.team") }] : []),
-    ...(isAdmin(profile) ? [{ href: "/admin/pages", label: t("admin.pages") }] : []),
-    ...(can(profile, "accounts") ? [{ href: "/admin/accounts", label: t("admin.accounts") }] : []),
-  ] as { href: "/admin" | "/admin/events" | "/admin/forms" | "/admin/media" | "/admin/finance" | "/admin/team" | "/admin/pages" | "/admin/accounts"; label: string }[];
+  const items: AdminNavItem[] = [
+    { key: "dashboard", href: "/admin", label: t("admin.dashboard") },
+    ...(can(profile, "events") ? [{ key: "events", href: "/admin/events", label: t("admin.events") } as const] : []),
+    ...(can(profile, "forms") ? [{ key: "forms", href: "/admin/forms", label: t("admin.forms") } as const] : []),
+    ...(can(profile, "media") ? [{ key: "media", href: "/admin/media", label: t("admin.media") } as const] : []),
+    ...(can(profile, "finance") ? [{ key: "finance", href: "/admin/finance", label: t("admin.finance") } as const] : []),
+    ...(isAdmin(profile) ? [{ key: "team", href: "/admin/team", label: t("admin.team") } as const] : []),
+    ...(isAdmin(profile) ? [{ key: "pages", href: "/admin/pages", label: t("admin.pages") } as const] : []),
+    ...(can(profile, "accounts") ? [{ key: "accounts", href: "/admin/accounts", label: t("admin.accounts") } as const] : []),
+  ];
 
   return (
     <ConfirmProvider>
-    <div className="flex min-h-screen flex-col md:flex-row">
-      <aside className="flex shrink-0 flex-col gap-3 bg-grey p-4 text-white md:w-60 md:p-5">
-        <div className="flex items-center justify-between md:block">
-          <Link href="/">
-            <Image src="/brand/logo.png" alt="Life Savers" width={96} height={80} className="h-14 w-auto rounded-full bg-white md:mb-6 md:h-auto" />
-          </Link>
-          <div className="md:hidden"><SignOutButton locale={locale} label={t("nav.logout")} /></div>
-        </div>
-        <nav className="flex gap-1 overflow-x-auto md:flex-1 md:flex-col">
-          {items.map((i) => (
-            <Link key={i.href} href={i.href} className="relative overflow-hidden whitespace-nowrap rounded-lg px-3 py-2 font-semibold hover:bg-white/10">
-              {i.label}
-              <LinkPending />
-            </Link>
-          ))}
-        </nav>
-        <p className="hidden truncate text-xs text-white/70 md:block">{profile.email} · {profile.role === "admin" ? t("admin.roleAdmin") : t("admin.roleMember")}
-          {profile.department && ` · ${t(`adminAccounts.departments.${profile.department}`)}`}
-        </p>
-        <div className="hidden md:block"><SignOutButton locale={locale} label={t("nav.logout")} /></div>
-      </aside>
-      <main className="min-w-0 flex-1 bg-muted p-4 sm:p-6">{children}</main>
+    <div className="admin-ui flex min-h-screen flex-col bg-muted md:flex-row">
+      <AdminNav
+        items={items}
+        locale={locale}
+        viewer={{
+          name: profile.full_name || profile.email,
+          email: profile.email,
+          role: profile.role === "admin" ? t("admin.roleAdmin") : t("admin.roleMember"),
+          department: profile.department ? t(`adminAccounts.departments.${profile.department}`) : null,
+        }}
+        labels={{
+          logout: t("nav.logout"),
+          menu: t("admin.menu"),
+          close: t("admin.closeMenu"),
+          viewSite: t("admin.viewSite"),
+          space: t("nav.login"),
+        }}
+      />
+      <main className="admin-main min-w-0 flex-1 px-4 pb-24 pt-5 sm:px-6 sm:pt-6 lg:px-10 lg:pt-8">{children}</main>
       <Toaster position="top-center" richColors />
+      <TourProvider
+        viewer={{ admin: isAdmin(profile), sections: profile.sections ?? [] }}
+        seen={profile.tours_seen ?? {}}
+      />
     </div>
     </ConfirmProvider>
   );

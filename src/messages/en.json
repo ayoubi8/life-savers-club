@@ -101,7 +101,19 @@
     "media": "Media",
     "manageMedia": "Photos and videos stored in the club's Google Drive",
     "finance": "Finance",
-    "manageFinance": "Budget of the year, purchases and income, by sheet"
+    "manageFinance": "Budget of the year, purchases and income, by sheet",
+    "menu": "Menu",
+    "closeMenu": "Close menu",
+    "viewSite": "View the site",
+    "hello": "Hello, {name}",
+    "heroText": "Your space to keep the club running: events, forms, team and more.",
+    "sectionsTitle": "Your spaces",
+    "manageAccounts": "Approve new accounts and manage access",
+    "stats": {
+      "upcoming": "{count, plural, =0 {No upcoming events} one {# upcoming event} other {# upcoming events}}",
+      "newResponses": "{count, plural, =0 {No new responses} one {# new response} other {# new responses}}",
+      "pending": "{count, plural, =0 {No pending accounts} one {# pending account} other {# pending accounts}}"
+    }
   },
   "adminForms": {
     "title": "Forms",
@@ -1897,6 +1909,575 @@
       "google_failed": "Google could not be reached. Try again.",
       "sheet_locked": "This sheet is locked by an admin.",
       "sheets_api_disabled": "The Google Sheets API is not enabled in the club's Google Cloud project. An admin must enable it: console.cloud.google.com → APIs & Services → Library → “Google Sheets API” → Enable, then try again."
+    }
+  },
+  "tours": {
+    "ui": {
+      "guide": "Guide",
+      "replay": "Show this page's guide",
+      "next": "Next",
+      "previous": "Back",
+      "done": "Done",
+      "close": "Skip the guide",
+      "progress": "{current} of {total}"
+    },
+    "dashboard": {
+      "welcome": {
+        "title": "Welcome to the admin area",
+        "body": "This is where the club runs its website: events, forms, photos, finance and more. This short guide shows you around."
+      },
+      "nav": {
+        "title": "Your sections",
+        "body": "The menu only shows the sections you are allowed to use. Need another one? Ask an admin."
+      },
+      "cards": {
+        "title": "Shortcuts",
+        "body": "Each card opens one of your sections, with a quick reminder of what it is for."
+      },
+      "noAccess": {
+        "title": "No section yet",
+        "body": "Your account is active but no section has been given to you. An admin can add one from the Accounts page."
+      },
+      "account": {
+        "title": "Your account",
+        "body": "Your email, your role (admin or member) and your department."
+      },
+      "guide": {
+        "title": "Need help later?",
+        "body": "Every admin page has its own guide. Click this button any time to see it again."
+      }
+    },
+    "events": {
+      "list": {
+        "new": {
+          "title": "Create an event",
+          "body": "Start a new event here. You only need a title; everything else can be filled in later."
+        },
+        "filters": {
+          "title": "Find an event",
+          "body": "Search by name and filter by status, past or upcoming, and year."
+        },
+        "item": {
+          "title": "An event",
+          "body": "Click it to edit. The buttons on the right let you view, duplicate or delete it."
+        },
+        "star": {
+          "title": "Feature an event",
+          "body": "The star puts the event on the home page and at the top of the Events page."
+        },
+        "featured": {
+          "title": "Featured order",
+          "body": "Drag the featured events (or use the arrows) to choose the order visitors see them in."
+        },
+        "pageSettings": {
+          "title": "The Events page",
+          "body": "Change the title, introduction and layout of the public Events page."
+        }
+      },
+      "details": {
+        "tabs": {
+          "title": "Four tabs",
+          "body": "Details, Photos & videos, Content and Design: each tab edits one part of the event page."
+        },
+        "publish": {
+          "title": "Preview and publish",
+          "body": "Preview the page, then publish it when it is ready. Until then, visitors can't see it."
+        },
+        "general": {
+          "title": "The basics",
+          "body": "Title, date, place and short description, in French and English."
+        },
+        "cover": {
+          "title": "Cover photo",
+          "body": "The image shown on the event card and at the top of its page."
+        },
+        "stats": {
+          "title": "Key numbers",
+          "body": "Add numbers like participants or people trained. They appear on the event page."
+        },
+        "registration": {
+          "title": "Registration",
+          "body": "Link a sign-up form or an external link so people can register."
+        },
+        "save": {
+          "title": "Save your changes",
+          "body": "This bar tells you when something isn't saved yet. Click Save before leaving."
+        }
+      },
+      "media": {
+        "upload": {
+          "title": "Add photos and videos",
+          "body": "Drop files here or click to choose them. They are added to the event gallery."
+        },
+        "item": {
+          "title": "A gallery item",
+          "body": "Add a description for accessibility, use it as the cover, or delete it."
+        }
+      },
+      "content": {
+        "languages": {
+          "title": "French and English",
+          "body": "Write the page in French, then switch to English. An empty English page can be copied from the French one."
+        },
+        "toolbar": {
+          "title": "Formatting tools",
+          "body": "Titles, bold, lists, links, images and more. The + button inserts blocks like photos or videos."
+        },
+        "status": {
+          "title": "Saved automatically",
+          "body": "Your text is saved as you type. This shows the word count and the last save."
+        }
+      },
+      "design": {
+        "controls": {
+          "title": "Colors and style",
+          "body": "Pick a ready-made style or your own colors. Then click Save."
+        },
+        "preview": {
+          "title": "Live preview",
+          "body": "See how the event page will look with your choices before saving."
+        }
+      },
+      "pageSettings": {
+        "locked": {
+          "title": "Read only",
+          "body": "Only admins can change these settings. You can still look at them."
+        },
+        "texts": {
+          "title": "Page texts",
+          "body": "The title and introduction of the public Events page. Leave empty to keep the default text."
+        },
+        "layout": {
+          "title": "Layout",
+          "body": "Choose how events are shown (grid or list) and how years are separated."
+        },
+        "notes": {
+          "title": "Notes per year",
+          "body": "Add a short text under a year, for example to sum it up."
+        }
+      }
+    },
+    "forms": {
+      "list": {
+        "new": {
+          "title": "Create a form",
+          "body": "Start from scratch or from a template: registration, survey, contact and more."
+        },
+        "card": {
+          "title": "A form",
+          "body": "Its status (draft, open, closed), the number of responses and new ones waiting for you."
+        },
+        "actions": {
+          "title": "Edit, copy, reuse",
+          "body": "Edit the form, duplicate it, or save it as a template for next time."
+        },
+        "templates": {
+          "title": "Your templates",
+          "body": "Forms you saved as templates. Start a new form from one in a click."
+        }
+      },
+      "edit": {
+        "tabs": {
+          "title": "Build, share, read",
+          "body": "Editor, Design, Share, Submissions, Integrations and Settings: the whole life of the form."
+        },
+        "title": {
+          "title": "Title and description",
+          "body": "What people see at the top of the form."
+        },
+        "questions": {
+          "title": "Your questions",
+          "body": "Click a question to edit it. Drag to reorder, and mark it required if needed."
+        },
+        "add": {
+          "title": "Add a question",
+          "body": "Pick a type: short text, choices, date, file, rating… Shortcut: press / on your keyboard."
+        },
+        "save": {
+          "title": "Saved automatically",
+          "body": "Every change is saved by itself. This shows when it was last saved."
+        },
+        "undo": {
+          "title": "Undo and redo",
+          "body": "Made a mistake? Go back a step (Ctrl+Z) or forward again."
+        },
+        "preview": {
+          "title": "Try it",
+          "body": "See the form as visitors will, and test it without saving a response."
+        },
+        "publish": {
+          "title": "Publish",
+          "body": "Open the form to the public when it's ready. You can close it again at any time."
+        }
+      },
+      "design": {
+        "controls": {
+          "title": "Look of the form",
+          "body": "Choose a style, colors, a cover image and a logo, then save."
+        },
+        "preview": {
+          "title": "Live preview",
+          "body": "Your changes appear here right away."
+        }
+      },
+      "share": {
+        "link": {
+          "title": "Share the link",
+          "body": "Copy the form's link to send it by message, email or social media."
+        },
+        "qr": {
+          "title": "QR code",
+          "body": "Download a QR code for posters and flyers."
+        },
+        "embed": {
+          "title": "Put it on a website",
+          "body": "Copy a code to show the form inside another web page."
+        }
+      },
+      "results": {
+        "views": {
+          "title": "Summary or responses",
+          "body": "See charts per question, or read each response one by one."
+        },
+        "filters": {
+          "title": "Search and sort",
+          "body": "Find a response by name or text and filter by status."
+        },
+        "export": {
+          "title": "Download",
+          "body": "Get every response as a CSV or Excel file."
+        }
+      },
+      "integrations": {
+        "google": {
+          "title": "Google Sheets",
+          "body": "Connect a Google Sheet: every new response is added to it automatically."
+        },
+        "how": {
+          "title": "How it works",
+          "body": "A short explanation of what is sent and when."
+        }
+      },
+      "settings": {
+        "main": {
+          "title": "Form settings",
+          "body": "Title, link, opening and closing dates, response limits and messages."
+        },
+        "danger": {
+          "title": "Careful zone",
+          "body": "Delete the form or its responses. This can't be undone."
+        }
+      }
+    },
+    "media": {
+      "library": {
+        "account": {
+          "title": "Where files are stored",
+          "body": "Photos and videos live in the club's Google Drive. The bar shows how much space is left."
+        },
+        "changeAccount": {
+          "title": "Change the Google account",
+          "body": "Only do this on purpose: files in the current account are hidden until it is connected again."
+        },
+        "requests": {
+          "title": "Deletion requests",
+          "body": "Members can't delete. Their requests wait here: approve to delete, or reject."
+        },
+        "newFolder": {
+          "title": "New folder",
+          "body": "Make one folder per event or topic to keep things tidy."
+        },
+        "folder": {
+          "title": "A folder",
+          "body": "Open it to see, upload and download its photos and videos."
+        },
+        "menuAdmin": {
+          "title": "Folder menu",
+          "body": "Rename the folder or delete it with everything inside (kept 30 days in the Drive trash)."
+        },
+        "menuMember": {
+          "title": "Folder menu",
+          "body": "Rename the folder, or ask an admin to delete it: deleting needs their approval."
+        }
+      },
+      "folder": {
+        "filters": {
+          "title": "Filters",
+          "body": "Show only photos or videos, a shape (horizontal, vertical, square) or a video quality."
+        },
+        "upload": {
+          "title": "Upload",
+          "body": "Choose files or drop them anywhere on the page. Big videos keep uploading while you browse."
+        },
+        "file": {
+          "title": "A file",
+          "body": "Click to open it in full size and download it. Tick the circle in the corner to select several files."
+        },
+        "deleteAdmin": {
+          "title": "Selected files",
+          "body": "With files selected, you can download, move them to another folder or delete them."
+        },
+        "deleteMember": {
+          "title": "Selected files",
+          "body": "With files selected, you can download or move them. Delete sends a request to an admin."
+        }
+      }
+    },
+    "finance": {
+      "home": {
+        "noYear": {
+          "title": "Open the year first",
+          "body": "Finance starts with a year and the money the club has today. Then every purchase and income updates it."
+        },
+        "google": {
+          "title": "Open or download",
+          "body": "Open the year in Google Sheets or download it as an Excel file."
+        },
+        "shareEmail": {
+          "title": "Your Google account",
+          "body": "Google Sheets opens with this Gmail. Change it if you use another one."
+        },
+        "yearActions": {
+          "title": "Manage the year",
+          "body": "Adjust the balance, close the year, or open the next one."
+        },
+        "totals": {
+          "title": "Totals",
+          "body": "Money at the start, spent, received and what the club has now."
+        },
+        "charts": {
+          "title": "Charts",
+          "body": "How the balance moved over the year, and where the money went or came from."
+        },
+        "sheets": {
+          "title": "Sheets",
+          "body": "One sheet per event, training or type of purchase. Open one to add operations."
+        },
+        "recent": {
+          "title": "Latest operations",
+          "body": "The last purchases and income added, in every sheet."
+        }
+      },
+      "sheet": {
+        "locked": {
+          "title": "Locked sheet",
+          "body": "This sheet is read only. Ask an admin if something must change."
+        },
+        "add": {
+          "title": "Add an operation",
+          "body": "Add a purchase (with several products if needed) or an income like a sponsor or fees."
+        },
+        "filters": {
+          "title": "Filters",
+          "body": "Search, show only purchases or income, a category, or cancelled operations."
+        },
+        "table": {
+          "title": "The operations",
+          "body": "Every line with its date, amount and who added it. Totals of the lines shown are at the bottom."
+        },
+        "quick": {
+          "title": "Quick add",
+          "body": "Type directly in this last row and press Enter to add a simple operation."
+        },
+        "editMember": {
+          "title": "Fixing a mistake",
+          "body": "You can change your own operations for 24 hours. After that, ask an admin."
+        },
+        "editAdmin": {
+          "title": "Fixing a mistake",
+          "body": "Double-click a row to edit it. As an admin you can change or cancel any operation."
+        },
+        "export": {
+          "title": "Open or download",
+          "body": "Open this sheet in Google Sheets, or download it as Excel or CSV."
+        }
+      },
+      "history": {
+        "list": {
+          "title": "Change history",
+          "body": "Every creation, change and cancellation in finance: who did it, when, and what changed."
+        }
+      }
+    },
+    "team": {
+      "list": {
+        "bureau": {
+          "title": "The bureau",
+          "body": "President and vice president, shown at the top of the Team page."
+        },
+        "departments": {
+          "title": "Departments",
+          "body": "Each department has a card and its own page. Drag to change the order."
+        },
+        "new": {
+          "title": "New department",
+          "body": "Add a department. It stays a draft until you publish it."
+        },
+        "view": {
+          "title": "See the page",
+          "body": "Open the public Team page in a new tab."
+        }
+      },
+      "details": {
+        "tabs": {
+          "title": "Four tabs",
+          "body": "Details, Content, Design and Photos: each tab edits one part of the department page."
+        },
+        "publish": {
+          "title": "Preview and publish",
+          "body": "Preview the page, then publish it so visitors can see it."
+        },
+        "identity": {
+          "title": "Name and tagline",
+          "body": "How the department is named and introduced, in French and English."
+        },
+        "leader": {
+          "title": "The leader",
+          "body": "Name, photo and role of the person in charge."
+        },
+        "autosave": {
+          "title": "No Save button",
+          "body": "Changes are saved automatically. This shows if everything is saved."
+        }
+      },
+      "content": {
+        "languages": {
+          "title": "French and English",
+          "body": "Write the page in French, then switch to English. An empty English page can be copied from the French one."
+        },
+        "toolbar": {
+          "title": "Formatting tools",
+          "body": "Titles, bold, lists, links, images and more. The + button inserts blocks like photos or videos."
+        },
+        "status": {
+          "title": "Saved automatically",
+          "body": "Your text is saved as you type. This shows the word count and the last save."
+        }
+      },
+      "design": {
+        "controls": {
+          "title": "Colors and style",
+          "body": "Pick a ready-made style or your own colors. Saved automatically."
+        },
+        "card": {
+          "title": "The card",
+          "body": "How the department's card looks on the Team page."
+        },
+        "preview": {
+          "title": "The page",
+          "body": "A preview of the department's own page."
+        }
+      },
+      "media": {
+        "mode": {
+          "title": "Team section",
+          "body": "Show one big team photo, one card per member, or both."
+        },
+        "photos": {
+          "title": "Team photos",
+          "body": "Upload photos. The first one is shown large."
+        },
+        "members": {
+          "title": "Members",
+          "body": "Add each member with a name and photo, and reorder them."
+        }
+      }
+    },
+    "pages": {
+      "index": {
+        "pages": {
+          "title": "The site's pages",
+          "body": "Header and footer, the home page, and the Sponsors page. Open one to edit its texts and images."
+        }
+      },
+      "general": {
+        "brand": {
+          "title": "Logo and name",
+          "body": "Shown in the header and footer of every page."
+        },
+        "nav": {
+          "title": "Menu",
+          "body": "The menu labels. If English is empty, the French text is used."
+        },
+        "contact": {
+          "title": "Contact details",
+          "body": "Email, phone and address shown on the site and used by the contact buttons."
+        },
+        "socials": {
+          "title": "Social links",
+          "body": "Links to the club's social media, shown in the footer."
+        },
+        "save": {
+          "title": "Save",
+          "body": "Nothing changes on the site until you save. Undo brings back the last saved version."
+        }
+      },
+      "home": {
+        "hero": {
+          "title": "The banner",
+          "body": "The big block at the top of the home page: titles, buttons and image."
+        },
+        "stats": {
+          "title": "Key figures",
+          "body": "The club's numbers shown under the banner."
+        },
+        "journey": {
+          "title": "The journey",
+          "body": "The club's story, step by step, as a timeline."
+        },
+        "events": {
+          "title": "Events section",
+          "body": "The title of the featured events block. Choose the events from the Events page."
+        },
+        "testimonials": {
+          "title": "Testimonials",
+          "body": "Quotes from members and partners."
+        },
+        "save": {
+          "title": "Save",
+          "body": "Nothing changes on the site until you save. Undo brings back the last saved version."
+        }
+      },
+      "sponsors": {
+        "hero": {
+          "title": "Top of the page",
+          "body": "The title and introduction of the Sponsors page."
+        },
+        "list": {
+          "title": "Sponsors",
+          "body": "Add sponsors with their logo and link, and choose their order."
+        },
+        "cta": {
+          "title": "Become a sponsor",
+          "body": "The block inviting new partners to contact the club."
+        },
+        "save": {
+          "title": "Save",
+          "body": "Nothing changes on the site until you save. Undo brings back the last saved version."
+        }
+      }
+    },
+    "accounts": {
+      "pending": {
+        "title": "New accounts",
+        "body": "People who signed up wait here. Activate them so they can use the admin."
+      },
+      "role": {
+        "title": "Role and department",
+        "body": "Admins can do everything. For a member, picking a department ticks its usual sections."
+      },
+      "sections": {
+        "title": "Sections",
+        "body": "Tick exactly what a member can open: events, forms, media, finance."
+      },
+      "status": {
+        "title": "Save or disable",
+        "body": "Save the changes, or disable an account to block it. The last admin can't be removed."
+      },
+      "disabled": {
+        "title": "Disabled accounts",
+        "body": "Blocked accounts. Enable one to give access back."
+      }
     }
   }
 }

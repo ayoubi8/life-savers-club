@@ -192,7 +192,7 @@ export function DetailsForm({
   return (
     <form onSubmit={save} className="space-y-4 pb-24">
       {/* ───── Information ───── */}
-      <section className={card} aria-labelledby="details-general">
+      <section data-tour="events.general" className={card} aria-labelledby="details-general">
         <h2 id="details-general" className="text-lg font-extrabold text-grey">{t("details.general")}</h2>
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <label className={label}>
@@ -294,7 +294,7 @@ export function DetailsForm({
       </section>
 
       {/* ───── Cover ───── */}
-      <section className={card}>
+      <section data-tour="events.cover" className={card}>
         <CoverField
           eventId={values.id}
           url={values.cover_url}
@@ -313,7 +313,7 @@ export function DetailsForm({
       </section>
 
       {/* ───── Key numbers ───── */}
-      <section className={card} aria-labelledby="details-stats">
+      <section data-tour="events.stats" className={card} aria-labelledby="details-stats">
         <h2 id="details-stats" className="text-lg font-extrabold text-grey">{t("details.stats")}</h2>
         <p className="text-xs text-muted-foreground">{t("details.statsHint")}</p>
         <ul className="mt-4 space-y-3">
@@ -432,7 +432,7 @@ export function DetailsForm({
       </section>
 
       {/* ───── Registration & position ───── */}
-      <section className={card} aria-labelledby="details-registration">
+      <section data-tour="events.registration" className={card} aria-labelledby="details-registration">
         <h2 id="details-registration" className="text-lg font-extrabold text-grey">{t("details.registration")}</h2>
         {forms.length === 0 ? (
           <p className="mt-2 text-sm text-muted-foreground">{t("details.noPublishedForms")}</p>
@@ -486,7 +486,7 @@ export function DetailsForm({
       </section>
 
       {/* ───── Sticky save bar ───── */}
-      <div className="sticky bottom-3 z-10 flex items-center justify-between gap-3 rounded-full border border-border bg-white/95 px-4 py-2 shadow-soft backdrop-blur">
+      <div data-tour="events.save" className="sticky bottom-3 z-10 flex items-center justify-between gap-3 rounded-full border border-border bg-white/95 px-4 py-2 shadow-soft backdrop-blur">
         <span className={cn("text-xs font-bold", dirty ? "text-pink" : "text-muted-foreground")} aria-live="polite">
           {dirty ? t("details.unsaved") : t("details.saved")}
         </span>

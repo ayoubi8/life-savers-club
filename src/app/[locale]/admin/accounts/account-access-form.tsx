@@ -26,9 +26,12 @@ type Labels = {
 export function AccountAccessForm({
   account,
   labels: l,
+  tour = false,
 }: {
   account: { id: string; role: Role; status: "pending" | "active" | "disabled"; department: string | null; sections: string[] };
   labels: Labels;
+  /** Marks this account's controls for the guided tour. */
+  tour?: boolean;
 }) {
   const [role, setRole] = useState<Role>(account.role);
   const [department, setDepartment] = useState(account.department ?? "");
@@ -49,7 +52,7 @@ export function AccountAccessForm({
   return (
     <form action={updateAccount} className="flex w-full flex-col gap-3 sm:w-auto sm:items-end">
       <input type="hidden" name="id" value={account.id} />
-      <div className="flex flex-wrap gap-2">
+      <div data-tour={tour ? "accounts.role" : undefined} className="flex flex-wrap gap-2">
         <label className="sr-only" htmlFor={`role-${account.id}`}>{l.role}</label>
         <select id={`role-${account.id}`} name="role" value={role} onChange={(e) => setRole(e.target.value as Role)} className={field}>
           <option value="member">{l.member}</option>
@@ -65,9 +68,9 @@ export function AccountAccessForm({
       </div>
 
       {role === "admin" ? (
-        <p className="text-xs font-semibold text-muted-foreground">{l.adminHint}</p>
+        <p data-tour={tour ? "accounts.sections" : undefined} className="text-xs font-semibold text-muted-foreground">{l.adminHint}</p>
       ) : (
-        <fieldset className="flex flex-wrap items-center gap-x-4 gap-y-1">
+        <fieldset data-tour={tour ? "accounts.sections" : undefined} className="flex flex-wrap items-center gap-x-4 gap-y-1">
           <legend className="sr-only">{l.sections}</legend>
           {SECTIONS.map((s) => (
             <label key={s} className="flex items-center gap-1.5 text-sm font-semibold text-grey">
@@ -81,7 +84,7 @@ export function AccountAccessForm({
         </fieldset>
       )}
 
-      <div className="flex flex-wrap gap-2">
+      <div data-tour={tour ? "accounts.status" : undefined} className="flex flex-wrap gap-2">
         {account.status !== "active" ? (
           <button name="status" value="active" className="rounded-full bg-green px-4 py-2 text-sm font-bold text-white">
             {account.status === "disabled" ? l.enable : l.activate}

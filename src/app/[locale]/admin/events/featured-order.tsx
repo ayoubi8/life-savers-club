@@ -104,7 +104,7 @@ export function FeaturedOrder({ items: initial }: { items: Item[] }) {
   }
 
   return (
-    <section aria-labelledby="featured-title" className="mb-6 rounded-card border border-border bg-white p-4">
+    <section data-tour="events.featured" aria-labelledby="featured-title" className="mb-6 rounded-card border border-border bg-white p-4">
       <h2 id="featured-title" className="flex items-center gap-2 font-extrabold text-grey">
         <Star className="h-4 w-4 text-[#f5a524]" fill="currentColor" aria-hidden />
         {t("title")}

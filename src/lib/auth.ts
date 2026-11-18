@@ -10,6 +10,8 @@ export type SessionProfile = {
   status: "pending" | "active" | "disabled";
   department: Department | null;
   sections: string[];
+  /** Guided tours finished or skipped: tour id → version. */
+  tours_seen: Record<string, number> | null;
 };
 
 /**
@@ -25,11 +27,11 @@ export const getSessionProfile = cache(async () => {
   const userId = data?.claims?.sub;
   if (!userId) return { userId: null, profile: null };
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("id, full_name, email, role, status, department, sections")
-    .eq("id", userId)
-    .maybeSingle();
+  const columns = "id, full_name, email, role, status, department, sections";
+  const first = await supabase.from("profiles").select(`${columns}, tours_seen`).eq("id", userId).maybeSingle();
+  // 42703 = column missing: the tours migration is not applied yet. Never sign people out for that.
+  const { data: profile } =
+    first.error?.code === "42703" ? await supabase.from("profiles").select(columns).eq("id", userId).maybeSingle() : first;
   return { userId, profile: (profile as SessionProfile | null) ?? null };
 });
 

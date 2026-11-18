@@ -26,10 +26,10 @@ export const inputClass =
   "mt-1 w-full rounded-lg border border-border bg-white px-3 py-2 text-sm font-normal text-ink outline-none focus:border-blue focus:ring-2 focus:ring-blue/20";
 
 /** A section card with a title and optional hint. */
-export function Panel({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
+export function Panel({ title, hint, tour, children }: { title: string; hint?: string; tour?: string; children: React.ReactNode }) {
   const id = useId();
   return (
-    <section aria-labelledby={id} className="rounded-card border border-border bg-white p-5">
+    <section data-tour={tour} aria-labelledby={id} className="rounded-card border border-border bg-white p-5">
       <h2 id={id} className="text-lg font-extrabold text-grey">{title}</h2>
       {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
       <div className="mt-4 space-y-4">{children}</div>
@@ -465,7 +465,7 @@ export function SaveBar({
 }) {
   const t = useTranslations("adminPages");
   return (
-    <div className="sticky bottom-3 z-20 flex flex-wrap items-center justify-between gap-3 rounded-full border border-border bg-white/95 px-4 py-2 shadow-soft backdrop-blur">
+    <div data-tour="site.save" className="sticky bottom-3 z-20 flex flex-wrap items-center justify-between gap-3 rounded-full border border-border bg-white/95 px-4 py-2 shadow-soft backdrop-blur">
       <span className={cn("text-xs font-bold", dirty ? "text-pink" : "text-muted-foreground")} role="status">
         {dirty ? t("unsaved") : t("upToDate")}
       </span>

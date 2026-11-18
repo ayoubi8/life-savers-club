@@ -108,7 +108,7 @@ export function EventsList({ events, locale }: { events: Row[]; locale: string }
 
   return (
     <div className={cn(pending && "opacity-80 transition-opacity")}>
-      <div className="mb-4 flex flex-col gap-2 lg:flex-row lg:items-center">
+      <div data-tour="events.filters" className="mb-4 flex flex-col gap-2 lg:flex-row lg:items-center">
         <label className="relative flex-1">
           <span className="sr-only">{t("search")}</span>
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
@@ -150,10 +150,10 @@ export function EventsList({ events, locale }: { events: Row[]; locale: string }
         <p className="rounded-card border border-border bg-white px-6 py-10 text-center text-sm text-muted-foreground">{t("noMatch")}</p>
       ) : (
         <ul className="space-y-3">
-          {visible.map((event) => {
+          {visible.map((event, index) => {
             const featured = featuredState[event.id] ?? event.featured;
             return (
-              <li key={event.id} className="flex flex-col gap-3 rounded-card border border-border bg-white p-3 sm:flex-row sm:items-center">
+              <li key={event.id} data-tour={index === 0 ? "events.item" : undefined} className="flex flex-col gap-3 rounded-card border border-border bg-white p-3 sm:flex-row sm:items-center">
                 <Link href={`/admin/events/${event.id}/details`} className="flex min-w-0 flex-1 items-center gap-4 rounded-xl focus-visible:outline-2 focus-visible:outline-blue">
                   <div className="relative aspect-[16/10] w-28 shrink-0 overflow-hidden rounded-lg bg-muted sm:w-36">
                     {event.cover ? (
@@ -200,6 +200,7 @@ export function EventsList({ events, locale }: { events: Row[]; locale: string }
                   <button
                     type="button"
                     onClick={() => toggleFeatured(event)}
+                    data-tour={index === 0 ? "events.star" : undefined}
                     aria-pressed={featured}
                     title={featured ? t("unfeature") : t("feature")}
                     aria-label={featured ? t("unfeature") : t("feature")}

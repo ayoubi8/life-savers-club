@@ -21,7 +21,7 @@ export function HomeForm({ initial, locale }: { initial: HomePage; locale: strin
 
   return (
     <div className="space-y-4 pb-24">
-      <Panel title={t("hero")} hint={t("heroHint")}>
+      <Panel tour="home.hero" title={t("hero")} hint={t("heroHint")}>
         <L10nField label={t("eyebrow")} value={v.hero.eyebrow} onChange={hero("eyebrow")} />
         <L10nField label={t("title1")} value={v.hero.title1} onChange={hero("title1")} />
         <L10nField label={t("title2")} value={v.hero.title2} onChange={hero("title2")} />
@@ -34,7 +34,7 @@ export function HomeForm({ initial, locale }: { initial: HomePage; locale: strin
         <p className="text-xs text-muted-foreground">{t("badgeHint")}</p>
       </Panel>
 
-      <Panel title={t("stats")} hint={t("statsHint")}>
+      <Panel tour="home.stats" title={t("stats")} hint={t("statsHint")}>
         <SortableList
           items={v.stats}
           onChange={(stats) => setValues((c) => ({ ...c, stats }))}
@@ -77,7 +77,7 @@ export function HomeForm({ initial, locale }: { initial: HomePage; locale: strin
         />
       </Panel>
 
-      <Panel title={t("journey")}>
+      <Panel tour="home.journey" title={t("journey")}>
         <L10nField label={f("title")} value={v.journey.title} onChange={journey("title")} />
         <L10nField label={f("subtitle")} value={v.journey.subtitle} max={200} onChange={journey("subtitle")} />
         <L10nField label={t("journeyNow")} value={v.journey.now} max={200} onChange={journey("now")} />
@@ -101,13 +101,13 @@ export function HomeForm({ initial, locale }: { initial: HomePage; locale: strin
         />
       </Panel>
 
-      <Panel title={t("events")} hint={t("eventsHint")}>
+      <Panel tour="home.events" title={t("events")} hint={t("eventsHint")}>
         <L10nField label={t("nextTitle")} value={v.events.nextTitle} onChange={events("nextTitle")} />
         <L10nField label={t("featuredTitle")} value={v.events.featuredTitle} onChange={events("featuredTitle")} />
         <L10nField label={t("allLink")} value={v.events.allLink} max={60} onChange={events("allLink")} />
       </Panel>
 
-      <Panel title={t("testimonials")}>
+      <Panel tour="home.testimonials" title={t("testimonials")}>
         <L10nField label={f("title")} value={v.testimonials.title} onChange={testimonials("title")} />
         <SortableList
           items={v.testimonials.items}

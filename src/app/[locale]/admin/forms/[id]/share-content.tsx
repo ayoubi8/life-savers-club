@@ -77,7 +77,7 @@ export function ShareContent({
         </div>
       )}
 
-      <section className="rounded-card border border-border bg-white p-5">
+      <section data-tour="share.link" className="rounded-card border border-border bg-white p-5">
         <h2 className="font-bold text-grey">{t("share.title")}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{t("share.hint")}</p>
 
@@ -112,7 +112,7 @@ export function ShareContent({
         <p className="mt-3 text-xs text-muted-foreground">{t("share.slugNote", { slug })}</p>
       </section>
 
-      <section className="rounded-card border border-border bg-white p-5">
+      <section data-tour="share.qr" className="rounded-card border border-border bg-white p-5">
         <h2 className="font-bold text-grey">{t("share.qr")}</h2>
         <div className="mt-3 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
           <div className="grid h-40 w-40 shrink-0 place-items-center rounded-xl border border-border bg-white">
@@ -135,7 +135,7 @@ export function ShareContent({
         </div>
       </section>
 
-      <section className="rounded-card border border-border bg-white p-5">
+      <section data-tour="share.embed" className="rounded-card border border-border bg-white p-5">
         <h2 className="font-bold text-grey">{t("share.embed")}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{t("share.embedHint")}</p>
 

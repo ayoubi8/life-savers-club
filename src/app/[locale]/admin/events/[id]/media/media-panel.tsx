@@ -98,6 +98,7 @@ export function MediaPanel({ eventId, coverUrl, media }: { eventId: string; cove
   return (
     <div className="space-y-4">
       <section
+        data-tour="eventMedia.upload"
         className={cn(
           "rounded-card border-2 border-dashed bg-white p-6 text-center transition",
           dragging ? "border-blue bg-blue/5" : "border-border",
@@ -158,10 +159,10 @@ export function MediaPanel({ eventId, coverUrl, media }: { eventId: string; cove
         <p className="rounded-card border border-border bg-white px-6 py-10 text-center text-sm text-muted-foreground">{t("empty")}</p>
       ) : (
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((item) => {
+          {items.map((item, index) => {
             const isCover = item.url === cover;
             return (
-              <li key={item.id} className={cn("overflow-hidden rounded-card border bg-white", isCover ? "border-pink ring-2 ring-pink/20" : "border-border")}>
+              <li key={item.id} data-tour={index === 0 ? "eventMedia.item" : undefined} className={cn("overflow-hidden rounded-card border bg-white", isCover ? "border-pink ring-2 ring-pink/20" : "border-border")}>
                 <div className="relative aspect-[4/3] bg-muted">
                   {item.kind === "image" ? (
                     // eslint-disable-next-line @next/next/no-img-element -- library thumbnail

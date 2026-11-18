@@ -41,6 +41,7 @@ export function NewDepartment() {
     <>
       <button
         type="button"
+        data-tour="team.new"
         onClick={() => setOpen(true)}
         className="inline-flex items-center gap-2 self-start rounded-full bg-pink px-5 py-2.5 text-sm font-extrabold text-white shadow-glow hover:opacity-90"
       >

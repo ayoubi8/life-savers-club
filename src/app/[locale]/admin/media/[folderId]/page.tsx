@@ -88,7 +88,7 @@ export default async function MediaFolderPage({
       </Link>
       <h1 className="mt-2 break-words text-2xl font-extrabold text-blue">{folder.name}</h1>
 
-      <nav aria-label={t("filters.label")} className="mb-5 mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+      <nav data-tour="media.filters" aria-label={t("filters.label")} className="mb-5 mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
         <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label={t("filters.kindLabel")}>
           {kinds.map((kind) => (
             <Link key={kind.label} href={href({ kind: kind.value })} className={chip(filters.kind === kind.value)} aria-current={filters.kind === kind.value ? "page" : undefined}>

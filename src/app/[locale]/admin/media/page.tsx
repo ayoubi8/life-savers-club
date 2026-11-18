@@ -90,7 +90,7 @@ export default async function MediaLibraryPage({
         </section>
       ) : (
         <>
-          <section className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-3 rounded-card border border-border bg-white px-4 py-3">
+          <section data-tour="media.account" className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-3 rounded-card border border-border bg-white px-4 py-3">
             <p className="min-w-0 text-sm text-grey">
               <HardDrive className="mr-1.5 inline h-4 w-4 align-text-bottom text-blue" aria-hidden />
               {t.rich("connectedTo", { email: account.google_email, b: (chunks) => <strong className="break-all">{chunks}</strong> })}
@@ -106,11 +106,11 @@ export default async function MediaLibraryPage({
           {requests.length > 0 && <DeleteRequests requests={requests} />}
 
           {folders.length === 0 ? (
-            <p className="rounded-card border border-dashed border-border bg-white p-6 text-sm text-muted-foreground">{t("noFolders")}</p>
+            <p data-tour="media.folder" className="rounded-card border border-dashed border-border bg-white p-6 text-sm text-muted-foreground">{t("noFolders")}</p>
           ) : (
             <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
-              {folders.map((folder) => (
-                <li key={folder.id} className="group relative rounded-card border border-border bg-white transition hover:border-blue focus-within:z-30">
+              {folders.map((folder, index) => (
+                <li key={folder.id} data-tour={index === 0 ? "media.folder" : undefined} className="group relative rounded-card border border-border bg-white transition hover:border-blue focus-within:z-30">
                   <Link href={`/admin/media/${folder.id}`} className="block">
                     <div className="grid aspect-square place-items-center overflow-hidden rounded-t-card bg-muted sm:aspect-[16/9]">
                       {folder.coverUrl ? (
@@ -140,7 +140,7 @@ export default async function MediaLibraryPage({
                       </p>
                     </div>
                   </Link>
-                  <div className="absolute bottom-2 right-1 sm:bottom-3 sm:right-2">
+                  <div data-tour={index === 0 ? "media.folder-menu" : undefined} className="absolute bottom-2 right-1 sm:bottom-3 sm:right-2">
                     <FolderMenu admin={admin} folder={{ id: folder.id, name: folder.name, files: folder.images + folder.videos }} />
                   </div>
                 </li>

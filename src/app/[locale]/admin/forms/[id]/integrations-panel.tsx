@@ -57,7 +57,7 @@ export function IntegrationsPanel({
         </p>
       )}
 
-      <section className="rounded-card border border-border bg-white p-5">
+      <section data-tour="integrations.google" className="rounded-card border border-border bg-white p-5">
         <div className="flex items-start gap-3">
           <FileSpreadsheet className="mt-0.5 h-5 w-5 text-green" />
           <div className="min-w-0 flex-1">
@@ -184,7 +184,7 @@ export function IntegrationsPanel({
         </div>
       </section>
 
-      <section className="rounded-card border border-border bg-white p-5">
+      <section data-tour="integrations.how" className="rounded-card border border-border bg-white p-5">
         <h3 className="font-bold text-grey">{t("integrations.how")}</h3>
         <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-muted-foreground">
           <li>{t("integrations.how1")}</li>

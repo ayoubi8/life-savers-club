@@ -197,7 +197,7 @@ export function Ledger({
       {/* Toolbar */}
       <div className="mb-3 flex flex-wrap items-center gap-2">
         {writable && (
-          <>
+          <div data-tour="sheet.add" className="flex flex-wrap gap-2">
             <button type="button" onClick={() => setDialog({ kind: "expense", row: null })} className={primaryButton}>
               <ShoppingCart className="h-4 w-4" aria-hidden />
               {t("operation.addPurchase")}
@@ -206,9 +206,9 @@ export function Ledger({
               <Wallet className="h-4 w-4" aria-hidden />
               {t("operation.addIncome")}
             </button>
-          </>
+          </div>
         )}
-        <div className="ml-auto flex flex-wrap items-center gap-2">
+        <div data-tour="sheet.filters" className="ml-auto flex flex-wrap items-center gap-2">
           <label className="sr-only" htmlFor="ledger-search">{t("filters.search")}</label>
           <input id="ledger-search" type="search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t("filters.search")} className={cn(inputClass, "w-44 py-1.5")} />
           <label className="sr-only" htmlFor="ledger-kind">{t("columns.type")}</label>
@@ -233,7 +233,7 @@ export function Ledger({
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-card border border-border bg-white">
+      <div data-tour="sheet.table" className="overflow-x-auto rounded-card border border-border bg-white">
         <table className="w-full min-w-[980px] border-collapse text-sm">
           <thead className="bg-muted text-left text-xs font-bold uppercase tracking-wide text-muted-foreground">
             <tr>
@@ -419,6 +419,7 @@ export function Ledger({
 
             {writable && (
               <tr
+                data-tour="sheet.quick"
                 className="bg-blue/[0.03]"
                 onKeyDown={(event) => {
                   if (event.key !== "Enter") return;

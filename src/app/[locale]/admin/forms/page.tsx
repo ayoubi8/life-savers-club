@@ -85,7 +85,7 @@ export default async function AdminFormsPage({
         </div>
       ) : (
         <div className="mt-6 grid gap-4 md:grid-cols-2">
-          {forms.map((form) => {
+          {forms.map((form, index) => {
             const count = Array.isArray(form.responses)
               ? Number(form.responses[0]?.count ?? 0)
               : 0;
@@ -93,6 +93,7 @@ export default async function AdminFormsPage({
             return (
               <article
                 key={form.id}
+                data-tour={index === 0 ? "forms.card" : undefined}
                 className="flex flex-col rounded-card border border-border bg-white p-5"
               >
                 <div className="flex items-start justify-between gap-3">
@@ -128,7 +129,7 @@ export default async function AdminFormsPage({
                   </span>
                 </div>
 
-                <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
+                <div data-tour={index === 0 ? "forms.actions" : undefined} className="mt-4 flex items-center justify-between border-t border-border pt-3">
                   <Link
                     href={`/admin/forms/${form.id}/edit`}
                     className="rounded-full bg-blue px-4 py-1.5 text-xs font-bold text-white hover:opacity-90"
@@ -168,7 +169,7 @@ export default async function AdminFormsPage({
       )}
 
       {templates.length > 0 && (
-        <section className="mt-10">
+        <section data-tour="forms.templates" className="mt-10">
           <h2 className="font-extrabold text-grey">{t("templatesTitle")}</h2>
           <p className="text-xs text-muted-foreground">{t("templatesHint")}</p>
           <ul className="mt-3 grid gap-3 md:grid-cols-2">

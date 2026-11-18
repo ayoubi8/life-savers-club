@@ -93,7 +93,7 @@ export function DetailsForm({ department, locale }: { department: DepartmentFull
       }}
       className="grid gap-6 lg:grid-cols-[1fr_280px]">
       <div className="space-y-6">
-        <section className={card} aria-labelledby="identity-title">
+        <section data-tour="dept.identity" className={card} aria-labelledby="identity-title">
           <h2 id="identity-title" className="font-extrabold text-grey">{t("identity")}</h2>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             <label className="block text-xs font-bold text-grey">
@@ -133,7 +133,7 @@ export function DetailsForm({ department, locale }: { department: DepartmentFull
           </label>
         </section>
 
-        <section className={card} aria-labelledby="leader-title">
+        <section data-tour="dept.leader" className={card} aria-labelledby="leader-title">
           <h2 id="leader-title" className="font-extrabold text-grey">{t("leader")}</h2>
           <p className="text-xs text-muted-foreground">{t("leaderHint")}</p>
           <div className="mt-4">
@@ -179,7 +179,7 @@ export function DetailsForm({ department, locale }: { department: DepartmentFull
             <DepartmentCard department={preview} locale={locale} cta={tTeam("discover")} preview />
           </div>
         </div>
-        <div className="rounded-card border border-border bg-white p-4">
+        <div data-tour="dept.autosave" className="rounded-card border border-border bg-white p-4">
           <AutosavePill status={status} onRetry={() => void flush()} invalid={t("nameRequired")} />
         </div>
       </aside>

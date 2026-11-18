@@ -54,6 +54,7 @@ export function NewForm({
     <>
       <button
         type="button"
+        data-tour="forms.new"
         onClick={() => setOpen(true)}
         className="inline-flex items-center gap-2 rounded-full bg-pink px-5 py-2.5 text-sm font-extrabold text-white shadow-glow hover:opacity-90"
       >

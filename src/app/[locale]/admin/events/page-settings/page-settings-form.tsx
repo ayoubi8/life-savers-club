@@ -53,14 +53,14 @@ export function PageSettingsForm({
   return (
     <div className="space-y-4 pb-24">
       {!canEdit && (
-        <p role="status" className="flex items-center gap-2 rounded-card border border-border bg-white px-4 py-3 text-sm font-semibold text-grey">
+        <p data-tour="pageSettings.locked" role="status" className="flex items-center gap-2 rounded-card border border-border bg-white px-4 py-3 text-sm font-semibold text-grey">
           <Lock className="h-4 w-4 text-pink" aria-hidden />
           {t("adminOnly")}
         </p>
       )}
 
       <fieldset disabled={!canEdit} className="space-y-4">
-        <section className={card} aria-labelledby="ps-texts">
+        <section data-tour="pageSettings.texts" className={card} aria-labelledby="ps-texts">
           <h2 id="ps-texts" className="text-lg font-extrabold text-grey">{t("texts")}</h2>
           <p className="text-xs text-muted-foreground">{t("defaultHint")}</p>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -79,7 +79,7 @@ export function PageSettingsForm({
           </div>
         </section>
 
-        <section className={cn(card, "space-y-5")}>
+        <section data-tour="pageSettings.layout" className={cn(card, "space-y-5")}>
           <Segmented
             label={t("layout")}
             value={values.layout}
@@ -131,7 +131,7 @@ export function PageSettingsForm({
           </div>
         </section>
 
-        <section className={card} aria-labelledby="ps-notes">
+        <section data-tour="pageSettings.notes" className={card} aria-labelledby="ps-notes">
           <h2 id="ps-notes" className="text-lg font-extrabold text-grey">{t("yearNotes")}</h2>
           <p className="text-xs text-muted-foreground">{t("yearNotesHint")}</p>
           {years.length === 0 ? (

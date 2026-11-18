@@ -57,6 +57,9 @@ export default async function AccountsPage({ params }: { params: Promise<{ local
     { key: "disabled", label: t("disabled"), list: profiles.filter((p) => p.status === "disabled") },
   ];
 
+  // The guided tour points at the controls of the first account that isn't yours.
+  const tourAccountId = groups.flatMap((g) => g.list).find((p) => p.id !== me.id)?.id;
+
   return (
     <div className="mx-auto max-w-4xl">
       <h1 className="text-2xl font-extrabold text-blue">{t("title")}</h1>
@@ -64,7 +67,7 @@ export default async function AccountsPage({ params }: { params: Promise<{ local
 
       <div className="mt-6 space-y-8">
         {groups.map((g) => (
-          <section key={g.key}>
+          <section key={g.key} data-tour={`accounts.${g.key}`}>
             <h2 className="mb-3 flex items-center gap-2 font-extrabold text-grey">
               {g.label}
               <span className={`rounded-full px-2 py-0.5 text-xs text-white ${g.key === "pending" ? "bg-pink" : g.key === "active" ? "bg-green" : "bg-grey"}`}>{g.list.length}</span>
@@ -92,7 +95,7 @@ export default async function AccountsPage({ params }: { params: Promise<{ local
                         </p>
                         <p className="text-xs text-muted-foreground">{t("joined")} {new Date(p.created_at).toLocaleDateString(locale)}</p>
                       </div>
-                      {!self && <AccountAccessForm account={p} labels={labels} />}
+                      {!self && <AccountAccessForm account={p} labels={labels} tour={p.id === tourAccountId} />}
                     </li>
                   );
                 })}

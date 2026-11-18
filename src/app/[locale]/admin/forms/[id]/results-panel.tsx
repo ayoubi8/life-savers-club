@@ -202,7 +202,7 @@ export function ResultsPanel({
           <p className="text-sm text-muted-foreground">{t("count", { count: total })}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <div role="tablist" className="flex rounded-full border border-border bg-white p-1">
+          <div data-tour="results.views" role="tablist" className="flex rounded-full border border-border bg-white p-1">
             {(["table", "summary"] as const).map((view) => (
               <Link
                 key={view}
@@ -218,7 +218,7 @@ export function ResultsPanel({
               </Link>
             ))}
           </div>
-          <div className="flex items-center gap-1 rounded-full border border-border bg-white p-1">
+          <div data-tour="results.export" className="flex items-center gap-1 rounded-full border border-border bg-white p-1">
             <Download className="ml-2 h-3.5 w-3.5 text-muted-foreground" aria-hidden />
             <a href={exportHref("csv")} className="rounded-full px-3 py-1.5 text-xs font-bold text-grey hover:bg-muted">
               CSV
@@ -230,7 +230,7 @@ export function ResultsPanel({
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 rounded-card border border-border bg-white p-3 sm:flex-row sm:flex-wrap sm:items-center">
+      <div data-tour="results.filters" className="flex flex-col gap-2 rounded-card border border-border bg-white p-3 sm:flex-row sm:flex-wrap sm:items-center">
         <label className="relative min-w-0 flex-1 sm:min-w-56">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
           <input

@@ -20,7 +20,7 @@ export default async function SitePagesIndex({ params }: { params: Promise<{ loc
     <div className="mx-auto max-w-4xl">
       <h1 className="text-2xl font-extrabold text-blue">{t("title")}</h1>
       <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
-      <div className="mt-6 grid gap-4 sm:grid-cols-3">
+      <div data-tour="site.pages" className="mt-6 grid gap-4 sm:grid-cols-3">
         {PAGES.map(({ key, href, icon: Icon }) => (
           <Link key={key} href={href} className="rounded-card border border-border bg-white p-5 transition hover:border-blue">
             <Icon className="h-6 w-6 text-pink" aria-hidden />

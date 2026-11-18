@@ -346,7 +346,7 @@ export function EditorView() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-3">
-      <section className="rounded-card border border-border bg-white p-4 sm:p-8">
+      <section data-tour="builder.title" className="rounded-card border border-border bg-white p-4 sm:p-8">
         <TitleField key={form.title} formId={form.id} initial={form.title} />
         <textarea
           value={firstPage.description ?? ""}
@@ -424,7 +424,7 @@ export function EditorView() {
               </div>
             ) : (
               <SortableContext items={page.fields.map((field) => field.id)} strategy={verticalListSortingStrategy}>
-                <div>
+                <div data-tour={pageIndex === 0 ? "builder.questions" : undefined}>
                   {page.fields.map((field, index) => (
                     <Fragment key={field.id}>
                       {index > 0 && (
@@ -460,6 +460,7 @@ export function EditorView() {
             <button
               type="button"
               onClick={() => openPalette(pageIndex, page.fields.length)}
+              data-tour={pageIndex === pages.length - 1 ? "builder.add" : undefined}
               className="flex w-full items-center justify-center gap-2 rounded-card border border-dashed border-blue/40 bg-white px-4 py-4 text-sm font-bold text-blue hover:bg-blue/5"
             >
               <Plus className="h-4 w-4" />

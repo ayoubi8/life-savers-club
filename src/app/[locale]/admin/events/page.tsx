@@ -21,6 +21,7 @@ export default async function AdminEventsPage({ params }: { params: Promise<{ lo
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Link
+            data-tour="events.page-settings"
             href="/admin/events/page-settings"
             className="inline-flex items-center gap-2 rounded-full border border-border bg-white px-4 py-2.5 text-sm font-bold text-grey hover:border-blue hover:text-blue"
           >

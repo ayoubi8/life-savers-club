@@ -25,6 +25,7 @@ export function NewFolderButton() {
     <>
       <button
         type="button"
+        data-tour="media.new-folder"
         onClick={() => setOpen(true)}
         className="inline-flex items-center gap-2 rounded-full bg-blue px-4 py-2 text-sm font-bold text-white hover:opacity-90"
       >
@@ -150,6 +151,7 @@ export function ChangeAccountButton({ email, fileCount, connectUrl }: { email: s
     <>
       <button
         type="button"
+        data-tour="media.change-account"
         onClick={start}
         className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-3 py-1.5 text-xs font-bold text-grey hover:bg-muted"
       >

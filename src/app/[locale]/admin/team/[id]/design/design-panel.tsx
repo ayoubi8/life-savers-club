@@ -44,7 +44,7 @@ export function DesignPanel({ department, locale }: { department: DepartmentFull
 
   return (
     <div className="grid gap-6 xl:grid-cols-[340px_1fr]">
-      <div className="space-y-6 self-start rounded-card border border-border bg-white p-5 xl:sticky xl:top-4">
+      <div data-tour="design.controls" className="space-y-6 self-start rounded-card border border-border bg-white p-5 xl:sticky xl:top-4">
         <section>
           <h2 className="font-extrabold text-grey">{t("presets")}</h2>
           <div className="mt-3 grid grid-cols-3 gap-2">
@@ -147,14 +147,14 @@ export function DesignPanel({ department, locale }: { department: DepartmentFull
       </div>
 
       <div className="min-w-0 space-y-6">
-        <section aria-label={tTeam("cardPreview")}>
+        <section data-tour="dept.card-preview" aria-label={tTeam("cardPreview")}>
           <p className="mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">{tTeam("cardPreview")}</p>
           <div className="pointer-events-none max-w-[260px]">
             <DepartmentCard department={preview} locale={locale} cta={tCard("discover")} preview />
           </div>
         </section>
 
-        <section aria-label={t("preview")}>
+        <section data-tour="design.preview" aria-label={t("preview")}>
           <p className="mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
             {t("preview")} · <span className="normal-case tracking-normal">{t("previewHint")}</span>
           </p>

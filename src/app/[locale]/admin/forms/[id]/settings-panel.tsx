@@ -32,7 +32,7 @@ export function SettingsPanel({
 
   return (
     <div className="max-w-3xl space-y-4">
-      <form action={action} className="rounded-card border border-border bg-white p-5">
+      <form data-tour="settings.main" action={action} className="rounded-card border border-border bg-white p-5">
         <h2 className="text-lg font-extrabold text-grey">{t("settings.title")}</h2>
         <input type="hidden" name="id" value={form.id} />
         <input type="hidden" name="locale" value={locale} />
@@ -218,7 +218,7 @@ export function SettingsPanel({
         </button>
       </form>
 
-      <section className="rounded-card border border-pink/30 bg-white p-5">
+      <section data-tour="settings.danger" className="rounded-card border border-pink/30 bg-white p-5">
         <h2 className="font-bold text-pink">{t("settings.danger")}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{t("settings.dangerText")}</p>
         <div className="mt-3">

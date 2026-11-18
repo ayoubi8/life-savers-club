@@ -54,7 +54,7 @@ export default async function FinancePage({
       <div className="mx-auto max-w-5xl">
         <h1 className="text-2xl font-extrabold text-blue">{t("title")}</h1>
         <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
-        <section className="mt-6 max-w-xl rounded-card border border-dashed border-border bg-white p-6">
+        <section data-tour="finance.no-year" className="mt-6 max-w-xl rounded-card border border-dashed border-border bg-white p-6">
           <h2 className="font-extrabold text-grey">{t("year.noneTitle")}</h2>
           <p className="mt-1 text-sm text-muted-foreground">{admin ? t("year.noneAdmin") : t("year.noneMember")}</p>
           {admin && (
@@ -101,7 +101,7 @@ export default async function FinancePage({
             </span>
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div data-tour="finance.google" className="flex flex-wrap gap-2">
           <a href={`/api/finance/open?${yearQuery}`} target="_blank" rel="noopener" className="inline-flex items-center gap-2 rounded-full border border-border bg-white px-4 py-2 text-sm font-bold text-grey hover:bg-muted">
             <FileSpreadsheet className="h-4 w-4 text-green" aria-hidden />
             {t("google.open")}
@@ -126,7 +126,7 @@ export default async function FinancePage({
         </p>
       )}
 
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+      <div data-tour="finance.share-email" className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <ShareEmailSetting current={(me?.google_share_email as string | null) ?? null} accountEmail={(me?.email as string) ?? profile!.email} />
         {years.length > 1 && (
           <nav aria-label={t("year.switch")} className="flex flex-wrap gap-1.5">
@@ -144,13 +144,13 @@ export default async function FinancePage({
       </div>
 
       {admin && (
-        <div className="mb-6 flex flex-wrap items-center gap-2">
+        <div data-tour="finance.year-actions" className="mb-6 flex flex-wrap items-center gap-2">
           <YearAdminActions year={year} />
           {!hasOpenYear && <OpenYearButton suggestedLabel={suggestedLabel()} />}
         </div>
       )}
 
-      <section aria-label={t("totals.title")} className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      <section data-tour="finance.totals" aria-label={t("totals.title")} className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         {stats.map((stat) => (
           <div key={stat.key} className={cn("rounded-card border bg-white p-4", stat.strong ? "border-blue sm:col-span-2 lg:col-span-1" : "border-border")}>
             <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">{t(`totals.${stat.key}`)}</p>
@@ -161,7 +161,7 @@ export default async function FinancePage({
         ))}
       </section>
 
-      <div className="mb-8 grid gap-4 lg:grid-cols-3">
+      <div data-tour="finance.charts" className="mb-8 grid gap-4 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <BalanceChart points={balanceSeries(operations, totals.opening_balance, year.starts_on)} locale={locale} label={t("chart.balance")} />
         </div>
@@ -181,7 +181,7 @@ export default async function FinancePage({
         </div>
       </div>
 
-      <section className="mb-8">
+      <section data-tour="finance.sheets" className="mb-8">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-lg font-extrabold text-grey">{archived ? t("sheets.archivedTitle") : t("sheets.title")}</h2>
           <div className="flex flex-wrap items-center gap-2">
@@ -245,7 +245,7 @@ export default async function FinancePage({
       </section>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <section>
+        <section data-tour="finance.recent">
           <h2 className="mb-3 text-lg font-extrabold text-grey">{t("recent.title")}</h2>
           {recent.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t("recent.none")}</p>

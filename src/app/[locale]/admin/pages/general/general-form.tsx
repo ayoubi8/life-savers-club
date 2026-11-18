@@ -14,7 +14,7 @@ export function GeneralForm({ initial, locale }: { initial: SiteGeneral; locale:
 
   return (
     <div className="space-y-4 pb-24">
-      <Panel title={t("brand")} hint={t("brandHint")}>
+      <Panel tour="general.brand" title={t("brand")} hint={t("brandHint")}>
         <ImageField label={t("logo")} value={v.logo} fallback={DEFAULT_GENERAL.logo} round onChange={(logo) => logo && setValues((c) => ({ ...c, logo }))} />
         <div className="grid gap-4 sm:grid-cols-2">
           <TextField label={t("nameStart")} value={v.nameStart} max={40} onChange={(nameStart) => setValues((c) => ({ ...c, nameStart }))} />
@@ -22,7 +22,7 @@ export function GeneralForm({ initial, locale }: { initial: SiteGeneral; locale:
         </div>
       </Panel>
 
-      <Panel title={t("nav")} hint={t("navHint")}>
+      <Panel tour="general.nav" title={t("nav")} hint={t("navHint")}>
         <L10nField label={t("navHome")} value={v.nav.home} max={40} onChange={nav("home")} />
         <L10nField label={t("navEvents")} value={v.nav.events} max={40} onChange={nav("events")} />
         <L10nField label={t("navTeam")} value={v.nav.team} max={40} onChange={nav("team")} />
@@ -30,7 +30,7 @@ export function GeneralForm({ initial, locale }: { initial: SiteGeneral; locale:
         <L10nField label={t("navJoin")} value={v.nav.join} max={40} onChange={nav("join")} />
       </Panel>
 
-      <Panel title={t("contact")} hint={t("contactHint")}>
+      <Panel tour="general.contact" title={t("contact")} hint={t("contactHint")}>
         <div className="grid gap-4 sm:grid-cols-2">
           <TextField label={t("email")} type="email" value={v.email} onChange={(email) => setValues((c) => ({ ...c, email }))} />
           <TextField label={t("phone")} type="tel" value={v.phone} onChange={(phone) => setValues((c) => ({ ...c, phone }))} />
@@ -46,7 +46,7 @@ export function GeneralForm({ initial, locale }: { initial: SiteGeneral; locale:
         <L10nField label={t("login")} value={v.footer.login} onChange={footer("login")} />
       </Panel>
 
-      <Panel title={t("socials")} hint={t("socialsHint")}>
+      <Panel tour="general.socials" title={t("socials")} hint={t("socialsHint")}>
         <SortableList
           items={v.socials}
           onChange={(socials) => setValues((c) => ({ ...c, socials }))}

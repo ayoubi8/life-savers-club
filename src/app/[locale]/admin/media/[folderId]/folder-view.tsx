@@ -203,6 +203,7 @@ export function FolderView({
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <button
           type="button"
+          data-tour="media.upload"
           onClick={() => inputRef.current?.click()}
           className="inline-flex items-center gap-2 rounded-full bg-blue px-4 py-2 text-sm font-bold text-white hover:opacity-90"
         >
@@ -273,10 +274,10 @@ export function FolderView({
         </button>
       ) : (
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
-          {items.map((item) => {
+          {items.map((item, index) => {
             const checked = selected.has(item.id);
             return (
-              <li key={item.id} className="group relative">
+              <li key={item.id} data-tour={index === 0 ? "media.file" : undefined} className="group relative">
                 <button
                   type="button"
                   onClick={() => (selection.length ? toggle(item.id) : setOpenId(item.id))}

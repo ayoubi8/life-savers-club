@@ -46,7 +46,7 @@ export function DeleteRequests({ requests }: { requests: DeleteRequest[] }) {
   }
 
   return (
-    <section className="mb-6 rounded-card border border-pink/30 bg-white">
+    <section data-tour="media.requests" className="mb-6 rounded-card border border-pink/30 bg-white">
       <h2 className="border-b border-border px-4 py-3 text-sm font-extrabold text-grey">{t("title", { count: requests.length })}</h2>
       <ul className="divide-y divide-border">
         {requests.map((request) => (

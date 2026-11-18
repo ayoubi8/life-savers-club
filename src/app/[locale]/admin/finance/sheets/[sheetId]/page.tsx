@@ -70,7 +70,7 @@ export default async function FinanceSheetPage({
             {!yearOpen && ` · ${t("year.statusClosed")}`}
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div data-tour="sheet.export" className="flex flex-wrap gap-2">
           <a href={`/api/finance/open?sheet=${sheet.id}&locale=${locale}`} target="_blank" rel="noopener" className="inline-flex items-center gap-2 rounded-full border border-border bg-white px-4 py-2 text-sm font-bold text-grey hover:bg-muted">
             <FileSpreadsheet className="h-4 w-4 text-green" aria-hidden />
             {t("google.open")}
@@ -88,7 +88,7 @@ export default async function FinanceSheetPage({
       </header>
 
       {locked && (
-        <p role="status" className="mb-4 flex items-center gap-2 rounded-card border border-border bg-white px-4 py-3 text-sm font-semibold text-grey">
+        <p data-tour="sheet.locked" role="status" className="mb-4 flex items-center gap-2 rounded-card border border-border bg-white px-4 py-3 text-sm font-semibold text-grey">
           <Lock className="h-4 w-4 shrink-0" aria-hidden />
           {admin ? t("sheets.lockedBannerAdmin") : t("sheets.lockedBanner")}
         </p>

@@ -59,7 +59,7 @@ export function DesignPanel({ event, locale }: { event: EventFull; locale: strin
 
   return (
     <div className="grid gap-6 xl:grid-cols-[340px_1fr]">
-      <div className="space-y-6 self-start rounded-card border border-border bg-white p-5 xl:sticky xl:top-4">
+      <div data-tour="design.controls" className="space-y-6 self-start rounded-card border border-border bg-white p-5 xl:sticky xl:top-4">
         <section>
           <h2 className="font-extrabold text-grey">{t("presets")}</h2>
           <div className="mt-3 grid grid-cols-3 gap-2">
@@ -175,7 +175,7 @@ export function DesignPanel({ event, locale }: { event: EventFull; locale: strin
         </div>
       </div>
 
-      <section aria-label={t("preview")} className="min-w-0">
+      <section data-tour="design.preview" aria-label={t("preview")} className="min-w-0">
         <p className="mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
           {t("preview")} · <span className="normal-case tracking-normal">{t("previewHint")}</span>
         </p>

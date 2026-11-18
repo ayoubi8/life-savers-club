@@ -81,7 +81,7 @@ export function DepartmentHeader({
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div data-tour="editor.publish" className="flex flex-wrap items-center gap-2">
           <a
             href={`/${locale}/team/${department.slug}`}
             target="_blank"
@@ -115,7 +115,7 @@ export function DepartmentHeader({
         </div>
       </div>
 
-      <nav aria-label={t("tabsLabel")} className="mt-6 flex gap-1 overflow-x-auto border-b border-border">
+      <nav data-tour="editor.tabs" aria-label={t("tabsLabel")} className="mt-6 flex gap-1 overflow-x-auto border-b border-border">
         {TABS.map((tab) => {
           const href = `${base}/${tab}`;
           const active = pathname === href || pathname.startsWith(`${href}/`);

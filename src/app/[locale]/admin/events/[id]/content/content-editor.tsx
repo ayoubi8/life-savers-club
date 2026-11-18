@@ -299,7 +299,7 @@ function EditorInner({
     <div className="rounded-card border border-border bg-white">
       {/* Header: languages + save state */}
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-3 py-2">
-        <div role="tablist" aria-label={t("language")} className="inline-flex rounded-full bg-muted p-0.5">
+        <div data-tour="content.languages" role="tablist" aria-label={t("language")} className="inline-flex rounded-full bg-muted p-0.5">
           {(["fr", "en"] as const).map((value) => (
             <button
               key={value}
@@ -313,7 +313,7 @@ function EditorInner({
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-3 text-xs">
+        <div data-tour="content.status" className="flex items-center gap-3 text-xs">
           <span className="text-muted-foreground">{t("words", { count: words })}</span>
           <SavePill status={status} savedAt={savedAt} onRetry={() => void save()} />
         </div>
@@ -374,7 +374,7 @@ function EditorInner({
       )}
 
       {editor && (
-        <div className="sticky top-0 z-20 border-b border-border bg-white/95 px-2 py-1.5 backdrop-blur">
+        <div data-tour="content.toolbar" className="sticky top-0 z-20 border-b border-border bg-white/95 px-2 py-1.5 backdrop-blur">
           <Toolbar
             editor={editor}
             onInsert={(anchor) => {

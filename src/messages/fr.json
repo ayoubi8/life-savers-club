@@ -101,7 +101,19 @@
     "media": "Médiathèque",
     "manageMedia": "Photos et vidéos stockées dans le Google Drive du club",
     "finance": "Finances",
-    "manageFinance": "Budget de l'année, achats et recettes, par feuille"
+    "manageFinance": "Budget de l'année, achats et recettes, par feuille",
+    "menu": "Menu",
+    "closeMenu": "Fermer le menu",
+    "viewSite": "Voir le site",
+    "hello": "Bonjour, {name}",
+    "heroText": "Votre espace pour faire vivre le club : événements, formulaires, équipe et bien plus.",
+    "sectionsTitle": "Vos espaces",
+    "manageAccounts": "Valider les nouveaux comptes et gérer les accès",
+    "stats": {
+      "upcoming": "{count, plural, =0 {Aucun événement à venir} one {# événement à venir} other {# événements à venir}}",
+      "newResponses": "{count, plural, =0 {Aucune nouvelle réponse} one {# nouvelle réponse} other {# nouvelles réponses}}",
+      "pending": "{count, plural, =0 {Aucun compte en attente} one {# compte en attente} other {# comptes en attente}}"
+    }
   },
   "adminForms": {
     "title": "Formulaires",
@@ -1897,6 +1909,575 @@
       "google_failed": "Google est injoignable. Réessayez.",
       "sheet_locked": "Cette feuille est verrouillée par un admin.",
       "sheets_api_disabled": "L'API Google Sheets n'est pas activée dans le projet Google Cloud du club. Un admin doit l'activer : console.cloud.google.com → API et services → Bibliothèque → « Google Sheets API » → Activer, puis réessayer."
+    }
+  },
+  "tours": {
+    "ui": {
+      "guide": "Guide",
+      "replay": "Voir le guide de cette page",
+      "next": "Suivant",
+      "previous": "Retour",
+      "done": "Terminé",
+      "close": "Passer le guide",
+      "progress": "{current} sur {total}"
+    },
+    "dashboard": {
+      "welcome": {
+        "title": "Bienvenue dans l'espace admin",
+        "body": "C'est ici que le club gère son site : événements, formulaires, photos, finances et plus. Ce petit guide vous fait faire le tour."
+      },
+      "nav": {
+        "title": "Vos sections",
+        "body": "Le menu affiche seulement les sections auxquelles vous avez accès. Besoin d'une autre ? Demandez à un admin."
+      },
+      "cards": {
+        "title": "Raccourcis",
+        "body": "Chaque carte ouvre une de vos sections, avec un rappel de ce qu'elle permet de faire."
+      },
+      "noAccess": {
+        "title": "Pas encore de section",
+        "body": "Votre compte est actif mais aucune section ne vous a été donnée. Un admin peut en ajouter une depuis la page Comptes."
+      },
+      "account": {
+        "title": "Votre compte",
+        "body": "Votre e-mail, votre rôle (admin ou membre) et votre département."
+      },
+      "guide": {
+        "title": "Besoin d'aide plus tard ?",
+        "body": "Chaque page de l'admin a son propre guide. Cliquez sur ce bouton à tout moment pour le revoir."
+      }
+    },
+    "events": {
+      "list": {
+        "new": {
+          "title": "Créer un événement",
+          "body": "Commencez un nouvel événement ici. Il suffit d'un titre, le reste peut être rempli plus tard."
+        },
+        "filters": {
+          "title": "Trouver un événement",
+          "body": "Cherchez par nom et filtrez par statut, passé ou à venir, et année."
+        },
+        "item": {
+          "title": "Un événement",
+          "body": "Cliquez dessus pour le modifier. Les boutons à droite permettent de le voir, le dupliquer ou le supprimer."
+        },
+        "star": {
+          "title": "Mettre en avant",
+          "body": "L'étoile affiche l'événement sur la page d'accueil et en haut de la page Événements."
+        },
+        "featured": {
+          "title": "Ordre des événements en avant",
+          "body": "Glissez les événements mis en avant (ou utilisez les flèches) pour choisir l'ordre affiché aux visiteurs."
+        },
+        "pageSettings": {
+          "title": "La page Événements",
+          "body": "Modifiez le titre, l'introduction et la mise en page de la page publique Événements."
+        }
+      },
+      "details": {
+        "tabs": {
+          "title": "Quatre onglets",
+          "body": "Détails, Photos et vidéos, Contenu et Design : chaque onglet modifie une partie de la page de l'événement."
+        },
+        "publish": {
+          "title": "Aperçu et publication",
+          "body": "Prévisualisez la page, puis publiez-la quand elle est prête. Avant ça, les visiteurs ne la voient pas."
+        },
+        "general": {
+          "title": "L'essentiel",
+          "body": "Titre, date, lieu et courte description, en français et en anglais."
+        },
+        "cover": {
+          "title": "Photo de couverture",
+          "body": "L'image affichée sur la carte de l'événement et en haut de sa page."
+        },
+        "stats": {
+          "title": "Chiffres clés",
+          "body": "Ajoutez des chiffres comme le nombre de participants ou de personnes formées. Ils s'affichent sur la page."
+        },
+        "registration": {
+          "title": "Inscription",
+          "body": "Reliez un formulaire ou un lien externe pour que les gens puissent s'inscrire."
+        },
+        "save": {
+          "title": "Enregistrez vos changements",
+          "body": "Cette barre indique quand quelque chose n'est pas encore enregistré. Cliquez sur Enregistrer avant de partir."
+        }
+      },
+      "media": {
+        "upload": {
+          "title": "Ajouter des photos et vidéos",
+          "body": "Déposez des fichiers ici ou cliquez pour les choisir. Ils sont ajoutés à la galerie de l'événement."
+        },
+        "item": {
+          "title": "Un élément de la galerie",
+          "body": "Ajoutez une description pour l'accessibilité, utilisez-le comme couverture ou supprimez-le."
+        }
+      },
+      "content": {
+        "languages": {
+          "title": "Français et anglais",
+          "body": "Rédigez la page en français, puis passez à l'anglais. Une page anglaise vide peut être copiée depuis le français."
+        },
+        "toolbar": {
+          "title": "Outils de mise en forme",
+          "body": "Titres, gras, listes, liens, images et plus. Le bouton + insère des blocs comme des photos ou des vidéos."
+        },
+        "status": {
+          "title": "Enregistré automatiquement",
+          "body": "Votre texte est enregistré pendant que vous écrivez. Ici : le nombre de mots et le dernier enregistrement."
+        }
+      },
+      "design": {
+        "controls": {
+          "title": "Couleurs et style",
+          "body": "Choisissez un style prêt à l'emploi ou vos propres couleurs. Puis cliquez sur Enregistrer."
+        },
+        "preview": {
+          "title": "Aperçu en direct",
+          "body": "Voyez à quoi ressemblera la page avec vos choix avant d'enregistrer."
+        }
+      },
+      "pageSettings": {
+        "locked": {
+          "title": "Lecture seule",
+          "body": "Seuls les admins peuvent modifier ces réglages. Vous pouvez quand même les consulter."
+        },
+        "texts": {
+          "title": "Textes de la page",
+          "body": "Le titre et l'introduction de la page publique Événements. Laissez vide pour garder le texte par défaut."
+        },
+        "layout": {
+          "title": "Mise en page",
+          "body": "Choisissez l'affichage des événements (grille ou liste) et la séparation entre les années."
+        },
+        "notes": {
+          "title": "Notes par année",
+          "body": "Ajoutez un petit texte sous une année, par exemple pour la résumer."
+        }
+      }
+    },
+    "forms": {
+      "list": {
+        "new": {
+          "title": "Créer un formulaire",
+          "body": "Partez de zéro ou d'un modèle : inscription, sondage, contact et plus."
+        },
+        "card": {
+          "title": "Un formulaire",
+          "body": "Son statut (brouillon, ouvert, fermé), le nombre de réponses et les nouvelles qui vous attendent."
+        },
+        "actions": {
+          "title": "Modifier, copier, réutiliser",
+          "body": "Modifiez le formulaire, dupliquez-le ou enregistrez-le comme modèle pour la prochaine fois."
+        },
+        "templates": {
+          "title": "Vos modèles",
+          "body": "Les formulaires enregistrés comme modèles. Créez un nouveau formulaire à partir d'un modèle en un clic."
+        }
+      },
+      "edit": {
+        "tabs": {
+          "title": "Créer, partager, lire",
+          "body": "Éditeur, Design, Partage, Réponses, Intégrations et Réglages : toute la vie du formulaire."
+        },
+        "title": {
+          "title": "Titre et description",
+          "body": "Ce que les gens voient en haut du formulaire."
+        },
+        "questions": {
+          "title": "Vos questions",
+          "body": "Cliquez sur une question pour la modifier. Glissez pour changer l'ordre et rendez-la obligatoire si besoin."
+        },
+        "add": {
+          "title": "Ajouter une question",
+          "body": "Choisissez un type : texte court, choix, date, fichier, note… Raccourci : appuyez sur / au clavier."
+        },
+        "save": {
+          "title": "Enregistré automatiquement",
+          "body": "Chaque changement est enregistré tout seul. Ici : l'heure du dernier enregistrement."
+        },
+        "undo": {
+          "title": "Annuler et rétablir",
+          "body": "Une erreur ? Revenez en arrière (Ctrl+Z) ou rétablissez."
+        },
+        "preview": {
+          "title": "Essayez-le",
+          "body": "Voyez le formulaire comme les visiteurs et testez-le sans enregistrer de réponse."
+        },
+        "publish": {
+          "title": "Publier",
+          "body": "Ouvrez le formulaire au public quand il est prêt. Vous pouvez le fermer à tout moment."
+        }
+      },
+      "design": {
+        "controls": {
+          "title": "Apparence du formulaire",
+          "body": "Choisissez un style, des couleurs, une image de couverture et un logo, puis enregistrez."
+        },
+        "preview": {
+          "title": "Aperçu en direct",
+          "body": "Vos changements apparaissent ici tout de suite."
+        }
+      },
+      "share": {
+        "link": {
+          "title": "Partager le lien",
+          "body": "Copiez le lien du formulaire pour l'envoyer par message, e-mail ou réseaux sociaux."
+        },
+        "qr": {
+          "title": "QR code",
+          "body": "Téléchargez un QR code pour les affiches et les flyers."
+        },
+        "embed": {
+          "title": "L'intégrer à un site",
+          "body": "Copiez un code pour afficher le formulaire dans une autre page web."
+        }
+      },
+      "results": {
+        "views": {
+          "title": "Résumé ou réponses",
+          "body": "Voyez des graphiques par question, ou lisez chaque réponse une par une."
+        },
+        "filters": {
+          "title": "Chercher et trier",
+          "body": "Trouvez une réponse par nom ou texte et filtrez par statut."
+        },
+        "export": {
+          "title": "Télécharger",
+          "body": "Récupérez toutes les réponses en fichier CSV ou Excel."
+        }
+      },
+      "integrations": {
+        "google": {
+          "title": "Google Sheets",
+          "body": "Connectez une feuille Google Sheets : chaque nouvelle réponse y est ajoutée automatiquement."
+        },
+        "how": {
+          "title": "Comment ça marche",
+          "body": "Une courte explication de ce qui est envoyé et quand."
+        }
+      },
+      "settings": {
+        "main": {
+          "title": "Réglages du formulaire",
+          "body": "Titre, lien, dates d'ouverture et de fermeture, limites de réponses et messages."
+        },
+        "danger": {
+          "title": "Zone sensible",
+          "body": "Supprimez le formulaire ou ses réponses. C'est définitif."
+        }
+      }
+    },
+    "media": {
+      "library": {
+        "account": {
+          "title": "Où sont les fichiers",
+          "body": "Les photos et vidéos sont dans le Google Drive du club. La barre montre l'espace restant."
+        },
+        "changeAccount": {
+          "title": "Changer de compte Google",
+          "body": "À faire seulement exprès : les fichiers du compte actuel sont masqués jusqu'à sa reconnexion."
+        },
+        "requests": {
+          "title": "Demandes de suppression",
+          "body": "Les membres ne peuvent pas supprimer. Leurs demandes attendent ici : approuvez pour supprimer, ou refusez."
+        },
+        "newFolder": {
+          "title": "Nouveau dossier",
+          "body": "Créez un dossier par événement ou par sujet pour garder tout en ordre."
+        },
+        "folder": {
+          "title": "Un dossier",
+          "body": "Ouvrez-le pour voir, ajouter et télécharger ses photos et vidéos."
+        },
+        "menuAdmin": {
+          "title": "Menu du dossier",
+          "body": "Renommez le dossier ou supprimez-le avec tout son contenu (gardé 30 jours dans la corbeille Drive)."
+        },
+        "menuMember": {
+          "title": "Menu du dossier",
+          "body": "Renommez le dossier, ou demandez à un admin de le supprimer : la suppression doit être approuvée."
+        }
+      },
+      "folder": {
+        "filters": {
+          "title": "Filtres",
+          "body": "Affichez seulement les photos ou les vidéos, une forme (horizontale, verticale, carrée) ou une qualité vidéo."
+        },
+        "upload": {
+          "title": "Importer",
+          "body": "Choisissez des fichiers ou déposez-les n'importe où sur la page. Les grosses vidéos continuent pendant que vous naviguez."
+        },
+        "file": {
+          "title": "Un fichier",
+          "body": "Cliquez pour l'ouvrir en grand et le télécharger. Cochez le rond dans le coin pour en sélectionner plusieurs."
+        },
+        "deleteAdmin": {
+          "title": "Fichiers sélectionnés",
+          "body": "Avec des fichiers sélectionnés, vous pouvez les télécharger, les déplacer ou les supprimer."
+        },
+        "deleteMember": {
+          "title": "Fichiers sélectionnés",
+          "body": "Avec des fichiers sélectionnés, vous pouvez les télécharger ou les déplacer. Supprimer envoie une demande à un admin."
+        }
+      }
+    },
+    "finance": {
+      "home": {
+        "noYear": {
+          "title": "Ouvrez d'abord l'année",
+          "body": "Les finances commencent par une année et l'argent que le club a aujourd'hui. Ensuite chaque achat et recette la met à jour."
+        },
+        "google": {
+          "title": "Ouvrir ou télécharger",
+          "body": "Ouvrez l'année dans Google Sheets ou téléchargez-la en fichier Excel."
+        },
+        "shareEmail": {
+          "title": "Votre compte Google",
+          "body": "Google Sheets s'ouvre avec ce Gmail. Changez-le si vous en utilisez un autre."
+        },
+        "yearActions": {
+          "title": "Gérer l'année",
+          "body": "Ajustez le solde, clôturez l'année ou ouvrez la suivante."
+        },
+        "totals": {
+          "title": "Totaux",
+          "body": "L'argent au départ, dépensé, reçu et ce que le club a maintenant."
+        },
+        "charts": {
+          "title": "Graphiques",
+          "body": "L'évolution du solde sur l'année, et où l'argent est parti ou d'où il vient."
+        },
+        "sheets": {
+          "title": "Feuilles",
+          "body": "Une feuille par événement, formation ou type d'achat. Ouvrez-en une pour ajouter des opérations."
+        },
+        "recent": {
+          "title": "Dernières opérations",
+          "body": "Les derniers achats et recettes ajoutés, dans toutes les feuilles."
+        }
+      },
+      "sheet": {
+        "locked": {
+          "title": "Feuille verrouillée",
+          "body": "Cette feuille est en lecture seule. Demandez à un admin si quelque chose doit changer."
+        },
+        "add": {
+          "title": "Ajouter une opération",
+          "body": "Ajoutez un achat (avec plusieurs produits si besoin) ou une recette comme un sponsor ou des frais."
+        },
+        "filters": {
+          "title": "Filtres",
+          "body": "Cherchez, affichez seulement les achats ou recettes, une catégorie, ou les opérations annulées."
+        },
+        "table": {
+          "title": "Les opérations",
+          "body": "Chaque ligne avec sa date, son montant et qui l'a ajoutée. Les totaux des lignes affichées sont en bas."
+        },
+        "quick": {
+          "title": "Ajout rapide",
+          "body": "Tapez directement dans cette dernière ligne et appuyez sur Entrée pour ajouter une opération simple."
+        },
+        "editMember": {
+          "title": "Corriger une erreur",
+          "body": "Vous pouvez modifier vos propres opérations pendant 24 heures. Ensuite, demandez à un admin."
+        },
+        "editAdmin": {
+          "title": "Corriger une erreur",
+          "body": "Double-cliquez sur une ligne pour la modifier. En tant qu'admin, vous pouvez modifier ou annuler toute opération."
+        },
+        "export": {
+          "title": "Ouvrir ou télécharger",
+          "body": "Ouvrez cette feuille dans Google Sheets, ou téléchargez-la en Excel ou CSV."
+        }
+      },
+      "history": {
+        "list": {
+          "title": "Historique des changements",
+          "body": "Chaque création, modification et annulation dans les finances : qui, quand et quoi."
+        }
+      }
+    },
+    "team": {
+      "list": {
+        "bureau": {
+          "title": "Le bureau",
+          "body": "Le président et le vice-président, affichés en haut de la page Équipe."
+        },
+        "departments": {
+          "title": "Départements",
+          "body": "Chaque département a sa carte et sa propre page. Glissez pour changer l'ordre."
+        },
+        "new": {
+          "title": "Nouveau département",
+          "body": "Ajoutez un département. Il reste en brouillon jusqu'à sa publication."
+        },
+        "view": {
+          "title": "Voir la page",
+          "body": "Ouvrez la page publique Équipe dans un nouvel onglet."
+        }
+      },
+      "details": {
+        "tabs": {
+          "title": "Quatre onglets",
+          "body": "Détails, Contenu, Design et Photos : chaque onglet modifie une partie de la page du département."
+        },
+        "publish": {
+          "title": "Aperçu et publication",
+          "body": "Prévisualisez la page, puis publiez-la pour que les visiteurs la voient."
+        },
+        "identity": {
+          "title": "Nom et accroche",
+          "body": "Le nom et la présentation du département, en français et en anglais."
+        },
+        "leader": {
+          "title": "Le responsable",
+          "body": "Nom, photo et rôle de la personne responsable."
+        },
+        "autosave": {
+          "title": "Pas de bouton Enregistrer",
+          "body": "Les changements sont enregistrés automatiquement. Ici, vous voyez si tout est enregistré."
+        }
+      },
+      "content": {
+        "languages": {
+          "title": "Français et anglais",
+          "body": "Rédigez la page en français, puis passez à l'anglais. Une page anglaise vide peut être copiée depuis le français."
+        },
+        "toolbar": {
+          "title": "Outils de mise en forme",
+          "body": "Titres, gras, listes, liens, images et plus. Le bouton + insère des blocs comme des photos ou des vidéos."
+        },
+        "status": {
+          "title": "Enregistré automatiquement",
+          "body": "Votre texte est enregistré pendant que vous écrivez. Ici : le nombre de mots et le dernier enregistrement."
+        }
+      },
+      "design": {
+        "controls": {
+          "title": "Couleurs et style",
+          "body": "Choisissez un style prêt à l'emploi ou vos propres couleurs. Enregistré automatiquement."
+        },
+        "card": {
+          "title": "La carte",
+          "body": "L'apparence de la carte du département sur la page Équipe."
+        },
+        "preview": {
+          "title": "La page",
+          "body": "Un aperçu de la page du département."
+        }
+      },
+      "media": {
+        "mode": {
+          "title": "Section équipe",
+          "body": "Affichez une grande photo d'équipe, une carte par membre, ou les deux."
+        },
+        "photos": {
+          "title": "Photos d'équipe",
+          "body": "Ajoutez des photos. La première est affichée en grand."
+        },
+        "members": {
+          "title": "Membres",
+          "body": "Ajoutez chaque membre avec un nom et une photo, et changez leur ordre."
+        }
+      }
+    },
+    "pages": {
+      "index": {
+        "pages": {
+          "title": "Les pages du site",
+          "body": "En-tête et pied de page, la page d'accueil et la page Sponsors. Ouvrez-en une pour modifier ses textes et images."
+        }
+      },
+      "general": {
+        "brand": {
+          "title": "Logo et nom",
+          "body": "Affichés dans l'en-tête et le pied de page de toutes les pages."
+        },
+        "nav": {
+          "title": "Menu",
+          "body": "Les libellés du menu. Si l'anglais est vide, le texte français est utilisé."
+        },
+        "contact": {
+          "title": "Coordonnées",
+          "body": "E-mail, téléphone et adresse affichés sur le site et utilisés par les boutons de contact."
+        },
+        "socials": {
+          "title": "Réseaux sociaux",
+          "body": "Les liens vers les réseaux du club, affichés en pied de page."
+        },
+        "save": {
+          "title": "Enregistrer",
+          "body": "Rien ne change sur le site avant d'enregistrer. Annuler remet la dernière version enregistrée."
+        }
+      },
+      "home": {
+        "hero": {
+          "title": "La bannière",
+          "body": "Le grand bloc en haut de la page d'accueil : titres, boutons et image."
+        },
+        "stats": {
+          "title": "Chiffres clés",
+          "body": "Les chiffres du club affichés sous la bannière."
+        },
+        "journey": {
+          "title": "Le parcours",
+          "body": "L'histoire du club, étape par étape, en frise."
+        },
+        "events": {
+          "title": "Section événements",
+          "body": "Le titre du bloc des événements mis en avant. Choisissez-les depuis la page Événements."
+        },
+        "testimonials": {
+          "title": "Témoignages",
+          "body": "Les citations de membres et partenaires."
+        },
+        "save": {
+          "title": "Enregistrer",
+          "body": "Rien ne change sur le site avant d'enregistrer. Annuler remet la dernière version enregistrée."
+        }
+      },
+      "sponsors": {
+        "hero": {
+          "title": "Haut de la page",
+          "body": "Le titre et l'introduction de la page Sponsors."
+        },
+        "list": {
+          "title": "Sponsors",
+          "body": "Ajoutez les sponsors avec leur logo et leur lien, et choisissez leur ordre."
+        },
+        "cta": {
+          "title": "Devenir sponsor",
+          "body": "Le bloc qui invite de nouveaux partenaires à contacter le club."
+        },
+        "save": {
+          "title": "Enregistrer",
+          "body": "Rien ne change sur le site avant d'enregistrer. Annuler remet la dernière version enregistrée."
+        }
+      }
+    },
+    "accounts": {
+      "pending": {
+        "title": "Nouveaux comptes",
+        "body": "Les personnes inscrites attendent ici. Activez-les pour qu'elles utilisent l'admin."
+      },
+      "role": {
+        "title": "Rôle et département",
+        "body": "Les admins peuvent tout faire. Pour un membre, choisir un département coche ses sections habituelles."
+      },
+      "sections": {
+        "title": "Sections",
+        "body": "Cochez exactement ce qu'un membre peut ouvrir : événements, formulaires, médias, finances."
+      },
+      "status": {
+        "title": "Enregistrer ou désactiver",
+        "body": "Enregistrez les changements, ou désactivez un compte pour le bloquer. Le dernier admin ne peut pas être retiré."
+      },
+      "disabled": {
+        "title": "Comptes désactivés",
+        "body": "Les comptes bloqués. Réactivez-en un pour lui rendre l'accès."
+      }
     }
   }
 }

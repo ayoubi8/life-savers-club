@@ -22,6 +22,7 @@ export default async function TeamAdminPage({ params }: { params: Promise<{ loca
           <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
         </div>
         <a
+          data-tour="team.view"
           href={`/${locale}/team`}
           target="_blank"
           rel="noreferrer"
@@ -32,7 +33,7 @@ export default async function TeamAdminPage({ params }: { params: Promise<{ loca
         </a>
       </div>
 
-      <section aria-labelledby="bureau-heading">
+      <section data-tour="team.bureau" aria-labelledby="bureau-heading">
         <h2 id="bureau-heading" className="text-lg font-extrabold text-grey">{t("bureau.title")}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{t("bureau.subtitle")}</p>
         {bureau.length ? (
@@ -54,7 +55,7 @@ export default async function TeamAdminPage({ params }: { params: Promise<{ loca
           </div>
           <NewDepartment />
         </div>
-        <div className="mt-4">
+        <div data-tour="team.departments" className="mt-4">
           <DepartmentsList items={departments} locale={locale} />
         </div>
       </section>

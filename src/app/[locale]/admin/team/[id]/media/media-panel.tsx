@@ -53,7 +53,7 @@ export function MediaPanel({ department }: { department: DepartmentFull }) {
 
   return (
     <div className="space-y-6">
-      <section className={card} aria-labelledby="mode-title">
+      <section data-tour="dept.mode" className={card} aria-labelledby="mode-title">
         <h2 id="mode-title" className="sr-only">{t("mode")}</h2>
         <Segmented
           label={t("mode")}
@@ -146,7 +146,7 @@ function PhotosSection({ department }: { department: DepartmentFull }) {
   }
 
   return (
-    <section className={card} aria-labelledby="photos-title">
+    <section data-tour="dept.photos" className={card} aria-labelledby="photos-title">
       <h2 id="photos-title" className="font-extrabold text-grey">{t("photosTitle")}</h2>
       <p className="text-xs text-muted-foreground">{t("photosHint")}</p>
 
@@ -335,7 +335,7 @@ function MembersSection({ department }: { department: DepartmentFull }) {
   }
 
   return (
-    <section className={card} aria-labelledby="members-title">
+    <section data-tour="dept.members" className={card} aria-labelledby="members-title">
       <h2 id="members-title" className="font-extrabold text-grey">{t("membersTitle")}</h2>
       <p className="text-xs text-muted-foreground">{t("membersHint")}</p>
 
