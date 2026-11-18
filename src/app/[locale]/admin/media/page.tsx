@@ -10,7 +10,7 @@ import { isGoogleConfigured } from "@/lib/google/config";
 import { DriveDisconnectedError, getDriveAccess } from "@/lib/media/drive-token";
 import { getActiveAccount, listDeleteRequests, listFolders } from "@/lib/media/queries";
 import { formatBytes } from "@/lib/media/schema";
-import { ChangeAccountButton, FolderMenu, NewFolderButton } from "./library-client";
+import { ChangeAccountButton, FolderMenu, ImportFolderButton, NewFolderButton } from "./library-client";
 import { DeleteRequests } from "./delete-requests";
 
 const KNOWN_ERRORS = new Set([
@@ -55,7 +55,12 @@ export default async function MediaLibraryPage({
           <h1 className="text-2xl font-extrabold text-blue">{t("title")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
         </div>
-        {account && <NewFolderButton />}
+        {account && (
+          <div className="flex flex-wrap gap-2">
+            <ImportFolderButton />
+            <NewFolderButton />
+          </div>
+        )}
       </header>
 
       {query.connected === "1" && (

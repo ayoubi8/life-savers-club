@@ -2,13 +2,14 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { Check, Download, Film, ImageIcon, Trash2, Upload, X } from "lucide-react";
+import { Check, Download, Film, FolderUp, ImageIcon, Trash2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "@/i18n/navigation";
 import { useConfirm } from "@/components/ui/confirm";
 import { loadMoreAssets, moveAssets, renameAsset, setOrientation, trashAssets } from "@/lib/media/actions";
 import type { AssetItem } from "@/lib/media/queries";
 import { formatDuration, kindOf, mimeOf, RESOLUTION_LABELS, resolutionOf, type AssetFilters, type Orientation } from "@/lib/media/schema";
+import { droppedFiles, PICK_FOLDER } from "@/lib/media/local-folder";
 import { cn } from "@/lib/utils";
 import { useMediaError } from "../library-client";
 import { NameDialog } from "../name-dialog";
@@ -65,6 +66,7 @@ export function FolderView({
   const router = useRouter();
   const confirm = useConfirm();
   const inputRef = useRef<HTMLInputElement>(null);
+  const folderInputRef = useRef<HTMLInputElement>(null);
   const objectUrls = useRef<string[]>([]);
 
   // Server data, plus pages loaded with "Load more" and files uploaded since.
@@ -107,6 +109,9 @@ export function FolderView({
   );
 
   function addFiles(files: File[]) {
+    // System files a picked folder brings along (.DS_Store, Thumbs.db…) aren't worth a warning.
+    files = files.filter((file) => !file.name.startsWith(".") && file.name !== "Thumbs.db" && file.name !== "desktop.ini");
+    if (!files.length) return void toast.error(t("emptyPick"));
     const accepted = files.filter((file) => kindOf(mimeOf(file)));
     const refused = files.length - accepted.length;
     if (refused) toast.error(t("refused", { count: refused }));
@@ -196,7 +201,7 @@ export function FolderView({
       onDrop={(event) => {
         event.preventDefault();
         setDragging(false);
-        addFiles([...event.dataTransfer.files]);
+        void droppedFiles(event.dataTransfer).then(addFiles);
       }}
       className={cn("relative min-h-[50vh] rounded-card transition", dragging && "ring-4 ring-blue/40")}
     >
@@ -215,6 +220,25 @@ export function FolderView({
           type="file"
           multiple
           accept={ACCEPT}
+          className="hidden"
+          onChange={(event) => {
+            addFiles([...(event.target.files ?? [])]);
+            event.target.value = "";
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => folderInputRef.current?.click()}
+          className="inline-flex items-center gap-2 rounded-full border border-blue px-4 py-2 text-sm font-bold text-blue hover:bg-blue/5"
+        >
+          <FolderUp className="h-4 w-4" aria-hidden />
+          {t("uploadFolder")}
+        </button>
+        <input
+          ref={folderInputRef}
+          type="file"
+          multiple
+          {...PICK_FOLDER}
           className="hidden"
           onChange={(event) => {
             addFiles([...(event.target.files ?? [])]);

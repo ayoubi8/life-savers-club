@@ -1539,8 +1539,8 @@
       "allResolutions": "All resolutions",
       "sd": "SD (under 720p)"
     },
-    "upload": "Upload",
-    "dropHint": "Or drop files on the page · JPG, PNG, WebP, GIF, HEIC, MP4, MOV, WebM · up to 10 GB each",
+    "upload": "Upload files",
+    "dropHint": "Or drop files or folders on the page · JPG, PNG, WebP, GIF, HEIC, MP4, MOV, WebM · up to 10 GB each",
     "dropHere": "Drop photos and videos here, or click to choose them.",
     "emptyFiltered": "No file matches these filters.",
     "emptyFolderView": "This folder is empty.",
@@ -1629,7 +1629,11 @@
       "approved": "Deleted.",
       "rejected": "Request rejected.",
       "partlyFailed": "{count, plural, one {# file could not be deleted.} other {# files could not be deleted.}}"
-    }
+    },
+    "uploadFolder": "Upload a folder",
+    "importFolder": "Import a folder",
+    "importedFolder": "Imported folder",
+    "emptyPick": "No photos or videos found in this folder."
   },
   "adminFinance": {
     "title": "Finance",

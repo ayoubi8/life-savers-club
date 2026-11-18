@@ -30,6 +30,9 @@ export function JourneyTimeline({
   subtitle: string;
   now: React.ReactNode;
 }) {
+  // Oldest first, whatever order the steps were added in (non-numeric years keep their place at the end).
+  const yearOf = (m: Milestone) => parseInt(m.year) || 99999;
+  items = [...items].sort((a, b) => yearOf(a) - yearOf(b));
   const d = ecgPath(items.length);
 
   return (
@@ -72,7 +75,8 @@ export function JourneyTimeline({
             return (
               <li key={m.id} className="contents">
                 <span className="journey-year" style={style}>{m.year}</span>
-                <Reveal delay={i * 100} className={`journey-slot ${i % 2 ? "is-down" : ""}`}>
+                {/* The slot is the grid item, so it needs --col too, or cards drift away from their year. */}
+                <Reveal delay={i * 100} className={`journey-slot ${i % 2 ? "is-down" : ""}`} style={style}>
                   <article className="journey-card" style={style}>
                     <span className="grid h-9 w-9 place-items-center rounded-xl bg-[var(--c)]">
                       <Icon size={18} aria-hidden="true" />

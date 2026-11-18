@@ -1,13 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { FolderPlus, MoreVertical, Pencil, RefreshCw, Trash2 } from "lucide-react";
+import { FolderPlus, FolderUp, Loader2, MoreVertical, Pencil, RefreshCw, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "@/i18n/navigation";
 import { useConfirm } from "@/components/ui/confirm";
 import { createFolder, deleteFolder, renameFolder } from "@/lib/media/actions";
+import { PICK_FOLDER, pickedFolderName } from "@/lib/media/local-folder";
+import { kindOf, mimeOf } from "@/lib/media/schema";
 import { NameDialog } from "./name-dialog";
+import { useUploads } from "./upload-queue";
 
 /** Translates an action error key, with a generic fallback. */
 export function useMediaError() {
@@ -44,6 +47,67 @@ export function NewFolderButton() {
           toast.success(t("folderCreated"));
           router.push(`/admin/media/${result.id}`);
           return null;
+        }}
+      />
+    </>
+  );
+}
+
+/** Picks a folder on the computer, makes a library folder with its name and uploads its photos and videos into it. */
+export function ImportFolderButton() {
+  const t = useTranslations("adminMedia");
+  const errorText = useMediaError();
+  const router = useRouter();
+  const uploads = useUploads();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function importFolder(files: File[]) {
+    const media = files.filter((file) => kindOf(mimeOf(file)));
+    if (!media.length) return void toast.error(t("emptyPick"));
+    const base = (pickedFolderName(files) ?? t("importedFolder")).slice(0, 80).trim() || t("importedFolder");
+    setBusy(true);
+    try {
+      // "Photos" already exists → "Photos (2)", "Photos (3)"…
+      for (let n = 1; n <= 20; n++) {
+        const result = await createFolder(n === 1 ? base : `${base} (${n})`);
+        if (result.ok) {
+          uploads.add(result.id, media);
+          if (files.length > media.length) toast.error(t("refused", { count: files.length - media.length }));
+          router.push(`/admin/media/${result.id}`);
+          return;
+        }
+        if (result.error !== "name_taken") return void toast.error(errorText(result.error));
+      }
+      toast.error(errorText("name_taken"));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <>
+      <button
+        type="button"
+        disabled={busy}
+        onClick={() => inputRef.current?.click()}
+        className="inline-flex items-center gap-2 rounded-full border border-blue px-4 py-2 text-sm font-bold text-blue hover:bg-blue/5 disabled:opacity-60"
+      >
+        {busy ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <FolderUp className="h-4 w-4" aria-hidden />}
+        {t("importFolder")}
+      </button>
+      <input
+        ref={inputRef}
+        type="file"
+        multiple
+        {...PICK_FOLDER}
+        className="hidden"
+        onChange={(event) => {
+          const files = [...(event.target.files ?? [])].filter(
+            (file) => !file.name.startsWith(".") && file.name !== "Thumbs.db" && file.name !== "desktop.ini",
+          );
+          event.target.value = "";
+          void importFolder(files);
         }}
       />
     </>
