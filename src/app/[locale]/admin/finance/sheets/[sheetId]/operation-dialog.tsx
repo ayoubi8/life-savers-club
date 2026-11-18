@@ -15,7 +15,6 @@ import {
   MAX_LINES,
   MAX_RECEIPT_BYTES,
   parseAmount,
-  PAYMENT_METHODS,
   RECEIPT_TYPES,
   type PaymentMethod,
 } from "@/lib/finance/schema";
@@ -69,8 +68,9 @@ export function OperationDialog({
   const [date, setDate] = useState(row?.occurred_on ?? today());
   const [label, setLabel] = useState(row?.label ?? "");
   const [category, setCategory] = useState(row?.category ?? categoriesFor(kind)[0]);
-  const [counterparty, setCounterparty] = useState(row?.counterparty ?? "");
-  const [payment, setPayment] = useState<PaymentMethod | "">((row?.payment_method as PaymentMethod | null) ?? "");
+  // No longer asked; values saved before are kept when an old operation is edited.
+  const counterparty = row?.counterparty ?? "";
+  const payment = (row?.payment_method as PaymentMethod | null) ?? null;
   const [note, setNote] = useState(row?.note ?? "");
   const [receipt, setReceipt] = useState<string | null>(row?.receipt_path ?? null);
   const [uploading, setUploading] = useState(false);
@@ -132,7 +132,7 @@ export function OperationDialog({
       category,
       label: label.trim() || parsedLines[0].product,
       counterparty,
-      payment_method: payment || null,
+      payment_method: payment,
       note,
       receipt_path: receipt,
       expected_updated_at: row?.updated_at,
@@ -178,21 +178,6 @@ export function OperationDialog({
               placeholder={kind === "income" ? t("operation.incomePlaceholder") : t("operation.purchasePlaceholder")}
               className={`${inputClass} mt-1`}
             />
-          </label>
-          <label className={labelClass}>
-            {kind === "income" ? t("operation.from") : t("operation.place")}
-            <input value={counterparty} maxLength={200} onChange={(e) => setCounterparty(e.target.value)} className={`${inputClass} mt-1`} />
-          </label>
-          <label className={labelClass}>
-            {t("columns.payment")}
-            <select value={payment} onChange={(e) => setPayment(e.target.value as PaymentMethod | "")} className={`${inputClass} mt-1`}>
-              <option value="">—</option>
-              {PAYMENT_METHODS.map((value) => (
-                <option key={value} value={value}>
-                  {t(`payment.${value}`)}
-                </option>
-              ))}
-            </select>
           </label>
         </div>
 

@@ -3,7 +3,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getTranslations } from "next-intl/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createFolder, createGoogleFile, DriveError, getFile, removePermission, shareWithUser } from "@/lib/google/drive";
+import { createFolder, createGoogleFile, DriveError, getFile, googleReason, removePermission, shareWithUser } from "@/lib/google/drive";
 import { DriveDisconnectedError, getDriveAccess, type DriveAccount } from "@/lib/media/drive-token";
 import { getPeople, getYearTotals, listSheets, listSheetOperations, listYearOperations, getSheet, type LedgerRow } from "./queries";
 import { adjustmentsTable, operationsTable, sheetSummaryTable, tabTitles, yearSummaryTable, type Table, type Translate } from "./tables";
@@ -24,8 +24,7 @@ async function sheets<T>(token: string, path: string, init: RequestInit = {}): P
     cache: "no-store",
   });
   if (!response.ok) {
-    const body = (await response.json().catch(() => null)) as { error?: { status?: string } } | null;
-    throw new DriveError(response.status, body?.error?.status ?? "sheets_failed");
+    throw new DriveError(response.status, googleReason(await response.json().catch(() => null)));
   }
   return (await response.json()) as T;
 }

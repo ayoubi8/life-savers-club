@@ -15,7 +15,7 @@ import { OperationDialog } from "./operation-dialog";
 
 type Viewer = { id: string; admin: boolean };
 type Kind = "expense" | "income";
-type Quick = { kind: Kind; date: string; label: string; category: string; quantity: string; price: string; counterparty: string; note: string };
+type Quick = { kind: Kind; date: string; label: string; category: string; quantity: string; price: string; note: string };
 
 const cell = "border-b border-border px-2 py-1.5 align-middle";
 const cellInput = "w-full rounded border border-border bg-white px-1.5 py-1 text-sm focus:border-blue focus:outline-none";
@@ -27,7 +27,6 @@ const freshQuick = (kind: Kind = "expense", date = today()): Quick => ({
   category: categoriesFor(kind)[0],
   quantity: "1",
   price: "",
-  counterparty: "",
   note: "",
 });
 
@@ -117,7 +116,7 @@ export function Ledger({
       occurred_on: draft.date,
       category: draft.category,
       label: draft.label.trim(),
-      counterparty: draft.counterparty,
+      counterparty: row?.counterparty ?? "",
       payment_method: (row?.payment_method as never) ?? null,
       note: draft.note,
       receipt_path: row?.receipt_path ?? null,
@@ -155,7 +154,6 @@ export function Ledger({
         category: row.category,
         quantity: String(line?.quantity ?? 1),
         price: String(line?.unit_price ?? row.amount),
-        counterparty: row.counterparty ?? "",
         note: row.note ?? "",
       },
     });
@@ -236,7 +234,7 @@ export function Ledger({
       </div>
 
       <div className="overflow-x-auto rounded-card border border-border bg-white">
-        <table className="w-full min-w-[1100px] border-collapse text-sm">
+        <table className="w-full min-w-[980px] border-collapse text-sm">
           <thead className="bg-muted text-left text-xs font-bold uppercase tracking-wide text-muted-foreground">
             <tr>
               <th className="w-8 px-2 py-2" />
@@ -246,7 +244,6 @@ export function Ledger({
               <th className="w-20 px-2 py-2 text-right">{t("columns.quantity")}</th>
               <th className="w-28 px-2 py-2 text-right">{t("columns.unitPrice")}</th>
               <th className="w-28 px-2 py-2 text-right">{t("columns.total")}</th>
-              <th className="w-36 px-2 py-2">{t("columns.counterparty")}</th>
               <th className="w-40 px-2 py-2">{t("columns.note")}</th>
               <th className="w-32 px-2 py-2 text-right">{t("columns.balanceAfter")}</th>
               <th className="w-24 px-2 py-2">{t("columns.by")}</th>
@@ -256,7 +253,7 @@ export function Ledger({
           <tbody>
             {visible.length === 0 && (
               <tr>
-                <td colSpan={12} className="px-4 py-8 text-center text-sm text-muted-foreground">
+                <td colSpan={11} className="px-4 py-8 text-center text-sm text-muted-foreground">
                   {rows.length ? t("ledger.noMatch") : t("ledger.empty")}
                 </td>
               </tr>
@@ -309,9 +306,6 @@ export function Ledger({
                       })()}
                     </td>
                     <td className={cell}>
-                      <input aria-label={t("columns.counterparty")} value={draft.counterparty} maxLength={200} onChange={(e) => set({ counterparty: e.target.value })} className={cellInput} />
-                    </td>
-                    <td className={cell}>
                       <input aria-label={t("columns.note")} value={draft.note} maxLength={2000} onChange={(e) => set({ note: e.target.value })} className={cellInput} />
                     </td>
                     <td className={cell} />
@@ -362,7 +356,6 @@ export function Ledger({
                     <td className={cn(cell, "whitespace-nowrap text-right font-bold", row.cancelled_at ? "line-through" : row.kind === "income" ? "text-green" : "text-pink")}>
                       {formatDzd(sign * row.amount, locale, { sign: true })}
                     </td>
-                    <td className={cn(cell, "max-w-36 truncate")} title={row.counterparty ?? ""}>{row.counterparty}</td>
                     <td className={cn(cell, "max-w-40 truncate")} title={row.note ?? ""}>{row.note}</td>
                     <td className={cn(cell, "whitespace-nowrap text-right font-semibold", row.balance_after < 0 ? "text-pink" : "text-ink")}>
                       {formatDzd(row.balance_after, locale)}
@@ -417,7 +410,7 @@ export function Ledger({
                         <td className={cn(cell, "text-right")}>{formatQuantity(item.quantity, locale)}</td>
                         <td className={cn(cell, "text-right")}>{formatDzd(item.unit_price, locale)}</td>
                         <td className={cn(cell, "text-right")}>{formatDzd(item.total, locale)}</td>
-                        <td className={cell} colSpan={5} />
+                        <td className={cell} colSpan={4} />
                       </tr>
                     ))}
                 </Fragment>
@@ -482,16 +475,6 @@ export function Ledger({
                 </td>
                 <td className={cn(cell, "whitespace-nowrap text-right font-semibold text-grey")}>{quickTotal === null ? "—" : formatDzd(quickTotal, locale)}</td>
                 <td className={cell}>
-                  <input
-                    aria-label={t("columns.counterparty")}
-                    value={quick.counterparty}
-                    maxLength={200}
-                    onChange={(e) => setQuick({ ...quick, counterparty: e.target.value })}
-                    placeholder={quick.kind === "income" ? t("operation.from") : t("operation.place")}
-                    className={cellInput}
-                  />
-                </td>
-                <td className={cell}>
                   <input aria-label={t("columns.note")} value={quick.note} maxLength={2000} onChange={(e) => setQuick({ ...quick, note: e.target.value })} className={cellInput} />
                 </td>
                 <td className={cell} colSpan={2} />
@@ -508,7 +491,7 @@ export function Ledger({
               <td colSpan={6} className="px-2 py-2 text-right text-grey">
                 {t("ledger.totalsVisible")}
               </td>
-              <td colSpan={6} className="px-2 py-2">
+              <td colSpan={5} className="px-2 py-2">
                 <span className="mr-4 text-green">
                   {t("totals.received")} {formatDzd(totals.received, locale)}
                 </span>

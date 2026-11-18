@@ -6,7 +6,7 @@ import { Archive, ArchiveRestore, FilePlus2, Lock, LockOpen, Mail, MoreVertical,
 import { toast } from "sonner";
 import { useRouter } from "@/i18n/navigation";
 import { useConfirm } from "@/components/ui/confirm";
-import { adjustBalance, openYear, setOpeningBalance, setShareEmail, setSheetArchived, setYearStatus, createSheet, updateSheet } from "@/lib/finance/actions";
+import { adjustBalance, openYear, setOpeningBalance, setShareEmail, setSheetArchived, setSheetLocked, setYearStatus, createSheet, updateSheet } from "@/lib/finance/actions";
 import { formatDzd, parseAmount } from "@/lib/finance/schema";
 import { DialogActions, inputClass, labelClass, Modal, primaryButton, secondaryButton, today, useFinanceError } from "./ui";
 
@@ -231,11 +231,18 @@ export function NewSheetButton({ yearId }: { yearId: string }) {
   );
 }
 
-/** Rename / archive a sheet (its author or an admin). */
-export function SheetMenu({ sheet }: { sheet: { id: string; name: string; description: string | null; archived: boolean } }) {
+/** Rename / archive a sheet (its author or an admin); lock / unlock it (admins). */
+export function SheetMenu({
+  sheet,
+  admin = false,
+}: {
+  sheet: { id: string; name: string; description: string | null; archived: boolean; locked: boolean };
+  admin?: boolean;
+}) {
   const t = useTranslations("adminFinance");
   const errorText = useFinanceError();
   const router = useRouter();
+  const confirm = useConfirm();
   const [menu, setMenu] = useState(false);
   const [editing, setEditing] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -248,6 +255,20 @@ export function SheetMenu({ sheet }: { sheet: { id: string; name: string; descri
     if (!result.ok) return setError(errorText(result.error));
     setEditing(false);
     toast.success(t("saved"));
+    router.refresh();
+  }
+
+  async function toggleLock() {
+    setMenu(false);
+    const ok = await confirm({
+      title: sheet.locked ? t("sheets.unlockTitle", { name: sheet.name }) : t("sheets.lockTitle", { name: sheet.name }),
+      message: sheet.locked ? t("sheets.unlockText") : t("sheets.lockText"),
+      confirmLabel: sheet.locked ? t("sheets.unlock") : t("sheets.lock"),
+    });
+    if (!ok) return;
+    const result = await setSheetLocked(sheet.id, !sheet.locked);
+    if (!result.ok) return void toast.error(errorText(result.error));
+    toast.success(sheet.locked ? t("sheets.unlocked") : t("sheets.locked"));
     router.refresh();
   }
 
@@ -286,6 +307,12 @@ export function SheetMenu({ sheet }: { sheet: { id: string; name: string; descri
               <Pencil className="h-4 w-4" aria-hidden />
               {t("sheets.rename")}
             </button>
+            {admin && (
+              <button role="menuitem" type="button" onClick={toggleLock} className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-semibold text-grey hover:bg-muted">
+                {sheet.locked ? <LockOpen className="h-4 w-4" aria-hidden /> : <Lock className="h-4 w-4" aria-hidden />}
+                {sheet.locked ? t("sheets.unlock") : t("sheets.lock")}
+              </button>
+            )}
             <button role="menuitem" type="button" onClick={archive} className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-semibold text-grey hover:bg-muted">
               {sheet.archived ? <ArchiveRestore className="h-4 w-4" aria-hidden /> : <Archive className="h-4 w-4" aria-hidden />}
               {sheet.archived ? t("sheets.restore") : t("sheets.archive")}

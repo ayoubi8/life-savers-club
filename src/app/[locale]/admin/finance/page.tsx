@@ -1,5 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Archive, Download, ExternalLink, FileSpreadsheet, History } from "lucide-react";
+import { Archive, Download, ExternalLink, FileSpreadsheet, History, Lock } from "lucide-react";
 import { Link, redirect } from "@/i18n/navigation";
 import { getSessionProfile } from "@/lib/auth";
 import { can, isAdmin } from "@/lib/permissions";
@@ -20,7 +20,7 @@ import { BalanceChart, CategoryBars } from "./balance-chart";
 import { CancelAdjustmentButton } from "./adjustment-client";
 import { NewSheetButton, OpenYearButton, SheetMenu, ShareEmailSetting, YearAdminActions } from "./year-client";
 
-const KNOWN_ERRORS = new Set(["invalid", "not_found", "drive_disconnected", "not_google_account", "google_forbidden", "google_failed"]);
+const KNOWN_ERRORS = new Set(["invalid", "not_found", "drive_disconnected", "not_google_account", "google_forbidden", "google_failed", "sheets_api_disabled"]);
 
 function suggestedLabel() {
   const now = new Date();
@@ -206,7 +206,10 @@ export default async function FinancePage({
               return (
                 <li key={sheet.id} className="relative rounded-card border border-border bg-white transition hover:border-blue">
                   <Link href={`/admin/finance/sheets/${sheet.id}`} className="block p-4 pr-12">
-                    <h3 className="truncate font-bold text-grey">{sheet.name}</h3>
+                    <h3 className="flex items-center gap-1.5 truncate font-bold text-grey">
+                      {sheet.locked_at && <Lock className="h-4 w-4 shrink-0 text-grey" aria-label={t("sheets.lockedBadge")} />}
+                      <span className="truncate">{sheet.name}</span>
+                    </h3>
                     {sheet.description && <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">{sheet.description}</p>}
                     <dl className="mt-3 grid grid-cols-3 gap-2 text-xs">
                       <div>
@@ -226,9 +229,12 @@ export default async function FinancePage({
                       {t("sheets.by", { name: (sheet.created_by && people[sheet.created_by]) || "—" })}
                     </p>
                   </Link>
-                  {open && (admin || mine) && (
+                  {open && (admin || (mine && !sheet.locked_at)) && (
                     <div className="absolute right-2 top-3">
-                      <SheetMenu sheet={{ id: sheet.id, name: sheet.name, description: sheet.description, archived: !!sheet.archived_at }} />
+                      <SheetMenu
+                        admin={admin}
+                        sheet={{ id: sheet.id, name: sheet.name, description: sheet.description, archived: !!sheet.archived_at, locked: !!sheet.locked_at }}
+                      />
                     </div>
                   )}
                 </li>

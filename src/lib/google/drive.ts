@@ -21,10 +21,16 @@ export class DriveError extends Error {
 }
 
 async function failure(response: Response) {
-  const body = (await response.json().catch(() => null)) as {
-    error?: { errors?: { reason?: string }[]; status?: string };
-  } | null;
-  return new DriveError(response.status, body?.error?.errors?.[0]?.reason ?? body?.error?.status ?? "unknown");
+  return new DriveError(response.status, googleReason(await response.json().catch(() => null)));
+}
+
+/**
+ * The most specific reason in a Google API error: "SERVICE_DISABLED" (API not enabled in the
+ * Cloud project), "storageQuotaExceeded", "notFound", then the generic status.
+ */
+export function googleReason(body: unknown) {
+  const error = (body as { error?: { errors?: { reason?: string }[]; details?: { reason?: string }[]; status?: string } } | null)?.error;
+  return error?.details?.find((detail) => detail.reason)?.reason ?? error?.errors?.[0]?.reason ?? error?.status ?? "unknown";
 }
 
 async function call<T>(token: string, path: string, init: RequestInit = {}): Promise<T> {

@@ -36,14 +36,15 @@ describe("operationsTable", () => {
     const table = operationsTable("Gala", [row({})], { u1: "Amine" }, t);
     expect(table.rows).toHaveLength(3);
     expect(table.rows[1].slice(3, 8)).toEqual(["Bandages", "categories.supplies", 10, 150, 1500]);
-    expect(table.rows[1][11]).toBe("");
-    expect(table.rows[2][11]).toBe(98000);
-    expect(table.rows[2][12]).toBe("Amine");
+    expect(table.rows[0]).toHaveLength(12);
+    expect(table.rows[1][9]).toBe("");
+    expect(table.rows[2][9]).toBe(98000);
+    expect(table.rows[2][10]).toBe("Amine");
   });
 
   it("marks cancelled operations with their reason", () => {
     const table = operationsTable("Gala", [row({ cancelled_at: "2026-11-15T00:00:00Z", cancel_reason: "duplicate" })], {}, t);
-    expect(table.rows[1][13]).toBe("export.cancelled(duplicate)");
+    expect(table.rows[1][11]).toBe("export.cancelled(duplicate)");
   });
 });
 

@@ -20,7 +20,7 @@ function changed() {
 /** Database errors raised by the finance rules, as keys the UI translates. */
 function dbError(error: { message?: string; code?: string } | null): string {
   if (!error) return "failed";
-  const known = ["locked", "stale", "invalid_lines", "invalid_sheet", "immutable_field", "reason_required", "forbidden", "not_found", "invalid"];
+  const known = ["sheet_locked", "locked", "stale", "invalid_lines", "invalid_sheet", "immutable_field", "reason_required", "forbidden", "not_found", "invalid"];
   if (error.message && known.includes(error.message)) return error.message;
   if (error.code === "23505") return "name_taken";
   if (error.code === "42501") return "locked"; // RLS: closed year or no right
@@ -123,6 +123,22 @@ export async function updateSheet(sheetId: string, input: { name: string; descri
     .select("id");
   if (error) return { ok: false, error: dbError(error) };
   if (!data?.length) return { ok: false, error: "forbidden" }; // not the author (RLS)
+  changed();
+  return { ok: true };
+}
+
+/** Admins only: a locked sheet is read-only for everyone until it is unlocked. */
+export async function setSheetLocked(sheetId: string, locked: boolean): Promise<Result> {
+  const ctx = await admin();
+  if (!ctx) return { ok: false, error: "forbidden" };
+  if (!uuid.safeParse(sheetId).success) return { ok: false, error: "invalid" };
+  const { data, error } = await ctx.supabase
+    .from("finance_sheets")
+    .update({ locked_at: locked ? new Date().toISOString() : null })
+    .eq("id", sheetId)
+    .select("id");
+  if (error) return { ok: false, error: dbError(error) };
+  if (!data?.length) return { ok: false, error: "forbidden" };
   changed();
   return { ok: true };
 }

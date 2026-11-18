@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { ArrowLeft, Download, ExternalLink, FileSpreadsheet } from "lucide-react";
+import { ArrowLeft, Download, ExternalLink, FileSpreadsheet, Lock } from "lucide-react";
 import { Link, redirect } from "@/i18n/navigation";
 import { getSessionProfile } from "@/lib/auth";
 import { can, isAdmin } from "@/lib/permissions";
@@ -12,7 +12,7 @@ import { SheetMenu } from "../../year-client";
 import { Ledger } from "./ledger";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const KNOWN_ERRORS = new Set(["invalid", "not_found", "drive_disconnected", "not_google_account", "google_forbidden", "google_failed"]);
+const KNOWN_ERRORS = new Set(["invalid", "not_found", "drive_disconnected", "not_google_account", "google_forbidden", "google_failed", "sheets_api_disabled"]);
 
 export default async function FinanceSheetPage({
   params,
@@ -39,7 +39,8 @@ export default async function FinanceSheetPage({
 
   const admin = isAdmin(profile);
   const yearOpen = year?.status === "open";
-  const writable = yearOpen && !sheet.archived_at;
+  const locked = !!sheet.locked_at;
+  const writable = yearOpen && !sheet.archived_at && !locked;
   const error = typeof query.error === "string" && KNOWN_ERRORS.has(query.error) ? query.error : null;
   const net = sheet.received - sheet.spent;
 
@@ -54,8 +55,12 @@ export default async function FinanceSheetPage({
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <h1 className="break-words text-2xl font-extrabold text-blue">{sheet.name}</h1>
-            {yearOpen && (admin || sheet.created_by === profile!.id) && (
-              <SheetMenu sheet={{ id: sheet.id, name: sheet.name, description: sheet.description, archived: !!sheet.archived_at }} />
+            {locked && <Lock className="h-5 w-5 shrink-0 text-grey" aria-label={t("sheets.lockedBadge")} />}
+            {yearOpen && (admin || (sheet.created_by === profile!.id && !locked)) && (
+              <SheetMenu
+                admin={admin}
+                sheet={{ id: sheet.id, name: sheet.name, description: sheet.description, archived: !!sheet.archived_at, locked }}
+              />
             )}
           </div>
           {sheet.description && <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{sheet.description}</p>}
@@ -82,6 +87,12 @@ export default async function FinanceSheetPage({
         </div>
       </header>
 
+      {locked && (
+        <p role="status" className="mb-4 flex items-center gap-2 rounded-card border border-border bg-white px-4 py-3 text-sm font-semibold text-grey">
+          <Lock className="h-4 w-4 shrink-0" aria-hidden />
+          {admin ? t("sheets.lockedBannerAdmin") : t("sheets.lockedBanner")}
+        </p>
+      )}
       {error && (
         <p role="alert" className="mb-4 rounded-card border border-pink/30 bg-pink/5 px-4 py-3 text-sm font-semibold text-pink">
           {t(`errors.${error}`)}

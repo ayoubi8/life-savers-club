@@ -1694,7 +1694,18 @@
       "archivedBadge": "Archivée (lecture seule)",
       "showArchived": "Feuilles archivées",
       "showActive": "Feuilles actives",
-      "back": "Année {label}"
+      "back": "Année {label}",
+      "lock": "Verrouiller",
+      "unlock": "Déverrouiller",
+      "lockTitle": "Verrouiller « {name} » ?",
+      "lockText": "Personne ne peut ajouter, modifier ou annuler d'opération dans cette feuille tant qu'un admin ne la déverrouille pas.",
+      "unlockTitle": "Déverrouiller « {name} » ?",
+      "unlockText": "Les membres peuvent de nouveau ajouter des opérations et modifier les leurs pendant 24 heures.",
+      "locked": "Feuille verrouillée.",
+      "unlocked": "Feuille déverrouillée.",
+      "lockedBadge": "Verrouillée",
+      "lockedBanner": "Cette feuille est verrouillée par un admin : on peut la consulter et la télécharger, pas la modifier.",
+      "lockedBannerAdmin": "Cette feuille est verrouillée. Déverrouillez-la depuis le menu ⋮ pour la modifier."
     },
     "recent": {
       "title": "Dernières opérations",
@@ -1737,13 +1748,6 @@
       "tickets": "Billets",
       "adjustment": "Ajustement"
     },
-    "payment": {
-      "cash": "Espèces",
-      "transfer": "Virement",
-      "card": "Carte",
-      "cheque": "Chèque",
-      "other": "Autre"
-    },
     "columns": {
       "date": "Date",
       "type": "Type",
@@ -1755,8 +1759,6 @@
       "unitPrice": "Prix unitaire",
       "total": "Total",
       "amount": "Montant (DA)",
-      "counterparty": "Lieu / source",
-      "payment": "Paiement",
       "note": "Note",
       "balanceAfter": "Solde après",
       "by": "Par",
@@ -1802,8 +1804,6 @@
       "incomeLabel": "Libellé",
       "incomePlaceholder": "ex. Sponsor X – Gala",
       "source": "Source",
-      "from": "De (sponsor, payeur)",
-      "place": "Lieu / fournisseur",
       "products": "Produits",
       "addLine": "Ajouter un produit",
       "removeLine": "Retirer ce produit",
@@ -1857,7 +1857,9 @@
         "ends_on": "Fin",
         "sheet_id": "Feuille",
         "event_id": "Événement",
-        "adjustment_amount": "Montant"
+        "adjustment_amount": "Montant",
+        "locked_at": "Verrouillée",
+        "locked_by": "Verrouillée par"
       }
     },
     "export": {
@@ -1891,8 +1893,10 @@
       "receipt_too_large": "Le reçu dépasse 10 Mo.",
       "drive_disconnected": "Google Drive n'est pas connecté. Demandez à un admin de le connecter dans Médiathèque.",
       "not_google_account": "Cet email n'est pas un compte Google. Indiquez votre Gmail avec « Modifier » à côté de « Google Sheets s'ouvre avec ».",
-      "google_forbidden": "Google a refusé l'action. Demandez à un admin de reconnecter Google Drive dans Médiathèque.",
-      "google_failed": "Google est injoignable. Réessayez."
+      "google_forbidden": "Google a refusé la demande (accès refusé). Le plus souvent une API n'est pas activée dans Google Cloud, ou le compte du club a retiré l'accès du site : un admin peut le reconnecter dans Médiathèque → Changer de compte.",
+      "google_failed": "Google est injoignable. Réessayez.",
+      "sheet_locked": "Cette feuille est verrouillée par un admin.",
+      "sheets_api_disabled": "L'API Google Sheets n'est pas activée dans le projet Google Cloud du club. Un admin doit l'activer : console.cloud.google.com → API et services → Bibliothèque → « Google Sheets API » → Activer, puis réessayer."
     }
   }
 }

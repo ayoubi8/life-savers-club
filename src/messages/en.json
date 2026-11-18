@@ -1694,7 +1694,18 @@
       "archivedBadge": "Archived (read only)",
       "showArchived": "Archived sheets",
       "showActive": "Active sheets",
-      "back": "Year {label}"
+      "back": "Year {label}",
+      "lock": "Lock",
+      "unlock": "Unlock",
+      "lockTitle": "Lock “{name}”?",
+      "lockText": "Nobody can add, change or cancel operations in this sheet until an admin unlocks it.",
+      "unlockTitle": "Unlock “{name}”?",
+      "unlockText": "Members can add operations again and change their own for 24 hours.",
+      "locked": "Sheet locked.",
+      "unlocked": "Sheet unlocked.",
+      "lockedBadge": "Locked",
+      "lockedBanner": "This sheet is locked by an admin: it can be viewed and downloaded, not changed.",
+      "lockedBannerAdmin": "This sheet is locked. Unlock it from the ⋮ menu to change it."
     },
     "recent": {
       "title": "Latest operations",
@@ -1737,13 +1748,6 @@
       "tickets": "Tickets",
       "adjustment": "Adjustment"
     },
-    "payment": {
-      "cash": "Cash",
-      "transfer": "Transfer",
-      "card": "Card",
-      "cheque": "Cheque",
-      "other": "Other"
-    },
     "columns": {
       "date": "Date",
       "type": "Type",
@@ -1755,8 +1759,6 @@
       "unitPrice": "Unit price",
       "total": "Total",
       "amount": "Amount (DA)",
-      "counterparty": "Place / source",
-      "payment": "Payment",
       "note": "Note",
       "balanceAfter": "Balance after",
       "by": "By",
@@ -1802,8 +1804,6 @@
       "incomeLabel": "Label",
       "incomePlaceholder": "e.g. Sponsor X – Gala",
       "source": "Source",
-      "from": "From (sponsor, payer)",
-      "place": "Place / supplier",
       "products": "Products",
       "addLine": "Add a product",
       "removeLine": "Remove this product",
@@ -1857,7 +1857,9 @@
         "ends_on": "End",
         "sheet_id": "Sheet",
         "event_id": "Event",
-        "adjustment_amount": "Amount"
+        "adjustment_amount": "Amount",
+        "locked_at": "Locked",
+        "locked_by": "Locked by"
       }
     },
     "export": {
@@ -1891,8 +1893,10 @@
       "receipt_too_large": "The receipt is over 10 MB.",
       "drive_disconnected": "Google Drive is not connected. Ask an admin to connect it in Media.",
       "not_google_account": "This email is not a Google account. Set your Gmail with “Change” next to “Google Sheets opens with”.",
-      "google_forbidden": "Google refused the action. Ask an admin to reconnect Google Drive in Media.",
-      "google_failed": "Google could not be reached. Try again."
+      "google_forbidden": "Google refused the request (permission denied). Usually an API is not enabled in Google Cloud, or the club account removed the site's access: an admin can reconnect it in Media → Change account.",
+      "google_failed": "Google could not be reached. Try again.",
+      "sheet_locked": "This sheet is locked by an admin.",
+      "sheets_api_disabled": "The Google Sheets API is not enabled in the club's Google Cloud project. An admin must enable it: console.cloud.google.com → APIs & Services → Library → “Google Sheets API” → Enable, then try again."
     }
   }
 }

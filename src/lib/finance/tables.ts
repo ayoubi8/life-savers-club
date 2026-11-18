@@ -37,8 +37,6 @@ export function operationsTable(title: string, rows: LedgerRow[], people: Record
     t("columns.quantity"),
     t("columns.unitPrice"),
     t("columns.total"),
-    t("columns.counterparty"),
-    t("columns.payment"),
     t("columns.note"),
     t("columns.balanceAfter"),
     t("columns.by"),
@@ -59,8 +57,6 @@ export function operationsTable(title: string, rows: LedgerRow[], people: Record
         line.quantity,
         line.unit_price,
         line.total,
-        row.counterparty ?? "",
-        row.payment_method ? t(`payment.${row.payment_method}`) : "",
         row.note ?? "",
         last ? row.balance_after : "",
         row.created_by ? (people[row.created_by] ?? "") : "",
@@ -68,7 +64,7 @@ export function operationsTable(title: string, rows: LedgerRow[], people: Record
       ]);
     });
   }
-  return { title, rows: [header, ...body], moneyColumns: [6, 7, 11] };
+  return { title, rows: [header, ...body], moneyColumns: [6, 7, 9] };
 }
 
 function byCategory(rows: LedgerRow[], t: Translate): Cell[][] {

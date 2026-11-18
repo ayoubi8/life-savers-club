@@ -28,6 +28,7 @@ export type FinanceSheet = {
   created_by: string | null;
   created_at: string;
   archived_at: string | null;
+  locked_at: string | null;
   received: number;
   spent: number;
   operations: number;
@@ -91,7 +92,7 @@ export async function getYearTotals(supabase: ServerClient, yearId: string): Pro
 export async function listSheets(supabase: ServerClient, yearId: string, archived = false): Promise<FinanceSheet[]> {
   let query = supabase
     .from("finance_sheets")
-    .select("id, year_id, name, description, event_id, gsheet_id, created_by, created_at, archived_at")
+    .select("id, year_id, name, description, event_id, gsheet_id, created_by, created_at, archived_at, locked_at")
     .eq("year_id", yearId)
     .order("created_at", { ascending: false });
   query = archived ? query.not("archived_at", "is", null) : query.is("archived_at", null);
@@ -119,7 +120,7 @@ export async function getSheet(supabase: ServerClient, sheetId: string) {
   const [{ data: sheet }, { data: totals }] = await Promise.all([
     supabase
       .from("finance_sheets")
-      .select("id, year_id, name, description, event_id, gsheet_id, created_by, created_at, archived_at")
+      .select("id, year_id, name, description, event_id, gsheet_id, created_by, created_at, archived_at, locked_at")
       .eq("id", sheetId)
       .maybeSingle(),
     supabase.from("finance_sheet_totals").select("received, spent, operations, last_change").eq("sheet_id", sheetId).maybeSingle(),

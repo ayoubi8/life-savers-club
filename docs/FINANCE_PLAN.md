@@ -6,6 +6,9 @@ Goal: the Finance & Logistics department (FL) runs the club's money from the adm
 > - In the sheet table, single-product rows are edited in place (double-click); multi-product purchases and incomes with all details are edited in a dialog. A quick-add row sits at the bottom.
 > - A Google copy is created the first time someone clicks "Open in Google Sheets", then refreshed automatically after each change. The Google files are written in French.
 > - Linking a sheet to an event (`event_id`) exists in the database but has no screen yet.
+> - Purchases and incomes no longer ask for a place / supplier or a payment method (kept in the database for old rows, not shown or exported).
+> - Admins can **lock a sheet** (`20261123000000_finance_sheet_lock.sql`): read-only for everyone, admins included, until an admin unlocks it.
+> - "Open in Google Sheets" needs the **Google Sheets API** enabled in the Cloud project, next to the Drive API.
 
 Decisions below come from the FL leader's answers.
 

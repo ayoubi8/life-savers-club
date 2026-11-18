@@ -43,6 +43,7 @@ export async function GET(request: Request) {
     return NextResponse.redirect(await openInGoogleSheets(target, { id: ctx.profile.id, email }));
   } catch (error) {
     if (error instanceof DriveDisconnectedError) return back("drive_disconnected");
+    if (error instanceof DriveError && error.reason === "SERVICE_DISABLED") return back("sheets_api_disabled");
     if (error instanceof DriveError && error.status === 400) return back("not_google_account");
     if (error instanceof DriveError && error.status === 403) return back("google_forbidden");
     return back("google_failed");
