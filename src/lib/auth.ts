@@ -12,6 +12,8 @@ export type SessionProfile = {
   sections: string[];
   /** Guided tours finished or skipped: tour id → version. */
   tours_seen: Record<string, number> | null;
+  /** The one protected owner account (see the owner_account migration). */
+  is_owner?: boolean;
 };
 
 /**
@@ -28,8 +30,8 @@ export const getSessionProfile = cache(async () => {
   if (!userId) return { userId: null, profile: null };
 
   const columns = "id, full_name, email, role, status, department, sections";
-  const first = await supabase.from("profiles").select(`${columns}, tours_seen`).eq("id", userId).maybeSingle();
-  // 42703 = column missing: the tours migration is not applied yet. Never sign people out for that.
+  const first = await supabase.from("profiles").select(`${columns}, tours_seen, is_owner`).eq("id", userId).maybeSingle();
+  // 42703 = column missing: a newer migration is not applied yet. Never sign people out for that.
   const { data: profile } =
     first.error?.code === "42703" ? await supabase.from("profiles").select(columns).eq("id", userId).maybeSingle() : first;
   return { userId, profile: (profile as SessionProfile | null) ?? null };

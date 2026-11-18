@@ -666,6 +666,24 @@
       "mrkt": "MRKT",
       "fl": "FL",
       "org": "ORG"
+    },
+    "owner": "Owner",
+    "ownerProtected": "Owner account: protected, no admin can change it.",
+    "credentials": {
+      "open": "Email & password",
+      "email": "Sign-in email",
+      "password": "New password",
+      "passwordHint": "Leave empty to keep the current one. At least 8 characters. Passwords are encrypted: they can be replaced, never read.",
+      "save": "Save",
+      "saved": "Sign-in details updated.",
+      "errors": {
+        "not_allowed": "Owner only.",
+        "invalid_email": "Invalid email address.",
+        "short_password": "The password must be 8 to 72 characters.",
+        "nothing": "Nothing to change.",
+        "email_taken": "This email is already used by another account.",
+        "failed": "Action failed."
+      }
     }
   },
   "pendingAccount": {

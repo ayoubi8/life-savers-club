@@ -666,6 +666,24 @@
       "mrkt": "MRKT",
       "fl": "FL",
       "org": "ORG"
+    },
+    "owner": "Propriétaire",
+    "ownerProtected": "Compte propriétaire : protégé, aucun admin ne peut le modifier.",
+    "credentials": {
+      "open": "Email et mot de passe",
+      "email": "Email de connexion",
+      "password": "Nouveau mot de passe",
+      "passwordHint": "Laissez vide pour garder l’actuel. 8 caractères minimum. Les mots de passe sont chiffrés : on peut les remplacer, jamais les lire.",
+      "save": "Enregistrer",
+      "saved": "Identifiants mis à jour.",
+      "errors": {
+        "not_allowed": "Réservé au propriétaire.",
+        "invalid_email": "Adresse email invalide.",
+        "short_password": "Le mot de passe doit faire entre 8 et 72 caractères.",
+        "nothing": "Rien à changer.",
+        "email_taken": "Cet email est déjà utilisé par un autre compte.",
+        "failed": "Action impossible."
+      }
     }
   },
   "pendingAccount": {
