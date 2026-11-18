@@ -13,7 +13,6 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
   title: { default: "Life Savers Club", template: "%s | Life Savers Club" },
   description: "Spread health, spread hope.",
-  icons: { icon: "/brand/logo.png" },
 };
 
 export function generateStaticParams() {
