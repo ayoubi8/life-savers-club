@@ -1,6 +1,6 @@
 # Supabase pauses free projects after 7 days without database activity.
 # This checks once a day and pings the database at a random interval of 1 to 5 days,
-# so the project never goes idle.
+# so the project never goes idle. Run history: the repo's Actions tab.
 # Needs two repository secrets (Settings > Secrets and variables > Actions):
 #   SUPABASE_URL       same value as NEXT_PUBLIC_SUPABASE_URL
 #   SUPABASE_ANON_KEY  same value as NEXT_PUBLIC_SUPABASE_ANON_KEY
